@@ -1,0 +1,230 @@
+<title>Готовность к первым клиентам</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#575e66; --ink-3:#656c74;
+  --line:#dedbd6; --line-strong:#c7c3bc;
+  --ok:#0f6e63; --ok-soft:#e3f0ee; --ok-line:#9fcdc6;
+  --wait:#9a5209; --wait-soft:#fbf0e0; --wait-line:#e5c087;
+  --stop:#a3302a; --stop-soft:#fbeae8; --stop-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --wait:#d79a55; --wait-soft:#2b2118; --wait-line:#5a4326;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --wait:#d79a55; --wait-soft:#2b2118; --wait-line:#5a4326;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px 92px}
+header.top{padding:50px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:34px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);margin:0 0 13px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(29px,4.3vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 13px;text-wrap:balance;max-width:19ch}
+.dek{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0}
+section{margin-bottom:48px}
+h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:17px;margin:26px 0 9px}
+.lead{color:var(--ink-2);max-width:70ch;margin:0 0 20px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+p{max-width:72ch;margin:0 0 13px}
+ul{max-width:72ch;margin:0 0 14px;padding-left:20px}
+li{margin-bottom:6px}
+li::marker{color:var(--ink-3)}
+
+/* сводка готовности */
+.gauge{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0 0 26px}
+.gauge div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+.gauge .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:5px}
+.gauge .v{font-size:25px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gauge .n{font-size:13px;color:var(--ink-2)}
+.gauge.stop{border-color:var(--stop)}
+
+.rows{display:flex;flex-direction:column;gap:2px;margin-bottom:18px}
+.row{display:grid;grid-template-columns:26px 1fr auto;gap:13px;align-items:start;background:var(--surface);border:1px solid var(--line);padding:13px 16px}
+.row:first-child{border-radius:10px 10px 0 0}
+.row:last-child{border-radius:0 0 10px 10px}
+.row .mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:1px}
+.row.ok .mark{background:var(--ok-soft);color:var(--ok)}
+.row.wait .mark{background:var(--wait-soft);color:var(--wait)}
+.row.stop .mark{background:var(--stop-soft);color:var(--stop)}
+.row b{font-weight:600;display:block;margin-bottom:2px}
+.row span{color:var(--ink-2);font-size:14.5px}
+.row .how{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;white-space:nowrap;padding-top:2px}
+
+.callout{border-radius:10px;padding:16px 19px;margin:22px 0;max-width:72ch;background:var(--wait-soft);border:1px solid var(--wait-line)}
+.callout.stop{background:var(--stop-soft);border-color:var(--stop-line)}
+.callout.ok{background:var(--ok-soft);border-color:var(--ok-line)}
+.callout .tag{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--wait);margin-bottom:7px}
+.callout.stop .tag{color:var(--stop)}
+.callout.ok .tag{color:var(--ok)}
+.callout p{margin:0 0 8px;font-size:15px}
+.callout p:last-child{margin:0}
+
+.scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:580px}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 15px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+code{font-family:var(--mono);font-size:13.5px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
+.step{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 17px;margin-bottom:8px}
+.step em{font-family:var(--mono);font-style:normal;font-size:12px;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok-line);border-radius:999px;padding:2px 9px}
+.step b{font-weight:600}
+.step span{color:var(--ink-2);font-size:14.5px;display:block;margin-top:2px}
+.step .t{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.end{border-top:2px solid var(--ink);padding-top:15px;margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+a{color:var(--ok)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Состояние продукта · 6 сентября 2026</p>
+  <h1>Готовность к первым клиентам</h1>
+  <p class="dek">Что уже работает и проверено, что мешает поставить систему в заведение,
+  и сколько до этого осталось. Оценки обновлены после того, как офлайн-режим
+  и настройки владельца были сделаны.</p>
+</header>
+
+<section>
+  <div class="gauge">
+    <div><span class="k">Строк кода</span><span class="v">10 276</span><span class="n">29 таблиц, 70+ эндпоинтов</span></div>
+    <div><span class="k">Тестов</span><span class="v">116</span><span class="n">все проходят</span></div>
+    <div><span class="k">Ядро продукта</span><span class="v">готово</span><span class="n">касса, брони, абонементы, отчёты</span></div>
+    <div class="gauge stop"><span class="k">До первого клиента</span><span class="v">3–4 недели</span><span class="n">упирается в фискализацию</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Что работает сегодня</h2>
+  <p class="lead">Всё перечисленное проверено не «на словах»: рядом указано, чем именно.</p>
+
+  <h3>Касса</h3>
+  <div class="rows">
+    <div class="row ok"><span class="mark">✓</span><div><b>Привязка кассы и вход по PIN</b><span>Руководитель привязывает компьютер к филиалу один раз, дальше сотрудник входит четырьмя цифрами. Украденное устройство отзывается за один запрос</span></div><span class="how">13 тестов + браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Смены и Z-отчёт</b><span>Открытие с суммой в ящике, закрытие со сверкой, неизменяемый снимок итогов</span></div><span class="how">браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Приём гостя и таймер</b><span>По брони — одно нажатие, без брони — четыре. Таймер идёт от серверного времени, перезагрузка его не сбивает</span></div><span class="how">27 тестов + браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Тарификация по сегментам</b><span>Визит через границу тарифа считается по частям: 20 минут по дневному, остальное по вечернему</span></div><span class="how">23 теста ядра</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Товары, продления, расчёт, оплата</b><span>Наличные с расчётом сдачи, карта, смешанная оплата, возврат обратной операцией</span></div><span class="how">браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Работа без интернета</b><span>Зал и карточки визитов из снимка, операции копятся в очереди и уходят при возврате связи. Повтор безопасен даже при гонке</span></div><span class="how">7 тестов + браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Ставится как программа</b><span>Ярлык, окно без адресной строки, открывается вообще без сети</span></div><span class="how">браузер, офлайн</span></div>
+  </div>
+
+  <h3>Бронирование</h3>
+  <div class="rows">
+    <div class="row ok"><span class="mark">✓</span><div><b>Шахматка и запись гостя</b><span>Помещения по строкам, часы по столбцам, клик по свободной клетке</span></div><span class="how">браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Защита от двойной записи</b><span>Непересечение гарантирует база с учётом времени на уборку — обойти нельзя даже из кода</span></div><span class="how">тест на гонку</span></div>
+  </div>
+
+  <h3>Абонементы</h3>
+  <div class="rows">
+    <div class="row ok"><span class="mark">✓</span><div><b>Продажа, списание, заморозка</b><span>Посещения, часы, безлимит. Баланс — свёртка леджера, двойное списание невозможно</span></div><span class="how">11 тестов</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Подсказка на кассе</b><span>Система сама предлагает подходящий абонемент гостя и показывает, что спишется</span></div><span class="how">браузер</span></div>
+  </div>
+
+  <h3>Кабинет владельца</h3>
+  <div class="rows">
+    <div class="row ok"><span class="mark">✓</span><div><b>Настройка заведения</b><span>Абонементы, услуги с тарифами, помещения, товары, сотрудники с PIN, настройки филиала — всё из интерфейса</span></div><span class="how">23 теста + браузер</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Отчёты</b><span>Выручка с динамикой, средний чек, загрузка по часам и дням, смены с расхождениями, долг по абонементам</span></div><span class="how">12 тестов + браузер</span></div>
+  </div>
+
+  <h3>Основание</h3>
+  <div class="rows">
+    <div class="row ok"><span class="mark">✓</span><div><b>Изоляция заведений</b><span>Данные разных организаций разделены на уровне СУБД, а не проверками в коде</span></div><span class="how">тесты изоляции</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Деньги неизменяемы</b><span>Платежи и списания нельзя отредактировать — только обратной операцией. Закрытая смена не правится</span></div><span class="how">тесты</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Что мешает подключить клиента</h2>
+  <p class="lead">Три позиции, без которых поставить систему в заведение нельзя. Остальное можно
+  доделывать по ходу.</p>
+
+  <div class="rows">
+    <div class="row stop"><span class="mark">!</span><div><b>Фискализация — главный блокиратор</b><span>В Казахстане заведение не может легально принимать деньги без фискального чека. Место в коде подготовлено (интерфейс <code>FiscalDevice</code>), но реализации нет: она зависит от выбранного оператора</span></div><span class="how">1,5–2 недели</span></div>
+    <div class="row stop"><span class="mark">!</span><div><b>Система живёт только на одном компьютере</b><span>Нет сервера, домена, HTTPS, автоматических бэкапов. Сейчас всё поднимается локально командой разработчика</span></div><span class="how">1 неделя</span></div>
+    <div class="row stop"><span class="mark">!</span><div><b>Чек не печатается</b><span>Гость уходит без бумаги. Нужен драйвер термопринтера — и он же потребуется для фискального чека</span></div><span class="how">входит в блок фискализации</span></div>
+  </div>
+
+  <h3>Дыры в защите, которые надо закрыть до боевой работы</h3>
+  <div class="rows">
+    <div class="row wait"><span class="mark">·</span><div><b>PIN можно перебирать</b><span>Ограничения на число попыток нет: четырёхзначный код подбирается за минуты</span></div><span class="how">1 день</span></div>
+    <div class="row wait"><span class="mark">·</span><div><b>Секрет подписи имеет значение по умолчанию</b><span><code>dev-secret-change-me</code> — если забыть заменить на сервере, токены подделываются</span></div><span class="how">1 час</span></div>
+    <div class="row wait"><span class="mark">·</span><div><b>Нет бэкапов и мониторинга</b><span>Потеря базы = потеря всей истории заведения</span></div><span class="how">входит в блок сервера</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Чего нет, но для первых клиентов не критично</h2>
+  <p class="lead">Это можно делать уже во время пилота, наблюдая за реальной работой.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Чего нет</th><th>Почему можно подождать</th><th class="num">Оценка</th></tr></thead>
+    <tbody>
+      <tr><td>Склад с себестоимостью и прибылью по товарам</td><td>Бар в бане небольшой; сейчас есть количественный учёт остатков. Но это то, чем меряются при сравнении с Paloma</td><td class="num">2–2,5 нед.</td></tr>
+      <tr><td>Скидка на кассе</td><td>Лимит скидки в настройках есть, интерфейса нет. Пока цена берётся по тарифу без исключений</td><td class="num">2–3 дня</td></tr>
+      <tr><td>Внесение и изъятие наличных из интерфейса</td><td>Сервер это умеет, кнопки на кассе нет — размен и инкассация пока мимо системы</td><td class="num">1 день</td></tr>
+      <tr><td>Депозит и бонусы</td><td>Обычный для бань сценарий, но на пилоте переживаемо</td><td class="num">1 неделя</td></tr>
+      <tr><td>Регистрация заведения владельцем</td><td>Первых клиентов заводим сами, это две минуты</td><td class="num">1,5 нед.</td></tr>
+      <tr><td>Мобильное приложение владельца</td><td>Кабинет открывается с телефона, вёрстка адаптивная</td><td class="num">позже</td></tr>
+      <tr><td>Программа для Windows (Tauri)</td><td>Каркас готов, сборка настроена. Нужна для прямого доступа к принтеру — соберём вместе с фискализацией</td><td class="num">3–4 дня</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>Кратчайший путь до первого клиента</h2>
+  <p class="lead">Четыре шага. Второй начинается только после вашего решения по оператору.</p>
+
+  <div class="step"><em>1</em><div><b>Защита и подготовка к серверу</b><span>Ограничение попыток PIN, запрет работы с секретом по умолчанию, Docker, миграции при выкатке, бэкапы</span></div><span class="t">3–4 дня</span></div>
+  <div class="step"><em>2</em><div><b>Фискализация и печать чека</b><span>Интеграция с выбранным ОФД, очередь повторов, термопринтер, фискальный возврат. Здесь же собираем программу для Windows</span></div><span class="t">1,5–2 недели</span></div>
+  <div class="step"><em>3</em><div><b>Развёртывание</b><span>Сервер, домен, HTTPS, автоматические бэкапы с проверкой восстановления, мониторинг</span></div><span class="t">3–4 дня</span></div>
+  <div class="step"><em>4</em><div><b>Пилот в одном заведении</b><span>Неделя наблюдения за реальным кассиром. Почти все ошибки в тарификации и времени обнаруживаются именно там</span></div><span class="t">1 неделя</span></div>
+
+  <div class="callout ok">
+    <span class="tag">Итого</span>
+    <p><strong>3–4 недели до первого клиента</strong>, если оператор ОФД выбран сейчас.
+    Плюс неделя пилота до второго.</p>
+    <p>Через 6–7 недель, добавив склад с себестоимостью и депозит, мы не проигрываем
+    Paloma ни по одному пункту, кроме мобильного приложения.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Что нужно от вас</h2>
+  <p class="lead">Без этих трёх ответов второй шаг не начинается.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Вопрос</th><th>Что от него зависит</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Какой ОФД</strong><br>Webkassa, Kassa24, другой</td><td>Модель чека, состав позиций, требования к НТИН. Нужен доступ к тестовому контуру оператора</td></tr>
+      <tr><td><strong>Где размещаем</strong><br>свой сервер, облако в РК</td><td>Персональные данные клиентов по закону РК хранятся в Казахстане. От выбора зависит блок 3</td></tr>
+      <tr><td><strong>Кто первые клиенты</strong><br>и что у них есть</td><td>Есть ли кухня, сколько филиалов, какой интернет, есть ли уже ККМ и принтер. От этого зависит, что доделать до пилота, а что после</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Пока ответов нет</span>
+    <p>Могу двигать первый шаг — защиту и подготовку к серверу. Он ни от каких
+    внешних решений не зависит и нужен в любом случае.</p>
+  </div>
+</section>
+
+<p class="end">Отчёт о состоянии · обновляет сроки из документа «Вторая версия против Paloma»</p>
+</div>

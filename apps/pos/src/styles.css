@@ -1,0 +1,373 @@
+@import "tailwindcss";
+
+/* ── мост между своей палитрой и shadcn ──────────────────────
+   Единственный источник цвета — токены ниже в :root. Tailwind и
+   shadcn-компоненты читают их отсюда, поэтому цвет кнопки нельзя
+   поменять «в двух местах» и получить расхождение. */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-ink);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--ink-2);
+  --color-accent: var(--accent-soft);
+  --color-accent-foreground: var(--accent);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--accent);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --font-sans: Inter, "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+/* Касса работает на тач-мониторе у стойки: крупные цели, высокий контраст,
+   ничего мелкого. Тёмный фон — экран часто светит в глаза гостям. */
+/* Касса стоит у стойки при верхнем свете, а не в тёмном зале: светлая тема
+   читается лучше и не бликует. Цвета заданы токенами — состояния плиток
+   и кнопок берут их отсюда, а не из своих значений. */
+:root {
+  --bg: #f2f1ee;          /* тёплый нейтральный фон */
+  --surface: #ffffff;
+  --surface-2: #eae8e4;
+  --surface-3: #f7f6f4;
+  --ink: #16191c;         /* 15.8:1 на белом */
+  --ink-2: #575e66;       /* 6.9:1 */
+  --ink-3: #656c74;       /* 5.6:1 на белом и 4.7:1 на тонированных плитках */
+  --line: #dedbd6;
+  --line-strong: #c7c3bc;
+
+  --accent: #0f6e63;      /* 5.4:1 на белом, белый текст на нём — 5.4:1 */
+  --accent-ink: #ffffff;
+  --accent-soft: #e6f2f0;
+  --accent-line: #9fcdc6;
+
+  --warn: #9a5209;
+  --warn-soft: #fbf0e0;
+  --warn-line: #e5c087;
+
+  --danger: #b02f2a;
+  --danger-soft: #fbeae8;
+  --danger-line: #e8b0ab;
+
+  --ok: #1c6b41;
+  --ok-soft: #e6f2ea;
+
+  --radius: 12px;
+  --shadow-1: 0 1px 2px rgba(22, 25, 28, .06);
+  --shadow-2: 0 6px 20px rgba(22, 25, 28, .10);
+  font-family: Inter, "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 15px; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+
+/* ── строка смены ─────────────────────────────────────────── */
+.topbar {
+  display: flex; align-items: center; gap: 20px;
+  padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.topbar h1 { font-size: 16px; margin: 0; font-weight: 600; }
+.topbar .muted { color: var(--ink-3); font-size: 13px; }
+.topbar .spacer { flex: 1; }
+.shift-chip {
+  display: flex; gap: 10px; align-items: center;
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.dot.off { background: var(--ink-3); }
+
+/* ── раскладка ────────────────────────────────────────────── */
+.layout { display: grid; grid-template-columns: 1fr 380px; min-height: 0; }
+.layout.solo { grid-template-columns: 1fr; }
+.board { padding: 18px; overflow: auto; }
+.grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+/* ── плитка ресурса ───────────────────────────────────────── */
+.tile {
+  position: relative; text-align: left; min-height: 156px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px; color: var(--ink);
+  display: flex; flex-direction: column; gap: 6px;
+  box-shadow: var(--shadow-1);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .08s ease;
+}
+.tile:hover { border-color: var(--line-strong); box-shadow: var(--shadow-2); }
+.tile:active { transform: scale(.995); }
+.tile.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow-2); }
+.tile .name { font-weight: 600; font-size: 16px; padding-right: 104px; }
+.tile .sub { color: var(--ink-3); font-size: 13px; }
+.tile .timer {
+  font-size: 36px; font-weight: 650; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; line-height: 1.05; margin-top: auto;
+}
+.tile .amount { font-size: 15px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+/* Состояние передаётся и цветом, и подписью в бейдже: одного цвета мало */
+.tile .badge {
+  position: absolute; top: 14px; right: 14px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em; padding: 4px 9px;
+  border-radius: 999px; background: var(--surface-2); color: var(--ink-2);
+}
+.tile.busy { background: var(--accent-soft); border-color: var(--accent-line); }
+.tile.busy .timer { color: var(--accent); }
+.tile.busy .badge { background: var(--accent); color: var(--accent-ink); }
+.tile.ending { background: var(--warn-soft); border-color: var(--warn-line); }
+.tile.ending .timer { color: var(--warn); }
+.tile.ending .badge { background: var(--warn); color: #fff; }
+.tile.overtime { background: var(--danger-soft); border-color: var(--danger-line); }
+.tile.overtime .timer { color: var(--danger); }
+.tile.overtime .badge { background: var(--danger); color: #fff; }
+.tile.booked .badge { background: var(--ink-2); color: #fff; }
+.tile.free .timer { color: var(--ink-3); font-size: 22px; font-weight: 500; }
+.tile.free .free-hint { color: var(--accent); font-size: 19px; font-weight: 600; }
+.tile.free:hover .free-hint { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ── боковая панель ───────────────────────────────────────── */
+.panel {
+  background: var(--surface); border-left: 1px solid var(--line);
+  padding: 18px; overflow: auto; display: flex; flex-direction: column; gap: 14px;
+}
+.panel h2 { margin: 0; font-size: 18px; }
+.panel .section { display: flex; flex-direction: column; gap: 8px; }
+.panel .label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3);
+}
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row > * { flex: 1; }
+
+.btn {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 12px 14px; min-height: 46px; font-weight: 500;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.btn.danger { color: var(--danger); }
+.btn.ghost { background: transparent; }
+.btn.small { min-height: 38px; padding: 8px 12px; font-size: 13px; }
+.btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+input, select {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 11px 12px; min-height: 44px; width: 100%;
+}
+
+.items { display: flex; flex-direction: column; gap: 6px; }
+.item {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;
+  background: var(--surface-2); border-radius: 8px; padding: 9px 11px; font-size: 13.5px;
+}
+.item .price { font-variant-numeric: tabular-nums; }
+.item button { background: none; border: 0; color: var(--ink-3); font-size: 16px; padding: 0 4px; }
+.item button:hover { color: var(--danger); }
+
+.total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px;
+}
+.total .value { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hint { color: var(--ink-3); font-size: 12.5px; line-height: 1.5; }
+.warn { color: var(--warn); font-size: 13px; }
+.error {
+  background: var(--danger-soft); border: 1px solid var(--danger-line); color: var(--danger);
+  border-radius: 8px; padding: 10px 12px; font-size: 13.5px;
+}
+
+.segments { font-size: 12px; color: var(--ink-3); display: flex; flex-direction: column; gap: 3px; }
+.segments span { font-variant-numeric: tabular-nums; }
+
+/* ── экран входа ──────────────────────────────────────────
+   Слева — что это за касса, справа — единственное действие.
+   Клавиши крупные: кассир жмёт пальцем, но всё работает мышью
+   и физической клавиатурой (цифры, Backspace, Enter, Esc). */
+.signin { display: grid; grid-template-columns: 320px 1fr; min-height: 100dvh; background: var(--bg); }
+.signin-aside {
+  background: var(--surface); border-right: 1px solid var(--line);
+  padding: 28px 26px; display: flex; flex-direction: column; gap: 26px;
+}
+.brand { display: flex; gap: 12px; align-items: center; }
+.brand-mark {
+  width: 46px; height: 46px; border-radius: 13px; background: var(--accent);
+  display: grid; place-items: center; flex: none;
+}
+.brand-name { display: block; font-size: 17px; font-weight: 650; line-height: 1.25; }
+.brand-sub { display: block; font-size: 12px; color: var(--ink-3); }
+
+.aside-field { display: flex; flex-direction: column; gap: 3px; }
+.aside-field .k {
+  font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3);
+}
+.aside-field .v { font-size: 17px; font-weight: 600; }
+.aside-foot {
+  margin-top: auto; display: flex; flex-direction: column; gap: 10px;
+  font-size: 12.5px; color: var(--ink-3); line-height: 1.5;
+}
+.aside-foot a { color: var(--accent); text-decoration: none; }
+.aside-foot .support { color: var(--ink-2); }
+
+.signin-main { display: grid; place-items: center; padding: 24px; overflow: auto; }
+/* Всё поле ввода обязано умещаться по высоте: главная кнопка не должна
+   уезжать за нижний край на низких экранах касс. */
+.pad { width: min(430px, 100%); display: flex; flex-direction: column;
+       gap: clamp(10px, 1.8vh, 20px); }
+.clock {
+  font-size: clamp(38px, 6.5vh, 62px); font-weight: 650; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; text-align: center; line-height: 1;
+}
+.clock-date { text-align: center; color: var(--ink-2); font-size: 15px; margin-top: 6px; }
+.pad-prompt { text-align: center; color: var(--ink-2); font-size: 15px; }
+
+.pin-box {
+  height: clamp(56px, 8vh, 68px); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  gap: 16px; box-shadow: var(--shadow-1);
+}
+.pin-box.bad { border-color: var(--danger); background: var(--danger-soft); }
+.pin-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--line-strong); }
+.pin-dot.on { background: var(--accent); border-color: var(--accent); }
+.pin-box.bad .pin-dot.on { background: var(--danger); border-color: var(--danger); }
+.pin-empty { color: var(--ink-3); font-size: 15px; }
+
+.keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1.2vh, 12px); }
+.key {
+  height: clamp(62px, 9.5vh, 88px); font-size: clamp(24px, 3.4vh, 30px);
+  font-weight: 600; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow-1); touch-action: manipulation;
+  transition: background .12s ease, transform .08s ease, border-color .12s ease;
+}
+.key:hover { border-color: var(--line-strong); }
+.key:active { background: var(--accent-soft); border-color: var(--accent); transform: scale(.97); }
+.key.secondary { font-size: 16px; font-weight: 500; color: var(--ink-2); }
+.key-enter {
+  height: clamp(56px, 8vh, 74px); width: 100%; font-size: clamp(17px, 2.4vh, 19px);
+  font-weight: 650;
+  background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 14px;
+  box-shadow: var(--shadow-1); touch-action: manipulation;
+  transition: opacity .12s ease, transform .08s ease;
+}
+.key-enter:active { transform: scale(.985); }
+.key-enter:disabled { opacity: .4; cursor: not-allowed; }
+
+.pad-error {
+  background: var(--danger-soft); border: 1px solid var(--danger-line); color: var(--danger);
+  border-radius: 10px; padding: 11px 13px; font-size: 14px; text-align: center;
+}
+.pad-link {
+  background: none; border: 0; color: var(--ink-3); font-size: 13px;
+  text-decoration: underline; text-underline-offset: 3px; padding: 6px;
+}
+.pad-link:hover { color: var(--accent); }
+
+.shake { animation: shake .32s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  75% { transform: translateX(7px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shake { animation: none; }
+  .key, .key-enter, .tile { transition: none; }
+}
+
+/* Форма привязки кассы — редкий экран, поэтому обычная форма без клавиатуры */
+.bind { width: min(430px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.bind h2 { margin: 0; font-size: 22px; }
+.bind label { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+
+@media (max-width: 860px) {
+  .signin { grid-template-columns: 1fr; }
+  .signin-aside {
+    flex-direction: row; align-items: center; gap: 20px; flex-wrap: wrap;
+    border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 20px;
+  }
+  .aside-foot { margin-top: 0; flex-direction: row; gap: 16px; flex-wrap: wrap; }
+  .signin-main { padding: 20px 16px 32px; align-items: start; }
+}
+
+.empty { color: var(--ink-3); padding: 40px; text-align: center; }
+
+/* ── шахматка бронирования ────────────────────────────────── */
+.timeline { display: flex; flex-direction: column; gap: 6px; min-width: 900px; }
+.timeline-head, .timeline-row { display: grid; grid-template-columns: 190px 1fr; gap: 10px; align-items: stretch; }
+.timeline-label { color: var(--ink-2); font-size: 13.5px; display: flex; align-items: center; }
+.timeline-hours { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; color: var(--ink-3); font-size: 11.5px; }
+.timeline-hours span { border-left: 1px solid var(--line); padding-left: 4px; }
+.timeline-track {
+  position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  height: 54px; overflow: hidden;
+}
+.timeline-slot { background: transparent; border: 0; border-left: 1px solid var(--line); }
+.timeline-slot:first-child { border-left: 0; }
+.timeline-slot:hover { background: var(--surface-3); }
+.timeline-booking {
+  position: absolute; top: 4px; bottom: 4px; border-radius: 6px; padding: 5px 8px;
+  background: var(--accent-soft); border: 1px solid var(--accent); overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; pointer-events: none;
+}
+.timeline-booking strong { font-size: 12.5px; }
+.timeline-booking span { font-size: 11px; color: var(--ink-2); }
+.timeline-booking.arrived { background: var(--warn-soft); border-color: var(--warn); }
+
+/* ── чеки ─────────────────────────────────────────────────── */
+.receipt {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.receipt-head { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: baseline; }
+.receipt-head .hint { grid-column: 1; }
+.receipt-head .price { grid-row: 1 / span 2; grid-column: 2; font-size: 17px; font-weight: 600; }
+.receipt-payments { display: flex; flex-direction: column; gap: 5px; }
+
+
+/* Карточка брони в панели приёма: главный путь кассира, когда гость записан */
+.booking-card {
+  background: var(--accent-soft); border: 1px solid var(--accent-line);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.booking-card strong { font-size: 22px; font-variant-numeric: tabular-nums; }
+.booking-card .label { color: var(--accent); font-weight: 600; }
+
+/* ── состояние связи ──────────────────────────────────────── */
+.offline-chip {
+  display: flex; align-items: center; gap: 8px; font-size: 13.5px;
+  background: var(--warn-soft); border: 1px solid var(--warn-line); color: var(--warn);
+  border-radius: 999px; padding: 7px 14px; min-height: 38px; white-space: nowrap;
+}
+.offline-chip b { font-weight: 600; }
+.offline-chip em {
+  font-style: normal; color: var(--ink-3); font-size: 12.5px;
+  padding-left: 8px; border-left: 1px solid var(--warn-line);
+}
+.offline-chip.sending {
+  background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent);
+}
+.offline-chip.sending .dot { background: var(--accent); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .offline-chip.sending .dot { animation: none; } }
+
+/* Кто за кассой: имя в шапке и выход по нажатию */
+.shift-chip.user { gap: 7px; color: var(--ink-2); }
+.shift-chip.user:hover { color: var(--ink); border-color: var(--line-strong); }
+.shift-chip.user svg { flex: none; opacity: .7; }

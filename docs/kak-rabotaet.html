@@ -1,0 +1,243 @@
+<title>Как это работает простыми словами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#4f565e; --ink-3:#6b727a;
+  --line:#dedbd6;
+  --ok:#0f6e63; --ok-soft:#e3f0ee; --ok-line:#9fcdc6;
+  --no:#a3302a; --no-soft:#fbeae8; --no-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c; --line:#2c3236;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --no:#e08079; --no-soft:#2e1a18; --no-line:#5e332f;
+}}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c; --line:#2c3236;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --no:#e08079; --no-soft:#2e1a18; --no-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 96px}
+header.top{padding:56px 0 26px;border-bottom:2px solid var(--ink);margin-bottom:40px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;max-width:17ch}
+.dek{font-size:18px;color:var(--ink-2);margin:0}
+section{margin-bottom:52px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.015em;margin:0 0 16px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:19px;margin:30px 0 10px}
+p{margin:0 0 15px}
+ul{margin:0 0 16px;padding-left:22px}
+li{margin-bottom:8px}
+li::marker{color:var(--ink-3)}
+strong{font-weight:600}
+
+.big{font-size:19px;color:var(--ink-2);border-left:3px solid var(--ok);padding-left:18px;margin:0 0 26px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:14px}
+.card h3{margin-top:0}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media (max-width:680px){.two{grid-template-columns:1fr}}
+
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);padding:16px 20px;margin:0}
+ol.steps li:first-child{border-radius:12px 12px 0 0}
+ol.steps li:last-child{border-radius:0 0 12px 12px}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok-line);display:grid;place-items:center;font-weight:700;font-size:14px;margin-top:2px}
+/* Номер занимает первую колонку, заголовок и подпись — вторую.
+   Без явного указания подпись уезжала в узкую колонку под номер
+   и переносилась по одному слову в строку. */
+ol.steps li::before{grid-column:1;grid-row:1}
+ol.steps b{grid-column:2;display:block;font-weight:600;margin-bottom:2px}
+ol.steps span{grid-column:2;color:var(--ink-2);font-size:16px}
+
+.list{display:flex;flex-direction:column;gap:2px;margin-bottom:20px}
+.item{display:grid;grid-template-columns:26px 1fr;gap:13px;background:var(--surface);border:1px solid var(--line);padding:13px 17px;align-items:start}
+.item:first-child{border-radius:11px 11px 0 0}
+.item:last-child{border-radius:0 0 11px 11px}
+.item i{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700;margin-top:2px}
+.item.yes i{background:var(--ok-soft);color:var(--ok)}
+.item.no i{background:var(--no-soft);color:var(--no)}
+.item b{font-weight:600}
+.item span{display:block;color:var(--ink-2);font-size:15.5px;margin-top:1px}
+
+.note{background:var(--ok-soft);border:1px solid var(--ok-line);border-radius:12px;padding:18px 21px;margin:24px 0}
+.note.warn{background:var(--no-soft);border-color:var(--no-line)}
+.note b{display:block;margin-bottom:6px;font-weight:600}
+.note p{margin:0 0 9px;font-size:16px}
+.note p:last-child{margin:0}
+.end{border-top:2px solid var(--ink);padding-top:16px;margin-top:44px;font-size:14px;color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <h1>Как это работает простыми словами</h1>
+  <p class="dek">Без технических терминов: что делает администратор, что владелец,
+  что программа берёт на себя — и что из этого уже готово, а что ещё нет.</p>
+</header>
+
+<section>
+  <h2>В двух словах</h2>
+  <p class="big">Это две программы. Одна стоит на стойке — на ней работает администратор.
+  Вторая открывается у владельца на компьютере или телефоне — там он настраивает
+  заведение и смотрит, как идут дела. Обе связаны: что владелец изменил — администратор
+  видит сразу.</p>
+</section>
+
+<section>
+  <h2>Про товары — отвечаю прямо</h2>
+  <div class="note">
+    <b>В программе ничего не «зашито»</b>
+    <p>Ни товаров, ни услуг, ни цен, ни саун. Всё это владелец заводит сам в своём
+    кабинете, и любое количество.</p>
+    <p>Проверено сегодня: добавил в кабинете «Пиво безалкогольное» за 1200 ₸, провёл
+    приход 24 штуки — и товар тут же появился у администратора на кассе с остатком 24.
+    Без перезапуска, без программиста.</p>
+  </div>
+
+  <h3>Как владелец добавляет товар</h3>
+  <ol class="steps">
+    <li><b>Открывает кабинет</b><span>Заходит по своему телефону и паролю</span></li>
+    <li><b>Настройки → Товары</b><span>Видит список того, что уже есть</span></li>
+    <li><b>«Добавить товар»</b><span>Пишет название, категорию и цену. Например: Пиво безалкогольное · Напитки · 1200 ₸</span></li>
+    <li><b>«Приход / списание»</b><span>Указывает, сколько привезли. Число со знаком минус — списание, если разбилось или испортилось</span></li>
+    <li><b>Готово</b><span>Администратор видит новый товар сразу и может продавать</span></li>
+  </ol>
+
+  <p>Точно так же добавляются <strong>услуги с ценами, сауны и комнаты, абонементы
+  и сотрудники</strong>. Всё это владелец делает сам, никого не спрашивая.</p>
+</section>
+
+<section>
+  <h2>Что владелец настраивает сам</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Услуги и цены</h3>
+      <p>Аренда сауны, массаж, веник. Для почасовых можно задать разные цены:
+      будни днём 6000 ₸, будни вечером 9000 ₸, выходные 12000 ₸ с минимумом два часа.</p>
+    </div>
+    <div class="card">
+      <h3>Сауны и комнаты</h3>
+      <p>Название, сколько человек помещается, какая услуга по умолчанию и сколько
+      минут нужно на уборку после гостя.</p>
+    </div>
+    <div class="card">
+      <h3>Товары</h3>
+      <p>Всё, что продаётся в баре: чай, вода, шапки. Цена и остаток.</p>
+    </div>
+    <div class="card">
+      <h3>Абонементы</h3>
+      <p>На десять посещений, на двадцать часов, безлимит на месяц. Срок, цена,
+      на какие услуги действует, можно ли замораживать.</p>
+    </div>
+    <div class="card">
+      <h3>Сотрудники</h3>
+      <p>Кто работает, кем работает и с каким PIN заходит на кассу. Кассир,
+      управляющий или бухгалтер — у каждого свои возможности.</p>
+    </div>
+    <div class="card">
+      <h3>Правила заведения</h3>
+      <p>До скольки минут округлять время, сколько минут переработки прощать,
+      какую скидку разрешено давать кассиру без спроса.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Как проходит день администратора</h2>
+  <ol class="steps">
+    <li><b>Приходит и вводит четыре цифры</b><span>Пароль на кассе не набирается — компьютер один раз привязан к заведению, дальше только PIN</span></li>
+    <li><b>Открывает смену</b><span>Пишет, сколько наличных в ящике. Пока смена не открыта, деньги принимать нельзя — так выручка не потеряется</span></li>
+    <li><b>Видит весь зал одним экраном</b><span>Плитки саун: свободна, занята, скоро освободится, забронирована. Всё в одном месте, ходить по разделам не надо</span></li>
+    <li><b>Принимает гостя</b><span>Если гость записан — одно нажатие «Гость пришёл», время и имя подставятся из брони. Если без записи — выбирает сауну, часы и число людей</span></li>
+    <li><b>Время идёт само</b><span>На плитке видно, сколько осталось и сколько гость уже должен. За 10 минут до конца плитка желтеет, после — краснеет</span></li>
+    <li><b>Добавляет чай и веник</b><span>Одним нажатием, сразу в счёт гостя</span></li>
+    <li><b>Продлевает, если попросили</b><span>«+30 минут». Если на это время записан другой гость — программа предупредит</span></li>
+    <li><b>Рассчитывает</b><span>Сумму считает программа: по времени, по тарифам этого дня и часа, плюс всё добавленное. Вводить руками ничего не надо</span></li>
+    <li><b>Принимает деньги</b><span>Наличными со сдачей, картой или пополам. Если у гостя абонемент — программа сама предложит списать с него</span></li>
+    <li><b>Закрывает смену</b><span>Пересчитывает наличные, программа сравнивает с ожидаемым и показывает, сошлось или нет</span></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Что видит владелец</h2>
+  <p>Заходит на пять минут и понимает состояние дел:</p>
+  <ul>
+    <li><strong>Выручка</strong> за неделю, месяц или квартал — и насколько это больше или меньше прошлого периода</li>
+    <li><strong>Средний чек</strong> и сколько было гостей</li>
+    <li><strong>Загрузка по дням недели и часам</strong> — где пусто, а где не хватает мест. Это главный аргумент, когда решаете менять цены</li>
+    <li><strong>Смены</strong> — у кого касса сошлась, а у кого нет</li>
+    <li><strong>Долг по абонементам</strong> — деньги за проданные, но не отгулянные. Это не прибыль, а обязательство перед гостями, и его видно отдельно</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Если пропал интернет</h2>
+  <p>Касса продолжает работать. Что происходит:</p>
+  <div class="list">
+    <div class="item yes"><i>✓</i><div><b>Зал виден, время идёт</b><span>Программа показывает последнее, что знала, таймеры не сбиваются</span></div></div>
+    <div class="item yes"><i>✓</i><div><b>Можно добавить товар, продлить, рассчитать, взять наличные</b><span>Всё копится и уходит само, когда интернет вернётся. Наверху видно: «Нет связи · 2 операции ждут»</span></div></div>
+    <div class="item no"><i>×</i><div><b>Нельзя записать новую бронь</b><span>Программа не сможет проверить, не занято ли это время на другой кассе</span></div></div>
+    <div class="item no"><i>×</i><div><b>Нельзя списать абонемент и принять карту</b><span>Для абонемента нужен точный остаток, для карты — связь у самого терминала</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Что уже готово</h2>
+  <p>Всё перечисленное работает и проверено — не на словах, а прогоном в настоящей программе.</p>
+  <div class="list">
+    <div class="item yes"><i>✓</i><div><b>Весь день администратора</b><span>Вход, смена, приём гостя, таймер, товары, продление, расчёт, оплата, возврат, закрытие смены</span></div></div>
+    <div class="item yes"><i>✓</i><div><b>Записи гостей</b><span>Расписание по саунам и часам, защита от двойной записи с учётом уборки</span></div></div>
+    <div class="item yes"><i>✓</i><div><b>Абонементы</b><span>Продажа, списание, заморозка, история — видно каждое посещение</span></div></div>
+    <div class="item yes"><i>✓</i><div><b>Настройка заведения владельцем</b><span>Услуги, цены, сауны, товары, абонементы, сотрудники, правила</span></div></div>
+    <div class="item yes"><i>✓</i><div><b>Отчёты владельца</b></div></div>
+    <div class="item yes"><i>✓</i><div><b>Работа без интернета</b></div></div>
+    <div class="item yes"><i>✓</i><div><b>Ставится как программа</b><span>Ярлык на рабочем столе, открывается даже без сети</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Чего пока нет</h2>
+  <div class="note warn">
+    <b>Главное, без чего нельзя работать по-настоящему</b>
+    <p><strong>Фискальный чек.</strong> В Казахстане заведение не может легально брать
+    деньги без него. Это не наша недоделка, а работа с оператором — нужно выбрать,
+    с каким именно, и заключить договор.</p>
+    <p><strong>Печать чека.</strong> Гость пока уходит без бумаги.</p>
+    <p><strong>Своего сервера нет.</strong> Сейчас программа живёт на одном компьютере.
+    Чтобы поставить её в заведение, нужен сервер, адрес в интернете и автоматические
+    копии базы.</p>
+  </div>
+
+  <h3>Помельче, можно доделать по ходу</h3>
+  <div class="list">
+    <div class="item no"><i>×</i><div><b>Скидка на кассе</b><span>Ограничение скидки в настройках есть, а кнопки у администратора нет</span></div></div>
+    <div class="item no"><i>×</i><div><b>Размен и инкассация</b><span>Программа это умеет, кнопки на кассе пока нет</span></div></div>
+    <div class="item no"><i>×</i><div><b>Закупочные цены и прибыль по товарам</b><span>Сейчас видно только сколько осталось, но не сколько заработали на чае</span></div></div>
+    <div class="item no"><i>×</i><div><b>Депозит и бонусы гостям</b></div></div>
+    <div class="item no"><i>×</i><div><b>Заведение регистрируется само</b><span>Первых клиентов заводим руками — это пара минут</span></div></div>
+    <div class="item no"><i>×</i><div><b>Приложение для телефона владельцу</b><span>Кабинет открывается с телефона, но это сайт, а не приложение из магазина</span></div></div>
+  </div>
+
+  <div class="note">
+    <b>Почему кажется сырым</b>
+    <p>Ядро продукта — то, чем администратор пользуется каждый день — сделано и работает.
+    Ощущение недоделанности даёт другое: нет чека, который гость держит в руках,
+    и программа пока живёт на одном компьютере, а не «где-то в интернете».
+    Это ровно те три пункта выше.</p>
+    <p>После них систему можно ставить в заведение. Остальное — улучшения,
+    которые видно уже в работе.</p>
+  </div>
+</section>
+
+<p class="end">Написано 6 сентября 2026 · всё, что помечено галочкой, проверено в работающей программе</p>
+</div>

@@ -1,0 +1,32 @@
+{
+  "name": "sauna-saas",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "api": "node --watch apps/api/src/server.ts",
+    "pos": "pnpm --filter @sauna/pos dev",
+    "db:migrate": "node db/migrate.mjs",
+    "db:reset": "node db/migrate.mjs --reset",
+    "test": "node scripts/test.mjs",
+    "test:unit": "node --test packages/core/test/*.test.ts",
+    "build": "pnpm --filter @sauna/pos build && pnpm --filter @sauna/owner build",
+    "owner": "pnpm --filter @sauna/owner dev",
+    "db:my": "node db/setup.mjs",
+    "db:demo": "node db/migrate.mjs --reset",
+    "stop": "node scripts/stop.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "pg": "^8.13.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

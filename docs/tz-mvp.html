@@ -1,0 +1,804 @@
+<title>Банное ядро</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --ground:#f2f5f6; --surface:#ffffff; --surface-2:#e8eef0;
+  --ink:#131a20; --ink-2:#4d5b65; --ink-3:#7a888f;
+  --line:#d7dfe3; --line-strong:#b6c3c9;
+  --accent:#0f5f66; --accent-soft:#e0eff0;
+  --signal:#a8501c; --signal-soft:#f8ece2;
+  --ok:#2c6b46; --ok-soft:#e4f0e9;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0d1316; --surface:#141c20; --surface-2:#1b262b;
+    --ink:#e6edf0; --ink-2:#9fb0b8; --ink-3:#75868e;
+    --line:#233036; --line-strong:#33454d;
+    --accent:#54b4ba; --accent-soft:#11292c;
+    --signal:#dd9159; --signal-soft:#2b2018;
+    --ok:#6fb98a; --ok-soft:#15261d;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0d1316; --surface:#141c20; --surface-2:#1b262b;
+  --ink:#e6edf0; --ink-2:#9fb0b8; --ink-3:#75868e;
+  --line:#233036; --line-strong:#33454d;
+  --accent:#54b4ba; --accent-soft:#11292c;
+  --signal:#dd9159; --signal-soft:#2b2018;
+  --ok:#6fb98a; --ok-soft:#15261d;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px 96px;display:grid;grid-template-columns:222px minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;gap:0;padding:0 18px 64px}}
+
+/* ---- masthead ---- */
+.masthead{grid-column:1/-1;border-bottom:2px solid var(--ink);padding:44px 0 20px;margin-bottom:40px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4.6vw,46px);line-height:1.1;letter-spacing:-.015em;margin:0 0 12px;text-wrap:balance;max-width:20ch}
+.dek{font-size:17px;color:var(--ink-2);max-width:62ch;margin:0 0 26px}
+.meta{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);padding-top:16px}
+.meta div{padding-right:34px;margin-right:34px;border-right:1px solid var(--line)}
+.meta div:last-child{border-right:0;margin-right:0;padding-right:0}
+.meta dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px}
+.meta dd{margin:0;font-size:14px;font-weight:500}
+
+/* ---- toc ---- */
+nav.toc{position:sticky;top:24px;font-size:13px;line-height:1.45}
+nav.toc p{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+nav.toc a{color:var(--ink-2);text-decoration:none;display:grid;grid-template-columns:24px 1fr;gap:4px}
+nav.toc a span{font-family:var(--mono);color:var(--ink-3);font-size:11.5px}
+nav.toc a:hover{color:var(--accent)}
+@media (max-width:900px){nav.toc{position:static;border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:16px 18px;margin-bottom:36px}}
+
+/* ---- prose ---- */
+main{min-width:0}
+section{margin-bottom:52px;scroll-margin-top:20px}
+h2{font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.2;letter-spacing:-.01em;margin:0 0 6px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;text-wrap:balance}
+h2 .num{font-family:var(--mono);font-size:13px;font-weight:400;color:var(--accent);letter-spacing:0}
+h3{font-family:var(--sans);font-weight:600;font-size:16px;margin:32px 0 8px;letter-spacing:-.005em}
+h4{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:24px 0 8px}
+.lede{color:var(--ink-2);max-width:70ch;margin:0 0 22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+p{max-width:72ch;margin:0 0 14px}
+ul,ol.list{max-width:72ch;margin:0 0 16px;padding-left:20px}
+li{margin-bottom:5px}
+li::marker{color:var(--ink-3)}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:2px;color:var(--ink)}
+a{color:var(--accent)}
+
+/* ---- decision blocks ---- */
+.rules{display:flex;flex-direction:column;gap:2px;margin-bottom:20px}
+.rule{background:var(--surface);border-left:3px solid var(--accent);padding:16px 20px}
+.rule.warn{border-left-color:var(--signal)}
+.rule h5{margin:0 0 6px;font-family:var(--sans);font-size:15px;font-weight:600;display:flex;gap:10px;align-items:baseline}
+.rule h5 em{font-family:var(--mono);font-style:normal;font-size:11.5px;font-weight:500;color:var(--accent);letter-spacing:.04em;flex:none}
+.rule.warn h5 em{color:var(--signal)}
+.rule p{margin:0 0 6px;font-size:14px}
+.rule p:last-child{margin-bottom:0}
+.rule .why{color:var(--ink-2)}
+.rule .else{color:var(--signal);font-size:13.5px}
+:root[data-theme="dark"] .rule .else,:root:not([data-theme="light"]) .rule .else{color:var(--signal)}
+.rule .else b{font-weight:500}
+
+.callout{background:var(--signal-soft);border:1px solid var(--signal);border-radius:3px;padding:16px 20px;margin:20px 0;max-width:72ch}
+.callout.calm{background:var(--accent-soft);border-color:var(--accent)}
+.callout p{margin:0 0 8px;font-size:14px}
+.callout p:last-child{margin:0}
+.callout .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:6px}
+.callout.calm .tag{color:var(--accent)}
+
+/* ---- tables ---- */
+.scroll{overflow-x:auto;margin:0 0 22px;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 16px;border-bottom:1px solid var(--line-strong);white-space:nowrap;background:var(--surface-2)}
+td{padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:0}
+td.mono,th.mono{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.pill.now{background:var(--ok-soft);color:var(--ok)}
+.pill.later{background:var(--surface-2);color:var(--ink-3)}
+.pill.risk{background:var(--signal-soft);color:var(--signal)}
+
+/* ---- entity cards ---- */
+.entity{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:14px 18px;margin-bottom:10px}
+.entity h5{font-family:var(--mono);font-size:13px;font-weight:500;margin:0 0 8px;color:var(--accent)}
+.entity p{font-family:var(--mono);font-size:12px;color:var(--ink-2);margin:0;line-height:1.7;max-width:none;word-break:break-word}
+.entity .note{font-family:var(--sans);font-size:13px;color:var(--ink-2);margin-top:8px;display:block}
+
+/* ---- misc ---- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:20px}
+@media (max-width:720px){.split{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:18px 20px}
+.panel h4{margin-top:0}
+.panel ul{margin-bottom:0;max-width:none}
+.panel li{font-size:14px}
+hr{border:0;border-top:1px solid var(--line);margin:36px 0}
+.end{border-top:2px solid var(--ink);padding-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+a:focus-visible,nav.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="kicker">Техническое задание · MVP · Черновик для команды</p>
+  <h1>SaaS для бань, саун и развлекательных центров</h1>
+  <p class="dek">Мультитенантная ERP/POS-платформа: рабочее место кассира, бронирование ресурсов, тарификация по времени, абонементы и кабинет владельца. Документ описывает ядро продукта и архитектурные решения, на которых оно строится.</p>
+  <dl class="meta">
+    <div><dt>Версия</dt><dd>0.1 — к обсуждению</dd></div>
+    <div><dt>Дата</dt><dd>3 сентября 2026</dd></div>
+    <div><dt>Рынок</dt><dd>Казахстан, KZT</dd></div>
+    <div><dt>Горизонт MVP</dt><dd>≈ 12 недель, 6 этапов</dd></div>
+  </dl>
+</header>
+
+<nav class="toc">
+  <p>Разделы</p>
+  <ol>
+    <li><a href="#s1"><span>01</span>Цель и границы</a></li>
+    <li><a href="#s2"><span>02</span>Глоссарий</a></li>
+    <li><a href="#s3"><span>03</span>Роли и права</a></li>
+    <li><a href="#s4"><span>04</span>Мультитенантность</a></li>
+    <li><a href="#s5"><span>05</span>Архитектурные решения</a></li>
+    <li><a href="#s6"><span>06</span>Модель данных</a></li>
+    <li><a href="#s7"><span>07</span>Функциональные требования</a></li>
+    <li><a href="#s8"><span>08</span>Интерфейс кассы</a></li>
+    <li><a href="#s9"><span>09</span>Кабинет владельца</a></li>
+    <li><a href="#s10"><span>10</span>API</a></li>
+    <li><a href="#s11"><span>11</span>Нефункциональные</a></li>
+    <li><a href="#s12"><span>12</span>Стек</a></li>
+    <li><a href="#s13"><span>13</span>Этапы</a></li>
+    <li><a href="#s14"><span>14</span>Открытые вопросы</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- 1 -->
+<section id="s1">
+  <h2><span class="num">01</span>Цель и границы</h2>
+  <p class="lede">Продукт заменяет заведению связку «тетрадь + Excel + 1С + голова администратора». Мы не строим универсальную ERP — мы строим узкоспециализированное ядро, вокруг которого можно нарастить ERP позже.</p>
+
+  <h3>Что решает продукт</h3>
+  <ul>
+    <li><strong>Для кассира</strong> — рутина без ошибок: кто где сидит, сколько времени осталось, сколько человек должен, что доплатить за продление.</li>
+    <li><strong>Для владельца</strong> — ответ на четыре вопроса: сколько заработали, на чём именно, насколько загружены помещения, не ворует ли смена.</li>
+  </ul>
+
+  <h3>Состав MVP</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Модуль</th><th>Входит в MVP</th><th>Что именно</th></tr></thead>
+    <tbody>
+      <tr><td>Организации, филиалы, ресурсы</td><td><span class="pill now">MVP</span></td><td>Иерархия, изоляция данных, настройки филиала</td></tr>
+      <tr><td>Сотрудники и права</td><td><span class="pill now">MVP</span></td><td>Роли, PIN-вход кассира, привязка к филиалу</td></tr>
+      <tr><td>Услуги и тарифы</td><td><span class="pill now">MVP</span></td><td>Правила цен по дню недели и времени суток</td></tr>
+      <tr><td>Товары</td><td><span class="pill now">MVP</span></td><td>Продажа + простой остаток, без партий и себестоимости</td></tr>
+      <tr><td>Клиенты</td><td><span class="pill now">MVP</span></td><td>Справочник, поиск по телефону, история визитов</td></tr>
+      <tr><td>Абонементы</td><td><span class="pill now">MVP</span></td><td>Посещения / часы / безлимит, заморозка, история списаний</td></tr>
+      <tr><td>Бронирование</td><td><span class="pill now">MVP</span></td><td>Шахматка, защита от пересечений, предоплата</td></tr>
+      <tr><td>Визит и таймер</td><td><span class="pill now">MVP</span></td><td>Старт, продление, доп. услуги, автоматический расчёт</td></tr>
+      <tr><td>Смена и касса</td><td><span class="pill now">MVP</span></td><td>Открытие/закрытие, Z-отчёт, инкассация, расхождение</td></tr>
+      <tr><td>Оплаты и возвраты</td><td><span class="pill now">MVP</span></td><td>Наличные, карта, абонемент, смешанная; сторно</td></tr>
+      <tr><td>Аналитика владельца</td><td><span class="pill now">MVP</span></td><td>Выручка, средний чек, загрузка, отчёты по сменам</td></tr>
+      <tr><td>Фискализация ОФД</td><td><span class="pill risk">Решить сейчас</span></td><td>Интерфейс закладываем в MVP, реализация — см. §14.1</td></tr>
+      <tr><td>CRM, лояльность, склад с партиями</td><td><span class="pill later">После</span></td><td>Модель данных должна допускать, кода в MVP нет</td></tr>
+      <tr><td>Онлайн-бронирование, WhatsApp/SMS</td><td><span class="pill later">После</span></td><td>Требует публичного API и очереди уведомлений</td></tr>
+      <tr><td>Зарплаты, расходы, бухгалтерия</td><td><span class="pill later">После</span></td><td>Отдельный финансовый контур</td></tr>
+      <tr><td>Мобильное приложение</td><td><span class="pill later">После</span></td><td>Кабинет владельца сначала адаптивный веб</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Граница, которую важно держать</span>
+    <p>Соблазн начать со «складского учёта и зарплат» очень велик — это то, что владельцы просят первым делом. Но без работающей кассы и таймера остальное продавать некому. Всё, что не касается ежедневного цикла «клиент пришёл → визит → оплата → смена закрыта», в MVP не входит.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2><span class="num">02</span>Глоссарий домена</h2>
+  <p class="lede">Единый язык для команды, кода и интерфейса. Названия в БД, API и на экранах должны совпадать с этим списком.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="mono">Термин</th><th>Определение</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">Организация</td><td>Клиент SaaS-платформы. Юридически — одно ИП/ТОО. Корень изоляции данных.</td></tr>
+      <tr><td class="mono">Филиал</td><td>Физическая точка. Свой адрес, часовой пояс, свои кассы, свой график и свои цены.</td></tr>
+      <tr><td class="mono">Ресурс</td><td>То, что бронируется и занимается во времени: сауна, парная, комната отдыха, купель, бильярд, беседка. Ресурс — единственная сущность, у которой есть занятость.</td></tr>
+      <tr><td class="mono">Услуга</td><td>Позиция прайса. Бывает почасовой (аренда сауны), разовой (вход), на человека (входной билет), дополнительной (веник, массаж, простыня).</td></tr>
+      <tr><td class="mono">Правило цены</td><td>Условие, по которому услуга стоит определённую сумму: день недели, интервал времени, период действия, минимальная длительность.</td></tr>
+      <tr><td class="mono">Бронирование</td><td>Намерение занять ресурс в будущем интервале. Ещё не деньги и не визит.</td></tr>
+      <tr><td class="mono">Визит</td><td>Фактическое пребывание. Имеет старт, план по времени, продления и финал. Именно визит запускает таймер и накапливает позиции чека.</td></tr>
+      <tr><td class="mono">Заказ</td><td>Набор позиций к оплате по визиту (или продажа навынос без визита).</td></tr>
+      <tr><td class="mono">Платёж</td><td>Факт получения денег одним способом. Один заказ может иметь несколько платежей (смешанная оплата).</td></tr>
+      <tr><td class="mono">Смена</td><td>Рабочий интервал кассира с денежным ящиком. Обязательный контекст любой кассовой операции.</td></tr>
+      <tr><td class="mono">Z-отчёт</td><td>Неизменяемый снимок итогов смены на момент закрытия.</td></tr>
+      <tr><td class="mono">Абонемент</td><td>Предоплаченное право пользования, ограниченное количеством, временем или периодом.</td></tr>
+      <tr><td class="mono">Операционный день</td><td>Бизнес-сутки филиала. Может не совпадать с календарными (например, с 08:00 до 08:00 следующего дня).</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2><span class="num">03</span>Роли и права доступа</h2>
+  <p class="lede">Роль — это набор прав, а не жёсткий тип пользователя. Один человек может быть кассиром в одном филиале и управляющим в другом.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Роль</th><th>Область</th><th>Что может</th><th>Чего не может</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Владелец</strong></td><td>Организация</td><td>Всё: настройки, филиалы, сотрудники, тарифы, вся аналитика, удаление данных</td><td>—</td></tr>
+      <tr><td><strong>Управляющий</strong></td><td>Филиал</td><td>Смены, отчёты филиала, товары, бронирования, скидки сверх лимита, сторно</td><td>Менять тарифы, заводить сотрудников с правами выше своих, видеть другие филиалы</td></tr>
+      <tr><td><strong>Кассир</strong></td><td>Филиал, своя смена</td><td>Открыть/закрыть смену, визиты, продажи, оплаты, продления, списание абонементов</td><td>Возврат сверх лимита, редактирование справочников, просмотр выручки за другие смены, удаление операций</td></tr>
+      <tr><td><strong>Бухгалтер</strong></td><td>Организация</td><td>Финансовые отчёты, выгрузки</td><td>Любые изменения операционных данных</td></tr>
+      <tr><td><strong>Сотрудник</strong> <span class="pill later">после MVP</span></td><td>Филиал</td><td>Свой график и свои начисления</td><td>Кассовые операции</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Права хранятся как список гранулярных разрешений (<code>visit.create</code>, <code>payment.refund</code>, <code>report.revenue.read</code>, <code>discount.apply.over_limit</code>), роль — именованный пресет. Это позволяет владельцу собрать нестандартную роль без правок кода.</p>
+
+  <div class="callout">
+    <span class="tag">Требование безопасности</span>
+    <p>Действия сверх полномочий кассира (возврат, скидка выше порога, удаление позиции из оплаченного заказа) не блокируются наглухо, а требуют <strong>подтверждения PIN-кодом управляющего прямо на экране кассы</strong> и попадают в аудит-лог с указанием обоих пользователей. Иначе кассиры начнут работать под чужой учёткой — и весь контроль обнулится.</p>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2><span class="num">04</span>Мультитенантность и изоляция данных</h2>
+  <p class="lede">Изоляция данных — не фича, а фундамент. Две конкурирующие бани в одном городе не должны иметь ни одного способа увидеть данные друг друга.</p>
+
+  <h3>Модель</h3>
+  <p>Общая база данных, общая схема, <code>org_id</code> в каждой прикладной таблице, поверх — <strong>Row-Level Security PostgreSQL</strong>. Приложение на каждый запрос устанавливает <code>SET LOCAL app.current_org = …</code> из проверенного JWT, и политика RLS фильтрует строки на уровне СУБД.</p>
+
+  <div class="rules">
+    <div class="rule warn">
+      <h5><em>Правило</em>org_id никогда не приходит от клиента</h5>
+      <p class="why">Идентификатор организации и список доступных филиалов берутся исключительно из подписанного токена сессии. Тело запроса и query-параметры не могут его переопределить.</p>
+      <p class="else"><b>Иначе:</b> классический IDOR — подмена <code>org_id</code> в запросе отдаёт чужую выручку.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Почему не база на клиента</em>Одна БД + RLS</h5>
+      <p class="why">Отдельная БД на организацию звучит безопаснее, но на сотне клиентов превращается в сто миграций, сто бэкапов и невозможность посчитать продуктовые метрики. RLS даёт ту же гарантию на уровне ядра СУБД: забытый <code>WHERE</code> в коде не приводит к утечке.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Второй контур</em>Филиал внутри организации</h5>
+      <p class="why">Кассир видит только свой филиал. Это отдельная проверка над RLS: <code>branch_id</code> сессии сверяется со списком филиалов в membership. Владелец переключает филиалы явно, «все филиалы» — только в аналитике.</p>
+    </div>
+  </div>
+
+  <p>Крупные тенанты в будущем можно вынести в отдельный шард по <code>org_id</code> без изменения кода — ключ шардирования уже есть в каждой таблице.</p>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2><span class="num">05</span>Ключевые архитектурные решения</h2>
+  <p class="lede">Это самый важный раздел документа. Каждое решение здесь стоит дёшево сейчас и очень дорого через год. Формат: решение → почему → что сломается без него.</p>
+
+  <h4>Деньги и цены</h4>
+  <div class="rules">
+    <div class="rule">
+      <h5><em>Р-01</em>Деньги — целое число в тиынах</h5>
+      <p class="why">Все суммы хранятся как <code>BIGINT</code> в минорных единицах, валюта — отдельным полем организации. Никаких <code>float</code>/<code>double</code> нигде, включая промежуточные расчёты и фронтенд.</p>
+      <p class="else"><b>Иначе:</b> Z-отчёт не сходится с ящиком на копейки, и никто не может объяснить почему.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-02</em>Снапшот цены в момент операции</h5>
+      <p class="why">Каждая позиция заказа хранит собственную копию: название услуги, цену за единицу, применённое правило цены, скидку, итог. Ссылка на справочник остаётся, но отчёты считаются по снапшоту.</p>
+      <p class="else"><b>Иначе:</b> владелец поднял цену на сауну — и вся прошлогодняя выручка в отчётах «пересчиталась». Это делает аналитику бесполезной, а расследование недостач невозможным.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-03</em>Цена — правило, а не число</h5>
+      <p class="why">Отдельная сущность <code>price_rule</code>: услуга, филиал, маска дней недели, интервал времени, период действия, единица (час / вход / человек), минимальная длительность, шаг округления, приоритет. Расчёт выполняет один чистый серверный сервис <code>pricing.calculate(context)</code> — им пользуются и касса, и бронирование, и предварительный расчёт.</p>
+      <p class="else"><b>Иначе:</b> логика цен расползётся по фронту кассы, по бэку и по отчётам, и на один вопрос «сколько должен клиент» система даст три разных ответа.</p>
+    </div>
+    <div class="rule warn">
+      <h5><em>Р-04</em>Посегментная тарификация при переходе через тарифную границу</h5>
+      <p class="why">Визит с 17:40 до 19:40 при дневном тарифе до 18:00 считается двумя сегментами: 20 минут по дневному, 100 минут по вечернему. Алгоритм — нарезка интервала визита по границам правил, расчёт каждого сегмента, суммирование.</p>
+      <p class="else"><b>Иначе:</b> «тариф по времени входа» — самый частый способ потерять деньги в вечерний прайм и самый частый повод для спора с клиентом. Требует явного решения (§14.2).</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-05</em>Политика округления времени — настройка филиала</h5>
+      <p class="why">Шаг тарификации (15/30/60 мин), направление округления (вверх / по факту), льготный период (не считать первые N минут переработки) задаются в настройках филиала и применяются только внутри <code>pricing</code>.</p>
+      <p class="else"><b>Иначе:</b> каждый кассир округляет по-своему, и выручка зависит от того, кто сегодня работает.</p>
+    </div>
+  </div>
+
+  <h4>Время и таймер</h4>
+  <div class="rules">
+    <div class="rule">
+      <h5><em>Р-06</em>Таймер не тикает — таймер вычисляется</h5>
+      <p class="why">Храним <code>started_at</code>, <code>planned_minutes</code>, список продлений и <code>ended_at</code>. Оставшееся время — чистая функция от серверного <code>now()</code>. Фронт получает серверное время при загрузке, считает дельту с локальными часами и рисует обратный отсчёт сам.</p>
+      <p class="else"><b>Иначе:</b> перезагрузка планшета, потеря сети или сбитые часы на кассовом ПК — и таймер потерян вместе с деньгами.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-07</em>UTC в базе, таймзона у филиала, отчёты — по операционному дню</h5>
+      <p class="why">Все метки — <code>timestamptz</code> в UTC. У филиала своя IANA-зона и время начала операционного дня. Отчёт «за сегодня» строится по операционному дню филиала, а не по календарным суткам сервера.</p>
+      <p class="else"><b>Иначе:</b> круглосуточные бани (а таких большинство) получат разорванную пополам ночную выручку и отчёты, не совпадающие с реальностью.</p>
+    </div>
+  </div>
+
+  <h4>Занятость ресурсов</h4>
+  <div class="rules">
+    <div class="rule warn">
+      <h5><em>Р-08</em>Непересечение брони гарантирует СУБД, а не код</h5>
+      <p class="why">Ограничение на уровне PostgreSQL:<br><code>EXCLUDE USING gist (resource_id WITH =, tstzrange(starts_at, ends_at) WITH &amp;&amp;) WHERE (status IN ('booked','active'))</code>. Время уборки/проветривания входит в занимаемый интервал через <code>buffer_minutes</code> ресурса.</p>
+      <p class="else"><b>Иначе:</b> два кассира (или кассир и будущее онлайн-бронирование) одновременно проверяют «свободно?», оба получают «да» и оба записывают клиента на одну парную. Проверка в коде эту гонку не закрывает в принципе.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-09</em>Визит может выйти за границы брони</h5>
+      <p class="why">Бронирование и визит — разные сущности с разными интервалами. Продление визита проверяет конфликт со следующей бронью и явно предупреждает кассира: «через 20 минут придут по брони».</p>
+      <p class="else"><b>Иначе:</b> либо продление невозможно, либо оно молча затирает чужую бронь.</p>
+    </div>
+  </div>
+
+  <h4>Абонементы</h4>
+  <div class="rules">
+    <div class="rule warn">
+      <h5><em>Р-10</em>Абонемент — леджер, а не счётчик</h5>
+      <p class="why">Не поле «осталось 5». Есть <code>subscriptions</code> (условия, срок, статус) и append-only <code>subscription_entries</code> (списание, возврат списания, корректировка, заморозка, продление) со ссылкой на визит и автора. Текущий баланс — агрегат, продублированный в кэш-поле и пересчитываемый.</p>
+      <p class="else"><b>Иначе:</b> двойное списание при повторном клике, невозможность ответить клиенту «куда делись два посещения», и никакого способа откатить ошибку кассира.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-11</em>Заморозка — интервал, а не мутация срока</h5>
+      <p class="why">Хранятся периоды заморозки; фактический <code>valid_to</code> вычисляется как исходный плюс сумма замороженных дней, в пределах лимита плана.</p>
+      <p class="else"><b>Иначе:</b> история «когда и на сколько заморозили» теряется, лимит заморозки не проконтролировать.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-12</em>Списание — атомарная транзакция с проверкой области действия</h5>
+      <p class="why">Одна транзакция: блокировка абонемента, проверка срока/статуса/области действия (услуга, филиал, день недели, время), запись списания, привязка к позиции заказа. Позиция заказа, оплаченная абонементом, имеет нулевую денежную сумму, но сохраняет тарифную стоимость — для отчёта «сколько мы отдали по абонементам».</p>
+      <p class="else"><b>Иначе:</b> выручка по абонементам невидима, и владелец не понимает, выгодны ли они ему.</p>
+    </div>
+  </div>
+
+  <h4>Деньги, смена, аудит</h4>
+  <div class="rules">
+    <div class="rule">
+      <h5><em>Р-13</em>Ни одной кассовой операции без открытой смены</h5>
+      <p class="why">Каждый заказ, платёж, возврат и движение налички обязательно ссылаются на <code>shift_id</code>. Нет смены — касса в режиме только чтения.</p>
+      <p class="else"><b>Иначе:</b> появляется выручка «ничья», и сверка наличных теряет смысл.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-14</em>Финансовые события append-only</h5>
+      <p class="why">Возврат — отдельная обратная операция со ссылкой на оригинал. Отмена позиции — сторно. <code>UPDATE</code> и <code>DELETE</code> по платежам запрещены на уровне прав БД.</p>
+      <p class="else"><b>Иначе:</b> расследование недостачи невозможно, а «исправить задним числом» становится штатной практикой персонала.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-15</em>Z-отчёт — неизменяемый снимок</h5>
+      <p class="why">При закрытии смены итоги (суммы по способам оплаты, наличные ожидаемые/фактические, расхождение, число визитов, продажи по категориям) сохраняются как готовый документ, а не пересчитываются при каждом открытии отчёта.</p>
+      <p class="else"><b>Иначе:</b> задним числом изменили цену или сторнировали чек — и вчерашний отчёт, который кассир подписал, изменился.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-16</em>Идемпотентность всех денежных операций</h5>
+      <p class="why">Оплата, продление, списание абонемента принимают <code>Idempotency-Key</code>; повтор с тем же ключом возвращает исходный результат, а не создаёт вторую операцию.</p>
+      <p class="else"><b>Иначе:</b> подвисшая сеть плюс второй клик кассира — двойной чек и разбирательство с клиентом.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-17</em>Справочники архивируются, а не удаляются</h5>
+      <p class="why">У услуг, товаров, ресурсов и тарифов есть <code>archived_at</code>. Позиция с историей продаж физически не удаляется никогда.</p>
+      <p class="else"><b>Иначе:</b> удалённая услуга ломает исторические отчёты и оставляет висячие ссылки.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-18</em>Аудит-лог с первого дня</h5>
+      <p class="why">Кто, когда, из какой смены и с какого устройства изменил цену, выдал скидку, сделал возврат, поменял права. Пишется в отдельную таблицу, не редактируется из приложения.</p>
+      <p class="else"><b>Иначе:</b> продукт не выполняет главное обещание владельцу — контроль над персоналом.</p>
+    </div>
+  </div>
+
+  <h4>Внешний мир</h4>
+  <div class="rules">
+    <div class="rule warn">
+      <h5><em>Р-19</em>Фискальный чек ≠ наш чек</h5>
+      <p class="why">Наш <code>order</code> и фискальный чек ОФД — разные сущности, связанные один-к-одному-или-ни-одного. Работа с ККМ прячется за интерфейсом <code>FiscalDevice</code> (<code>register</code>, <code>refund</code>, <code>status</code>) с очередью повторов при недоступности оператора.</p>
+      <p class="else"><b>Иначе:</b> требования фискализации протекут в модель заказа, и смена провайдера ОФД будет означать переписывание кассы.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-20</em>Платёжные интеграции — за общим портом</h5>
+      <p class="why">Kaspi, банковский эквайринг, переводы описываются одним интерфейсом <code>PaymentProvider</code>. В MVP реализация — «карта вручную» (кассир проводит по терминалу и подтверждает), но модель платежа уже содержит <code>external_ref</code> и статус.</p>
+    </div>
+  </div>
+  <h4>Наличные и сверка кассы</h4>
+  <div class="rules">
+    <div class="rule warn">
+      <h5><em>Р-21</em>«Клиент передал» — не сумма платежа</h5>
+      <p class="why">Поле «клиент передал» существует только для того, чтобы система посчитала сдачу. В платёж, в выручку и в движение наличных записывается <strong>стоимость оплаченного заказа</strong>. Заказ 5&nbsp;000&nbsp;₸, клиент передал 10&nbsp;000&nbsp;₸, сдача 5&nbsp;000&nbsp;₸ — в кассу пришло 5&nbsp;000&nbsp;₸. Полученная сумма и сдача сохраняются справочными полями платежа (<code>tendered_amount</code>, <code>change_amount</code>) для разбора спорных ситуаций и в учёте не участвуют.</p>
+      <p class="else"><b>Иначе:</b> выручка раздувается на размер сдачи, наличные в ящике никогда не сходятся с системой, а средний чек и вся аналитика владельца становятся бессмысленными.</p>
+    </div>
+    <div class="rule">
+      <h5><em>Р-22</em>Ожидаемые наличные считает система, а не кассир</h5>
+      <p class="why">Формула ожидаемого остатка: <strong>остаток на начало смены + оплаты наличными − возвраты наличными + внесения − изъятия и инкассации</strong> (плюс прочие предусмотренные движения). Кассир при закрытии вводит только результат физического пересчёта; расхождение и его статус — «сходится», «недостача N&nbsp;₸», «излишек N&nbsp;₸» — выводит система.</p>
+      <p class="else"><b>Иначе:</b> если ожидаемую сумму называет кассир, сверка превращается в формальность.</p>
+    </div>
+    <div class="rule warn">
+      <h5><em>Р-23</em>Закрытая смена не редактируется; корректировка — отдельное событие</h5>
+      <p class="why">После закрытия ни фактическая сумма, ни расхождение не меняются. Если корректировка предусмотрена, она создаётся отдельной записью с фиксацией: кто изменил, когда, старое значение, новое значение и причина. Z-отчёт хранит и исходные, и скорректированные цифры; старое значение не затирается.</p>
+      <p class="else"><b>Иначе:</b> кассир «поправит» недостачу задним числом, и владелец об этом не узнает — а это ровно тот сценарий, ради которого продукт и покупают.</p>
+    </div>
+  </div>
+
+  <div class="callout calm">
+    <span class="tag">Рекомендация: слепой пересчёт</span>
+    <p>Настройка филиала, при которой кассир не видит ожидаемую сумму, пока не введёт свою. Без неё кассир просто перепишет цифру, которую показала система, и расхождения перестанут появляться вовсе — включая настоящие.</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2><span class="num">06</span>Модель данных</h2>
+  <p class="lede">Ключевые сущности и поля MVP. Во всех прикладных таблицах присутствуют <code>org_id</code>, <code>created_at</code>, <code>updated_at</code>; там, где это имеет смысл — <code>created_by</code>.</p>
+
+  <h3>Платформа и организация</h3>
+  <div class="entity"><h5>organizations</h5><p>id · name · bin · currency (KZT) · plan · status · settings jsonb · created_at</p></div>
+  <div class="entity"><h5>branches</h5><p>id · org_id · name · address · timezone (IANA) · operational_day_start · work_schedule jsonb · settings jsonb (шаг тарификации, округление, льготные минуты, лимит скидки кассира) · archived_at</p></div>
+  <div class="entity"><h5>users</h5><p>id · phone · email · password_hash · full_name · status<span class="note">Пользователь глобален для платформы: один человек может работать в нескольких организациях.</span></p></div>
+  <div class="entity"><h5>memberships</h5><p>id · user_id · org_id · branch_id (null = все филиалы) · role · permissions jsonb · pin_hash · status</p></div>
+  <div class="entity"><h5>audit_log</h5><p>id · org_id · branch_id · user_id · shift_id · entity_type · entity_id · action · before jsonb · after jsonb · ip · device_id · created_at</p></div>
+
+  <h3>Ресурсы и каталог</h3>
+  <div class="entity"><h5>resource_types</h5><p>id · org_id · name (сауна, баня, комната, беседка, бильярд) · icon</p></div>
+  <div class="entity"><h5>resources</h5><p>id · org_id · branch_id · type_id · name · capacity · default_service_id · buffer_minutes · sort_order · status · archived_at</p></div>
+  <div class="entity"><h5>services</h5><p>id · org_id · name · kind (time_based / entry / per_person / extra) · unit (hour / visit / person / piece) · default_duration_min · resource_type_id · vat_rate · is_extra · archived_at</p></div>
+  <div class="entity"><h5>price_rules</h5><p>id · org_id · branch_id (null = все) · service_id · priority · dow_mask · time_from · time_to · date_from · date_to · amount · unit · min_units · rounding · is_active<span class="note">Побеждает правило с наибольшим приоритетом среди подходящих. Правила без пересечений по приоритету должны валидироваться при сохранении.</span></p></div>
+  <div class="entity"><h5>products</h5><p>id · org_id · name · sku · category · unit · price · vat_rate · track_stock · archived_at</p></div>
+  <div class="entity"><h5>stock_levels / stock_movements</h5><p>branch_id · product_id · qty  |  id · branch_id · product_id · delta · reason (sale / income / writeoff / correction) · order_id · created_by<span class="note">В MVP — только количественный учёт без партий и себестоимости; движения append-only, остаток — агрегат.</span></p></div>
+
+  <h3>Клиенты и абонементы</h3>
+  <div class="entity"><h5>customers</h5><p>id · org_id · phone (уникален внутри организации) · full_name · birthday · gender · notes · tags · marketing_consent · created_at</p></div>
+  <div class="entity"><h5>subscription_plans</h5><p>id · org_id · name · type (visits / hours / unlimited_period / money) · allowance · validity_days · price · scope_services[] · scope_resource_types[] · scope_branches[] · dow_mask · time_from · time_to · max_holders · freeze_days_limit · is_transferable · archived_at</p></div>
+  <div class="entity"><h5>subscriptions</h5><p>id · org_id · plan_id · customer_id · holders[] · purchased_at · valid_from · valid_to_base · status (active / frozen / expired / used_up / cancelled) · balance_cache · price_paid · order_id</p></div>
+  <div class="entity"><h5>subscription_entries</h5><p>id · subscription_id · type (charge / refund / adjust / extend) · amount · visit_id · order_item_id · comment · created_by · created_at<span class="note">Append-only. Баланс = allowance − Σ(charge) + Σ(refund) ± Σ(adjust).</span></p></div>
+  <div class="entity"><h5>subscription_freezes</h5><p>id · subscription_id · starts_on · ends_on · created_by · reason</p></div>
+
+  <h3>Занятость и продажи</h3>
+  <div class="entity"><h5>bookings</h5><p>id · org_id · branch_id · resource_id · customer_id · service_id · starts_at · ends_at · guests_count · status (booked / arrived / cancelled / no_show) · source (cashier / phone / online) · prepayment_order_id · comment · created_by<span class="note">EXCLUDE-ограничение по (resource_id, tstzrange) для статусов, занимающих ресурс.</span></p></div>
+  <div class="entity"><h5>visits</h5><p>id · org_id · branch_id · resource_id · booking_id · customer_id · opened_shift_id · started_at · planned_minutes · ended_at · guests_count · status (active / finished / cancelled) · order_id</p></div>
+  <div class="entity"><h5>visit_extensions</h5><p>id · visit_id · minutes · price_snapshot · created_by · created_at · reason</p></div>
+  <div class="entity"><h5>orders</h5><p>id · org_id · branch_id · shift_id · visit_id · customer_id · status (open / paid / partially_refunded / refunded / void) · subtotal · discount_total · total · paid_total · created_by</p></div>
+  <div class="entity"><h5>order_items</h5><p>id · order_id · kind (service_time / service_extra / product / extension) · ref_id · name_snapshot · qty · unit · unit_price · price_rule_id · discount · total · subscription_id · covered_by_subscription_amount · created_by · voided_by_item_id</p></div>
+  <div class="entity"><h5>payments</h5><p>id · org_id · order_id · shift_id · method (cash / card / transfer / subscription / bonus) · amount · tendered_amount · change_amount · external_ref · idempotency_key (уникален) · status · fiscal_receipt_id · created_by · created_at<span class="note">В учёте участвует только <code>amount</code> — стоимость оплаченного заказа. <code>tendered_amount</code> и <code>change_amount</code> справочные: они нужны для расчёта сдачи и разбора спорных ситуаций, но не попадают ни в выручку, ни в движение наличных (Р-21).</span></p></div>
+  <div class="entity"><h5>refunds</h5><p>id · original_payment_id · order_id · shift_id · amount · reason · approved_by · created_by · created_at</p></div>
+
+  <h3>Смена</h3>
+  <div class="entity"><h5>shifts</h5><p>id · org_id · branch_id · opened_by · opened_at · opening_cash · closed_by · closed_at · counted_cash · expected_cash · discrepancy · discrepancy_status (match / shortage / surplus) · status (open / closed) · z_report jsonb<span class="note"><code>expected_cash</code> — всегда вычисляемая величина: opening_cash + наличные платежи − наличные возвраты + внесения − изъятия и инкассации. <code>counted_cash</code> вводит кассир. <code>discrepancy</code> = counted − expected и хранится со знаком.</span></p></div>
+  <div class="entity"><h5>cash_movements</h5><p>id · shift_id · type (cash_in / cash_out / collection) · amount · comment · created_by</p></div>
+  <div class="entity"><h5>shift_adjustments</h5><p>id · shift_id · field (counted_cash / opening_cash / …) · old_value · new_value · reason · created_by · approved_by · created_at<span class="note">Единственный законный способ изменить цифры закрытой смены. Сама строка смены при этом хранит и исходное, и скорректированное значение (Р-23).</span></p></div>
+
+  <div class="callout calm">
+    <span class="tag">Про отчёты</span>
+    <p>Аналитика считается из <code>orders</code>, <code>order_items</code> и <code>payments</code> — отдельных «таблиц выручки» не заводим, иначе получим два источника правды, которые рано или поздно разойдутся. Когда объём вырастет, добавим суточные rollup-таблицы, пересчитываемые из первичных данных, — это дешёвая оптимизация, которую можно сделать позже без изменения модели.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <h2><span class="num">07</span>Функциональные требования</h2>
+  <p class="lede">Требования сгруппированы по модулям и пронумерованы для ссылок в задачах и тест-кейсах.</p>
+
+  <h3>7.1 Смена и касса</h3>
+  <ul>
+    <li><strong>FR-SH-01.</strong> Кассир открывает смену, указывая сумму наличных в ящике на начало. Без открытой смены касса доступна только для просмотра.</li>
+    <li><strong>FR-SH-02.</strong> Одновременно в филиале может быть открыто несколько смен (несколько касс) — операция всегда привязана к смене конкретного устройства.</li>
+    <li><strong>FR-SH-03.</strong> Вход в смену — по PIN сотрудника на устройстве, привязанном к филиалу. Пароль вводится только при первичной привязке устройства.</li>
+    <li><strong>FR-SH-04.</strong> Внесение и изъятие наличных фиксируется отдельными операциями с комментарием.</li>
+    <li><strong>FR-SH-05.</strong> Закрытие смены: кассир вводит фактический пересчёт наличных, система показывает ожидаемую сумму и расхождение, формирует Z-отчёт и делает его неизменяемым.</li>
+    <li><strong>FR-SH-06.</strong> Смену нельзя закрыть при наличии активных визитов — система показывает список и предлагает завершить или передать в следующую смену.</li>
+    <li><strong>FR-SH-07.</strong> Z-отчёт содержит: выручку по способам оплаты, наличные (начало / приход / расход / ожидаемо / факт / расхождение), число визитов и гостей, продажи по категориям, скидки, возвраты, списания по абонементам.</li>
+    <li><strong>FR-SH-08.</strong> Ожидаемый остаток наличных система считает сама по формуле Р-22; кассир вводит только фактический пересчёт.</li>
+    <li><strong>FR-SH-09.</strong> Система показывает расхождение со статусом «сходится», «недостача N ₸» или «излишек N ₸». Статус и обе суммы сохраняются в Z-отчёте.</li>
+    <li><strong>FR-SH-10.</strong> Настройка «слепой пересчёт»: кассир не видит ожидаемую сумму до ввода фактической.</li>
+    <li><strong>FR-SH-11.</strong> После закрытия смены её данные неизменяемы. Корректировка возможна только с правом управляющего, отдельной записью с обязательной причиной; исходное значение сохраняется.</li>
+    <li><strong>FR-SH-12.</strong> Владелец и управляющий видят список смен с расхождениями и полную историю корректировок.</li>
+  </ul>
+
+  <h3>7.2 Визит и таймер</h3>
+  <ul>
+    <li><strong>FR-VS-01.</strong> Визит создаётся с брони одним действием или без брони — выбором свободного ресурса.</li>
+    <li><strong>FR-VS-02.</strong> При старте фиксируются ресурс, услуга, число гостей, плановая длительность; таймер стартует от серверного времени.</li>
+    <li><strong>FR-VS-03.</strong> Система непрерывно показывает оставшееся время и текущую сумму к оплате, пересчитываемую по правилам тарификации.</li>
+    <li><strong>FR-VS-04.</strong> За настраиваемое время до конца (по умолчанию 10 минут) плитка ресурса меняет состояние на «заканчивается»; при истечении — на «переработка» с отдельным счётчиком.</li>
+    <li><strong>FR-VS-05.</strong> Продление: кассир добавляет время (+30 / +60 / произвольно), система проверяет следующую бронь и предупреждает о конфликте, пересчитывает сумму.</li>
+    <li><strong>FR-VS-06.</strong> В визит добавляются дополнительные услуги и товары; каждая позиция сохраняет снапшот цены.</li>
+    <li><strong>FR-VS-07.</strong> Изменение числа гостей пересчитывает позиции с тарификацией на человека.</li>
+    <li><strong>FR-VS-08.</strong> Завершение визита: система фиксирует фактическое время, финализирует расчёт, требует полной оплаты, освобождает ресурс с учётом буфера уборки.</li>
+    <li><strong>FR-VS-09.</strong> Визит, начавшийся в одной смене и завершившийся в другой, допускается; выручка относится на смену, в которой прошёл платёж (см. §14.9).</li>
+  </ul>
+
+  <h3>7.3 Бронирование</h3>
+  <ul>
+    <li><strong>FR-BK-01.</strong> Экран-шахматка: ресурсы по вертикали, время по горизонтали, день выбирается; видны брони, активные визиты и буферы.</li>
+    <li><strong>FR-BK-02.</strong> Создание брони: ресурс, дата, интервал, клиент (поиск или новый), гости, комментарий. Пересечение блокируется на уровне БД.</li>
+    <li><strong>FR-BK-03.</strong> Перенос и изменение длительности — перетаскиванием, с той же проверкой пересечений.</li>
+    <li><strong>FR-BK-04.</strong> Предоплата брони: частичная сумма принимается как платёж и учитывается при финальном расчёте визита.</li>
+    <li><strong>FR-BK-05.</strong> Статусы: забронировано, пришёл (создан визит), отменено, не пришёл. Отмена и no-show фиксируют автора и время.</li>
+    <li><strong>FR-BK-06.</strong> При старте визита из брони все параметры подставляются автоматически.</li>
+  </ul>
+
+  <h3>7.4 Услуги, тарифы, товары</h3>
+  <ul>
+    <li><strong>FR-CT-01.</strong> Владелец создаёт услуги с типом тарификации и привязкой к типу ресурса.</li>
+    <li><strong>FR-CT-02.</strong> Правила цен задаются визуально: недельная сетка с интервалами и суммами, чтобы не требовалось понимать модель данных.</li>
+    <li><strong>FR-CT-03.</strong> При сохранении правил система проверяет пересечения и «дыры» в расписании и предупреждает о них.</li>
+    <li><strong>FR-CT-04.</strong> Предпросмотр: «сколько будет стоить 2 часа в пятницу в 19:00» — прямо в интерфейсе настройки.</li>
+    <li><strong>FR-CT-05.</strong> Товары продаются как в рамках визита, так и навынос (заказ без визита).</li>
+    <li><strong>FR-CT-06.</strong> Для товаров с учётом остатков продажа уменьшает остаток; уход в минус запрещён либо разрешён по настройке филиала.</li>
+  </ul>
+
+  <h3>7.5 Клиенты</h3>
+  <ul>
+    <li><strong>FR-CU-01.</strong> Поиск по последним цифрам телефона и по имени, за одно поле ввода.</li>
+    <li><strong>FR-CU-02.</strong> Клиент создаётся из кассы в один шаг — обязателен только телефон.</li>
+    <li><strong>FR-CU-03.</strong> Карточка клиента: визиты, суммы, абонементы, комментарии, теги.</li>
+    <li><strong>FR-CU-04.</strong> Визит без клиента допускается («аноним») — иначе кассир будет вводить мусорные данные ради скорости.</li>
+  </ul>
+
+  <h3>7.6 Абонементы</h3>
+  <ul>
+    <li><strong>FR-SB-01.</strong> Типы: по числу посещений, по числу часов, безлимит на период, месячный; каждый — с областью действия (услуги, типы ресурсов, филиалы, дни недели, часы).</li>
+    <li><strong>FR-SB-02.</strong> Персональный и семейный: у семейного несколько держателей и общий баланс либо персональные лимиты (см. §14.7).</li>
+    <li><strong>FR-SB-03.</strong> Продажа абонемента — обычная позиция заказа, проходит через смену и Z-отчёт.</li>
+    <li><strong>FR-SB-04.</strong> При оформлении визита система сама предлагает подходящий абонемент клиента и показывает, что именно спишется.</li>
+    <li><strong>FR-SB-05.</strong> Списание невозможно, если абонемент просрочен, заморожен, исчерпан или услуга вне его области; кассир видит понятную причину.</li>
+    <li><strong>FR-SB-06.</strong> Заморозка и разморозка с контролем лимита дней по плану.</li>
+    <li><strong>FR-SB-07.</strong> Продление срока и корректировка баланса — только с правом управляющего, с обязательным комментарием, всё попадает в историю.</li>
+    <li><strong>FR-SB-08.</strong> История использования показывает каждое списание с датой, визитом и кассиром.</li>
+  </ul>
+
+  <h3>7.7 Оплаты и возвраты</h3>
+  <ul>
+    <li><strong>FR-PM-01.</strong> Способы: наличные, карта, перевод, абонемент, смешанная оплата несколькими способами по одному заказу.</li>
+    <li><strong>FR-PM-02.</strong> Для наличных кассир вводит полученную от клиента сумму, система считает сдачу. Это поле влияет только на сдачу: в платёж, выручку и кассу попадает стоимость заказа (Р-21).</li>
+    <li><strong>FR-PM-03.</strong> Скидка: фиксированная сумма или процент, на позицию или на заказ; сверх лимита кассира — подтверждение PIN управляющего.</li>
+    <li><strong>FR-PM-04.</strong> Возврат — полный или частичный, с обязательной причиной, обратной операцией и возвратом списанных единиц абонемента.</li>
+    <li><strong>FR-PM-05.</strong> Печать чека и отправка ссылки на чек клиенту (в MVP — печать; отправка через каналы уведомлений после MVP).</li>
+  </ul>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2><span class="num">08</span>Интерфейс кассира</h2>
+  <p class="lede">Главный критерий качества этого экрана — число действий и секунд на типовую операцию. Кассир работает стоя, часто на тач-мониторе, при очереди у стойки.</p>
+
+  <h3>Один экран вместо разделов</h3>
+  <p>Основной экран смены — сетка плиток ресурсов филиала. Всё, что делает кассир в течение дня, происходит на этом экране: клик по плитке открывает боковую панель визита, из неё доступны продление, добавление позиций, оплата и завершение. Никаких переходов между разделами и никаких модальных окон поверх модальных окон.</p>
+
+  <h4>Состояния плитки ресурса</h4>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Состояние</th><th>Что видно на плитке</th><th>Кодирование</th></tr></thead>
+    <tbody>
+      <tr><td>Свободен</td><td>Название, вместимость, ближайшая бронь</td><td>Нейтральный фон, тонкая рамка</td></tr>
+      <tr><td>Занят</td><td>Клиент, обратный отсчёт, текущая сумма</td><td>Заливка акцентом, крупный таймер</td></tr>
+      <tr><td>Заканчивается</td><td>То же + отметка «≤10 мин»</td><td>Полоса-предупреждение сверху</td></tr>
+      <tr><td>Переработка</td><td>Счётчик перебора и доначисление</td><td>Сигнальный цвет + значок</td></tr>
+      <tr><td>Забронирован</td><td>Время брони, имя, гости</td><td>Штриховка, приглушённый тон</td></tr>
+      <tr><td>Уборка</td><td>Остаток буфера</td><td>Серый, действия недоступны</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>Бюджет действий на операцию</h4>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Операция</th><th class="num">Максимум действий</th><th>Как достигается</th></tr></thead>
+    <tbody>
+      <tr><td>Принять клиента без брони</td><td class="num">4</td><td>Плитка → длительность (пресеты 1ч/2ч/3ч) → клиент или «аноним» → Старт</td></tr>
+      <tr><td>Принять по брони</td><td class="num">2</td><td>Плитка → «Пришёл»</td></tr>
+      <tr><td>Продлить</td><td class="num">2</td><td>Плитка → кнопка +30/+60</td></tr>
+      <tr><td>Добавить товар</td><td class="num">2</td><td>Панель визита → плитка товара из избранного</td></tr>
+      <tr><td>Оплатить и завершить</td><td class="num">3</td><td>«К оплате» → способ → «Оплачено»</td></tr>
+      <tr><td>Найти клиента</td><td class="num">1</td><td>Ввод 4 цифр телефона в постоянно доступное поле</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Требования к взаимодействию</h3>
+  <ul>
+    <li>Горячие клавиши для клавиатурных касс: <code>F2</code> — новый визит, <code>F4</code> — оплата, <code>/</code> — поиск клиента, <code>Esc</code> — закрыть панель.</li>
+    <li>Минимальный размер интерактивной цели — 44 px; частые действия — крупными кнопками, редкие и опасные — мельче и дальше.</li>
+    <li>Ни одно действие кассира не должно требовать ввода цены вручную: сумму всегда считает сервер.</li>
+    <li>На экране оплаты наличными видны три строки: к оплате, получено от клиента, сдача. Крупно — сдача: это то, что кассир должен отсчитать, стоя перед гостем.</li>
+    <li>Все операции подтверждаются мгновенно в интерфейсе; сетевые ошибки показываются явным индикатором связи, а не молчанием.</li>
+    <li>Разрушающие действия (сторно, возврат, отмена визита) требуют подтверждения и причины.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="tag">Антипаттерн</span>
+    <p>Не делайте кассиру «конструктор чека» с ручным вводом сумм и произвольными позициями. Это кажется гибкостью, а на практике становится главным каналом злоупотреблений и делает аналитику владельца недостоверной. Любая нестандартная ситуация должна решаться заранее заведённой услугой или подтверждённой скидкой.</p>
+  </div>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2><span class="num">09</span>Кабинет владельца</h2>
+  <p class="lede">Владелец заходит на пять минут и должен сразу понять состояние бизнеса. Сначала выводы, потом таблицы.</p>
+
+  <h3>Главная</h3>
+  <ul>
+    <li>Выручка за период с сопоставлением с предыдущим аналогичным периодом.</li>
+    <li>Число визитов и гостей, средний чек, средняя длительность визита.</li>
+    <li>Загрузка ресурсов в процентах от доступного времени — по дням недели и часам (тепловая карта): это главный инструмент управления тарифами.</li>
+    <li>Открытые смены прямо сейчас и что в них происходит.</li>
+  </ul>
+
+  <h3>Отчёты MVP</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Отчёт</th><th>Разрезы</th><th>Отвечает на вопрос</th></tr></thead>
+    <tbody>
+      <tr><td>Выручка</td><td>День / неделя / месяц, филиал, способ оплаты</td><td>Сколько заработали и чем платили</td></tr>
+      <tr><td>Продажи услуг и товаров</td><td>Категория, позиция, количество, сумма</td><td>Что именно приносит деньги</td></tr>
+      <tr><td>Загрузка ресурсов</td><td>Ресурс, день недели, час</td><td>Где простой и где не хватает мощности</td></tr>
+      <tr><td>Смены</td><td>Кассир, дата, ожидаемые и фактические наличные, недостачи и излишки, корректировки после закрытия, скидки, возвраты, сторно</td><td>Всё ли чисто у персонала</td></tr>
+      <tr><td>Абонементы</td><td>План, продано, списано, сгорело, остаток обязательств</td><td>Выгодны ли абонементы и сколько мы должны клиентам</td></tr>
+      <tr><td>Клиенты</td><td>Новые / повторные, частота, сумма</td><td>Растёт ли база</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout calm">
+    <span class="tag">Метрика, о которой обычно забывают</span>
+    <p>Проданные, но не отгулянные абонементы — это финансовое обязательство заведения, а не выручка. В отчётах нужно показывать «остаток обязательств» отдельно, иначе владелец переоценивает прибыль и удивляется кассовому разрыву в конце сезона.</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <h2><span class="num">10</span>API</h2>
+  <p class="lede">REST + JSON, версионирование в пути. Все операции, меняющие деньги, принимают заголовок <code>Idempotency-Key</code>. Организация и филиал берутся из токена, а не из тела.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="mono">Метод и путь</th><th>Назначение</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">POST /v1/auth/login · /auth/pin</td><td>Вход по паролю; быстрый вход по PIN на привязанном устройстве</td></tr>
+      <tr><td class="mono">POST /v1/shifts · POST /v1/shifts/{id}/close</td><td>Открыть смену; закрыть со сверкой наличных и Z-отчётом</td></tr>
+      <tr><td class="mono">GET /v1/board</td><td>Состояние филиала: ресурсы, визиты, таймеры, ближайшие брони, серверное время</td></tr>
+      <tr><td class="mono">POST /v1/visits</td><td>Открыть визит (с брони или без)</td></tr>
+      <tr><td class="mono">POST /v1/visits/{id}/extend</td><td>Продлить с проверкой следующей брони</td></tr>
+      <tr><td class="mono">POST /v1/visits/{id}/items</td><td>Добавить услугу или товар</td></tr>
+      <tr><td class="mono">POST /v1/visits/{id}/finish</td><td>Завершить, финализировать расчёт</td></tr>
+      <tr><td class="mono">POST /v1/orders/{id}/payments</td><td>Принять оплату (в том числе смешанную)</td></tr>
+      <tr><td class="mono">POST /v1/orders/{id}/refunds</td><td>Возврат полный или частичный</td></tr>
+      <tr><td class="mono">GET/POST /v1/bookings · PATCH /v1/bookings/{id}</td><td>Шахматка, создание, перенос</td></tr>
+      <tr><td class="mono">POST /v1/pricing/quote</td><td>Предварительный расчёт стоимости по контексту — единая точка правды о цене</td></tr>
+      <tr><td class="mono">POST /v1/subscriptions · /{id}/charge · /{id}/freeze</td><td>Продажа, списание, заморозка абонемента</td></tr>
+      <tr><td class="mono">GET /v1/reports/*</td><td>Отчёты кабинета владельца</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Экран смены получает изменения через WebSocket или SSE: два кассира за разными устройствами обязаны видеть одну и ту же картину занятости без перезагрузки страницы.</p>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <h2><span class="num">11</span>Нефункциональные требования</h2>
+  <div class="split">
+    <div class="panel">
+      <h4>Производительность</h4>
+      <ul>
+        <li>Кассовые операции: p95 &lt; 300 мс, p99 &lt; 800 мс.</li>
+        <li>Экран смены открывается за &lt; 1,5 с на слабом офисном ПК.</li>
+        <li>Отчёты за месяц — &lt; 3 с.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>Надёжность</h4>
+      <ul>
+        <li>Явный индикатор связи на кассе.</li>
+        <li>Локальная очередь повторов для коротких обрывов сети.</li>
+        <li>Бэкапы с восстановлением на точку времени, проверяемые регулярно.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>Безопасность</h4>
+      <ul>
+        <li>Хеширование паролей и PIN (argon2id), PIN только в паре с привязанным устройством.</li>
+        <li>RLS как второй контур изоляции.</li>
+        <li>Аудит всех операций с деньгами и правами.</li>
+        <li>Персональные данные клиентов — согласно требованиям РК о персональных данных.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>Совместимость</h4>
+      <ul>
+        <li>Касса — браузер на Windows и Android-планшете, разрешение от 1280×800, поддержка тач.</li>
+        <li>Кабинет владельца — адаптивный веб, включая телефон.</li>
+        <li>Печать чеков на термопринтерах через ESC/POS.</li>
+      </ul>
+    </div>
+  </div>
+  <p>Локализация: русский и казахский в интерфейсе с первого релиза (строки выносятся сразу, перевод может появиться позже), формат валюты и дат — казахстанский.</p>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <h2><span class="num">12</span>Технологический стек</h2>
+  <p class="lede">Рекомендация, а не догма. Главный аргумент за TypeScript-монорепо — общие типы между кассой, кабинетом и бэкендом: в системе с деньгами и временем это экономит больше, чем любая другая мера.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Слой</th><th>Выбор</th><th>Почему</th></tr></thead>
+    <tbody>
+      <tr><td>База данных</td><td>PostgreSQL 16+</td><td>RLS для изоляции тенантов, <code>tstzrange</code> + GiST для непересечения броней, jsonb для настроек — три вещи, ради которых стоит выбирать именно её</td></tr>
+      <tr><td>Доступ к БД</td><td>Drizzle или Kysely + сырой SQL в критичных местах</td><td>Полный контроль над транзакциями, блокировками и RLS-контекстом; тяжёлые ORM с RLS дружат плохо</td></tr>
+      <tr><td>Бэкенд</td><td>NestJS (TypeScript)</td><td>Модульность под будущие ERP-модули, понятный DI, зрелая экосистема</td></tr>
+      <tr><td>Фоновые задачи</td><td>Redis + BullMQ</td><td>Очередь фискализации, уведомления, пересчёт агрегатов, автозакрытие смен</td></tr>
+      <tr><td>Касса</td><td>React + TypeScript, Vite, отдельное приложение</td><td>У кассы и кабинета разные требования к скорости и вводу — не смешивать их в одном UI</td></tr>
+      <tr><td>Кабинет владельца</td><td>React + TypeScript в том же монорепо</td><td>Переиспользование типов API и доменных вычислений</td></tr>
+      <tr><td>Реальное время</td><td>WebSocket (Socket.IO) на филиал</td><td>Синхронизация доски занятости между кассами</td></tr>
+      <tr><td>Инфраструктура</td><td>Docker, миграции в репозитории, S3-совместимое хранилище</td><td>Воспроизводимость окружений с первого дня</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Мобильное приложение позже — React Native переиспользует те же типы и клиент API.</p>
+</section>
+
+<!-- 13 -->
+<section id="s13">
+  <h2><span class="num">13</span>Этапы разработки</h2>
+  <p class="lede">Порядок этапов подчинён одному принципу: как можно раньше получить работающую кассу в реальном заведении, потому что только она покажет, где мы ошиблись в модели.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="mono">Этап</th><th>Содержание</th><th>Критерий готовности</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">Э0 · Каркас</td><td>Монорепо, миграции, аутентификация, организации, филиалы, сотрудники, роли, RLS, аудит-лог</td><td>Пользователь одной организации технически не может получить данные другой — есть тест</td></tr>
+      <tr><td class="mono">Э1 · Справочники</td><td>Ресурсы, услуги, правила цен, товары, сервис <code>pricing</code> с посегментным расчётом</td><td><code>pricing.quote</code> покрыт тестами на переходы тарифов, округления и минимальную длительность</td></tr>
+      <tr><td class="mono">Э2 · Касса-ядро</td><td>Смена, визит, таймер, доп. позиции, оплата, возврат, Z-отчёт, печать</td><td>Полный день работы проходит без ручного ввода сумм; Z-отчёт сходится</td></tr>
+      <tr><td class="mono">Э3 · Бронирование</td><td>Шахматка, EXCLUDE-ограничение, буферы, предоплата, связка бронь → визит</td><td>Параллельные запросы на один интервал: ровно один успешен — есть тест</td></tr>
+      <tr><td class="mono">Э4 · Клиенты и абонементы</td><td>Справочник клиентов, планы, продажа, списание, заморозка, история</td><td>Баланс по леджеру всегда сходится с кэшем; двойное списание невозможно</td></tr>
+      <tr><td class="mono">Э5 · Кабинет владельца</td><td>Главная, шесть отчётов MVP, настройки, управление сотрудниками</td><td>Выручка в отчётах совпадает с суммой Z-отчётов за период</td></tr>
+      <tr><td class="mono">Э6 · Пилот</td><td>Фискализация, нагрузочное тестирование, обучение персонала, доработки по обратной связи</td><td>Одно реальное заведение работает неделю без параллельной тетради</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout calm">
+    <span class="tag">Рекомендация по пилоту</span>
+    <p>Первое внедрение стоит делать в заведении, где владелец готов терпеть шероховатости и разговаривать с командой. Неделя наблюдения за реальным кассиром даст больше, чем месяц обсуждений: почти все ошибки в модели времени и тарификации обнаруживаются именно там.</p>
+  </div>
+</section>
+
+<!-- 14 -->
+<section id="s14">
+  <h2><span class="num">14</span>Открытые вопросы к команде</h2>
+  <p class="lede">Каждый пункт влияет на модель данных, поэтому ответы нужны до начала соответствующего этапа, а не после.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="num">№</th><th>Вопрос</th><th>Почему это важно решить заранее</th><th>Нужно к</th></tr></thead>
+    <tbody>
+      <tr><td class="num">14.1</td><td>Нужен ли фискальный чек с первого релиза и какой провайдер ОФД (Webkassa, Kassa24, иной)?</td><td>Определяет состав заказа, требования к позициям и НДС; поздняя интеграция ломает уже работающую кассу</td><td class="mono">Э2</td></tr>
+      <tr><td class="num">14.2</td><td>Тариф при переходе через границу времени: посегментно или по времени входа?</td><td>Прямо влияет на выручку в вечерний прайм и на спор с клиентом у стойки</td><td class="mono">Э1</td></tr>
+      <tr><td class="num">14.3</td><td>Гости сверх вместимости: отдельная услуга «доп. гость» или множитель к базовой цене?</td><td>Разные модели данных и разные отчёты по услугам</td><td class="mono">Э1</td></tr>
+      <tr><td class="num">14.4</td><td>Нужен ли офлайн-режим кассы в MVP?</td><td>Полноценный офлайн с синхронизацией удорожает MVP примерно в полтора раза. Рекомендация: онлайн + локальная очередь на короткие обрывы</td><td class="mono">Э2</td></tr>
+      <tr><td class="num">14.5</td><td>Обязательна ли предоплата брони и что делать при no-show?</td><td>Определяет, может ли предоплата «сгорать», и как это отражается в выручке</td><td class="mono">Э3</td></tr>
+      <tr><td class="num">14.6</td><td>Как тарифицируется сам SaaS: за филиал, за кассу или процент от оборота?</td><td>Задаёт модуль биллинга и то, какие лимиты платформа обязана считать с самого начала</td><td class="mono">Э0</td></tr>
+      <tr><td class="num">14.7</td><td>Семейный абонемент: общий баланс на всех держателей или персональные лимиты?</td><td>Разная схема леджера; переделка после запуска потребует миграции живых абонементов</td><td class="mono">Э4</td></tr>
+      <tr><td class="num">14.8</td><td>Нужна ли запись к конкретному сотруднику (массажист, банщик)?</td><td>Это превращает сотрудника в бронируемый ресурс и заметно меняет модуль бронирования. Дешевле заложить сейчас, чем встроить потом</td><td class="mono">Э3</td></tr>
+      <tr><td class="num">14.9</td><td>Визит на стыке смен: на какую смену относить выручку?</td><td>Предлагается: на смену платежа, визит при этом может пережить смену. Нужно подтверждение от практикующих администраторов</td><td class="mono">Э2</td></tr>
+      <tr><td class="num">14.10</td><td>Нужны ли скидки и промокоды в MVP или достаточно ручной скидки с подтверждением?</td><td>Промокоды тянут за собой отдельный модуль правил и ограничений</td><td class="mono">Э2</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <hr>
+
+  <h3>Главные риски проекта</h3>
+  <ul>
+    <li><strong>Расползание объёма.</strong> Владельцы будут просить склад, зарплаты и лояльность до того, как заработает касса. Дисциплина по §1 — условие выживания сроков.</li>
+    <li><strong>Недооценка тарификации.</strong> «Просто цена за час» на практике превращается в дни недели, праздники, ночные тарифы, минимальное время и доплату за гостей. Сервис <code>pricing</code> — самое тестируемое место системы.</li>
+    <li><strong>Фискализация как сюрприз.</strong> Отложенная интеграция с ОФД обычно требует переделки модели чека. См. §14.1.</li>
+    <li><strong>Сопротивление персонала.</strong> Система, которая делает работу кассира прозрачной, будет саботироваться, если она при этом медленнее тетради. Именно поэтому бюджет действий из §8 — требование, а не пожелание.</li>
+  </ul>
+</section>
+
+<p class="end">Документ v0.1 · к обсуждению с командой · следующий шаг — ответы на §14 и старт этапа Э0</p>
+
+</main>
+</div>

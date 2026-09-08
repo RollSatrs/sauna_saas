@@ -1,0 +1,312 @@
+<title>Сколько брать с владельцев бань</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#4f565e; --ink-3:#6b727a;
+  --line:#dedbd6; --line-strong:#c7c3bc;
+  --a:#0f6e63; --a-soft:#e3f0ee; --a-line:#9fcdc6;
+  --b:#8a4a12; --b-soft:#fbf1e2; --b-line:#e3c391;
+  --stop:#a3302a; --stop-soft:#fbeae8; --stop-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --a:#57b6a8; --a-soft:#16302c; --a-line:#2f5f57;
+  --b:#d09a5c; --b-soft:#2a2015; --b-line:#5a4527;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --a:#57b6a8; --a-soft:#16302c; --a-line:#2f5f57;
+  --b:#d09a5c; --b-soft:#2a2015; --b-line:#5a4527;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px 96px}
+header.top{padding:54px 0 26px;border-bottom:2px solid var(--ink);margin-bottom:38px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);margin:0 0 13px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,4.6vw,46px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;max-width:17ch}
+.dek{font-size:17.5px;color:var(--ink-2);max-width:62ch;margin:0}
+section{margin-bottom:50px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:18px;margin:28px 0 10px}
+.lead{color:var(--ink-2);max-width:70ch;margin:0 0 22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+p{max-width:72ch;margin:0 0 14px}
+ul{max-width:72ch;margin:0 0 15px;padding-left:21px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink-3)}
+.scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 15px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hi td{background:var(--a-soft)}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.yes{background:var(--a-soft);color:var(--a)}
+.pill.no{background:var(--stop-soft);color:var(--stop)}
+.pill.part{background:var(--b-soft);color:var(--b)}
+.note{border-radius:12px;padding:18px 21px;margin:24px 0;max-width:74ch;background:var(--a-soft);border:1px solid var(--a-line)}
+.note.stop{background:var(--stop-soft);border-color:var(--stop-line)}
+.note.warn{background:var(--b-soft);border-color:var(--b-line)}
+.note b{display:block;margin-bottom:7px;font-weight:600}
+.note p{margin:0 0 9px;font-size:15.5px}
+.note p:last-child{margin:0}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 22px}
+@media (max-width:680px){.plans{grid-template-columns:1fr}}
+.plan{border:1px solid var(--line);border-radius:14px;padding:22px 24px;background:var(--surface)}
+.plan.best{border-color:var(--a);box-shadow:0 0 0 3px var(--a-soft)}
+.plan .name{font-family:var(--display);font-weight:700;font-size:20px;margin-bottom:4px}
+.plan .price{font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.plan .price span{font-size:15px;font-weight:400;color:var(--ink-3)}
+.plan .who{color:var(--ink-2);font-size:14.5px;margin:8px 0 14px}
+.plan ul{margin:0;padding-left:19px;font-size:14.5px}
+.plan li{margin-bottom:5px;color:var(--ink-2)}
+.q{background:var(--surface);border-left:3px solid var(--a);border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:12px}
+.q b{display:block;font-weight:600;margin-bottom:5px}
+.q p{margin:0;font-size:15px;color:var(--ink-2)}
+code{font-family:var(--mono);font-size:13.5px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
+a{color:var(--a)}
+.src{font-size:14px;color:var(--ink-3);max-width:72ch}
+.src a{color:var(--ink-2)}
+.end{border-top:2px solid var(--ink);padding-top:15px;margin-top:42px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">К обсуждению · до написания кода</p>
+  <h1>Сколько брать с владельцев бань</h1>
+  <p class="dek">Разобрал тарифы Paloma в Казахстане и нашёл дыру в их линейке.
+  Ниже — предложение по нашим тарифам 5 000 и 9 000 ₸ и три риска,
+  которые стоит обсудить прежде, чем я это построю.</p>
+</header>
+
+<section>
+  <h2>Главное в одном абзаце</h2>
+  <div class="note">
+    <b>Тарификация по времени — самый дорогой тариф Paloma, и склада в нём нет</b>
+    <p>Бане нужны тарифы по времени, карта кабинок и бронирование. У Paloma это
+    отдельный тариф <strong>«Тарификатор» за 12 600 ₸/мес</strong> — самый дорогой
+    в линейке. При этом складской учёт лежит в других тарифах и в «Тарификатор»
+    <strong>не входит</strong>.</p>
+    <p>То есть баня у Paloma либо платит 12 600 ₸ и остаётся без склада, либо
+    берёт склад в тарифе, где нет главного — тарификации. Мы можем дать и то,
+    и другое дешевле.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Часть 1. Как бани берут деньги с гостей</h2>
+  <p class="lead">Вы правильно поняли — моделей две, и они не пересекаются.
+  Это подтверждает прошлый разбор прайсов, ничего не изменилось.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>Частная сауна</th><th>Общественная баня</th></tr></thead>
+    <tbody>
+      <tr><td><strong>За что платят</strong></td><td>за зал целиком</td><td>за человека</td></tr>
+      <tr><td><strong>Как считают</strong></td><td>по часам, минимум обычно 2 часа</td><td>входной билет</td></tr>
+      <tr><td><strong>Цена зависит от</strong></td><td>дня недели и времени суток</td><td>времени суток, разряда отделения</td></tr>
+      <tr><td><strong>Гости сверх нормы</strong></td><td>доплата за человека в час</td><td>каждый платит сам</td></tr>
+      <tr><td><strong>Абонементы</strong></td><td>почти не бывает</td><td><strong>обычное дело</strong>: 4, 8, 10, 30, 60 посещений</td></tr>
+      <tr><td><strong>Льготные категории</strong></td><td>нет</td><td>дети, пенсионеры</td></tr>
+      <tr><td><strong>Типичная цена</strong></td><td>5 000–15 000 ₸/час за зал</td><td>2 000–3 500 ₸ с человека</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p><strong>Почему это важно для тарифов:</strong> это два разных покупателя нашей
+  программы с разными потребностями. Частной сауне не нужны абонементы и льготные
+  билеты. Общественной бане не нужна почасовая аренда залов. Значит, тарифы можно
+  строить не только вокруг склада.</p>
+
+  <p class="src">Подробный разбор с цифрами заведений — в документе
+  <a href="https://claude.ai/code/artifact/ec0aa332-11b9-4ecd-a801-ba475cabee00">«Две бани, две модели цен»</a>.</p>
+</section>
+
+<section>
+  <h2>Часть 2. Как Paloma берёт деньги с владельцев</h2>
+  <p class="lead">Четыре тарифа. Цены — за месяц; в скобках со скидкой 15% при оплате за год.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Тариф</th><th class="num">₸ / мес</th><th>Что добавляет</th><th>Годится бане?</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Стартап</strong></td><td class="num">5 400 <span style="color:var(--ink-3)">(4 590)</span></td>
+        <td>Касса с офлайном, товары, роли, смены, все отчёты, бронирование столиков</td>
+        <td><span class="pill no">нет</span> нет тарифов по времени</td>
+      </tr>
+      <tr>
+        <td><strong>Базовый</strong></td><td class="num">9 000 <span style="color:var(--ink-3)">(7 650)</span></td>
+        <td>+ склад: движение товаров, инвентаризация, остатки, поставки, расчёты с поставщиками</td>
+        <td><span class="pill no">нет</span> та же беда</td>
+      </tr>
+      <tr>
+        <td><strong>Полный</strong></td><td class="num">10 800 <span style="color:var(--ink-3)">(9 180)</span></td>
+        <td>+ техкарты, учёт потерь, разделка</td>
+        <td><span class="pill no">нет</span> это для кухни</td>
+      </tr>
+      <tr class="hi">
+        <td><strong>Тарификатор</strong></td><td class="num">12 600 <span style="color:var(--ink-3)">(10 710)</span></td>
+        <td>Услуги по времени, тарифы по времени, визуальная карта кабинок, единое окно бронирования</td>
+        <td><span class="pill part">да, но</span> <strong>склада в нём нет</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Фискализация: интеграции с онлайн-кассой бесплатны, но <strong>ОФД владелец
+  оплачивает отдельно сам</strong>. Пробный период — 15 дней. Ограничений по числу
+  касс и филиалов на странице тарифов не заявлено.</p>
+
+  <div class="note warn">
+    <b>Вот наша возможность</b>
+    <p>Для бани настоящая цена входа у Paloma — <strong>12 600 ₸/мес</strong>, и это
+    без складского учёта. Мы можем дать банное ядро за 5 000 ₸ — в 2,5 раза дешевле,
+    а склад добавить за 9 000 ₸, чего у них в этой связке вообще нет.</p>
+  </div>
+
+  <p class="src">Источники:
+  <a href="https://paloma365.kz/tariffs">paloma365.kz/tariffs</a>,
+  <a href="https://paloma365.kz/ru">paloma365.kz</a>,
+  <a href="https://help.paloma365.com/knowledgebase/help-guides-specials-s_tarifs/">справка Paloma о тарификации</a></p>
+</section>
+
+<section>
+  <h2>Часть 3. Что предлагаю по нашим тарифам</h2>
+  <p class="lead">За основу — ваши 5 000 и 9 000 ₸, как вы и сказали.
+  Разница только в том, что кладём внутрь.</p>
+
+  <div class="plans">
+    <div class="plan best">
+      <div class="name">Баня</div>
+      <div class="price">5 000 ₸ <span>/ мес</span></div>
+      <p class="who">Частная сауна, банный комплекс. 1 филиал, касс сколько нужно.</p>
+      <ul>
+        <li>Касса со сменами и Z-отчётом</li>
+        <li>Тарифы по времени: будни, вечер, выходные</li>
+        <li>Карта залов и бронирование</li>
+        <li>Товары и остатки в штуках</li>
+        <li>Клиенты, оплаты, возвраты</li>
+        <li>Отчёты владельцу, загрузка по часам</li>
+        <li>Работа без интернета</li>
+        <li>Фискальный чек</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <div class="name">Баня + склад</div>
+      <div class="price">9 000 ₸ <span>/ мес</span></div>
+      <p class="who">Кому важна прибыль по бару и несколько филиалов.</p>
+      <ul>
+        <li>Всё из тарифа «Баня»</li>
+        <li>Приход по накладной, поставщики</li>
+        <li>Себестоимость и прибыль по товарам</li>
+        <li>Инвентаризация и списания</li>
+        <li>Несколько филиалов</li>
+        <li>Абонементы и входные билеты за человека</li>
+        <li>Перемещение товаров между филиалами</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>Годовая оплата со скидкой 15%, как у Paloma: <strong>4 250 ₸</strong> и
+  <strong>7 650 ₸</strong> в месяц. Пробный период 15 дней — тоже как у них,
+  меньше давать смысла нет.</p>
+
+  <h3>Чем это «лучше», а не просто дешевле</h3>
+  <ul>
+    <li><strong>Тарификация в младшем тарифе.</strong> У них она стоит 12 600 ₸ — у нас
+    входит в 5 000 ₸. Это главный аргумент в разговоре с владельцем</li>
+    <li><strong>Склад и тарификация вместе.</strong> У Paloma эти вещи в разных ветках
+    линейки, у нас — в одном тарифе за 9 000 ₸</li>
+    <li><strong>Мы про бани, а не «в том числе бани».</strong> Посегментный расчёт при
+    переходе через границу тарифа, буфер уборки в бронировании, абонементы с заморозкой —
+    у универсальной системы этого нет</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Три риска — это и надо обсудить</h2>
+  <p class="lead">Прежде чем я начну строить, вы должны знать, где здесь тонко.</p>
+
+  <div class="note stop">
+    <b>1. Склада у нас нет. Продавать тариф за 9 000 ₸ пока нечем</b>
+    <p>Сейчас есть только количество: сколько чая осталось. Ни закупочных цен,
+    ни прибыли по товарам, ни инвентаризации, ни поставщиков. Всё это —
+    <strong>2–2,5 недели работы</strong>.</p>
+    <p>Пока склада нет, старший тариф продавать не за что. Либо ждём,
+    либо на старте продаём один тариф.</p>
+  </div>
+
+  <div class="note stop">
+    <b>2. Биллинга нет вообще</b>
+    <p>Нет регистрации заведения, нет оплаты подписки, нет ограничения функций
+    по тарифу, нет пробного периода и напоминаний. Сейчас заведение заводится
+    руками через файл настройки.</p>
+    <p>Чтобы тарифы существовали не на бумаге, нужно построить: регистрацию,
+    сам справочник тарифов, проверку «что доступно этому заведению» на каждом
+    экране, приём оплаты и пробный период. <strong>Примерно 1,5–2 недели</strong>,
+    и это отдельно от склада.</p>
+  </div>
+
+  <div class="note warn">
+    <b>3. Склад — слабый повод доплачивать именно для бани</b>
+    <p>Для ресторана склад — половина смысла системы. Для бани бар маленький:
+    чай, веники, простыни, шапки. Готов ли владелец платить лишние 4 000 ₸ в месяц
+    за учёт чая — вопрос честный.</p>
+    <p>Поэтому в предложении выше я добавил в старший тариф не только склад, но и
+    <strong>несколько филиалов</strong> и <strong>абонементы с билетами за человека</strong>.
+    Владелец одной сауны платит 5 000 ₸ и доволен; сеть или общественная баня
+    платит 9 000 ₸ и понимает, за что.</p>
+    <p>Альтернатива — брать за филиал: 5 000 ₸ за первый, по 3 000 ₸ за следующий.
+    Это ближе к тому, как растёт ценность для клиента, но сложнее объяснять.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Что нужно от вас, чтобы двигаться</h2>
+
+  <div class="q">
+    <b>1. Разделение тарифов — согласны?</b>
+    <p>5 000 ₸ = банное ядро без склада. 9 000 ₸ = склад + несколько филиалов +
+    абонементы и билеты за человека. Или абонементы оставить в младшем,
+    а старший делать только про склад и филиалы?</p>
+  </div>
+
+  <div class="q">
+    <b>2. Что строим первым — склад или биллинг?</b>
+    <p>Если первые клиенты идут по одному тарифу и платят вам напрямую, биллинг
+    можно отложить, а склад сделать сразу. Если хотите продавать оба тарифа
+    с первого дня — сначала биллинг, потом склад. Обратный порядок дороже переделывать.</p>
+  </div>
+
+  <div class="q">
+    <b>3. На кого целимся: частные сауны или общественные бани?</b>
+    <p>От этого зависит, что вообще должно быть в младшем тарифе. Частной сауне
+    не нужны абонементы; общественной бане не нужна почасовая аренда залов,
+    зато нужны билеты за человека и льготные категории — а этого у нас ещё нет
+    (примерно неделя работы).</p>
+  </div>
+
+  <div class="q">
+    <b>4. Цена — демпинг или паритет?</b>
+    <p>5 000 ₸ против 12 600 ₸ у Paloma — это в 2,5 раза дешевле. Хорошо для
+    захода, но дешёвое иногда читается как слабое, и поднимать цену потом тяжелее,
+    чем опускать. Может, 7 000 и 12 000 ₸ — всё ещё заметно дешевле,
+    но без ощущения «дёшево значит плохо».</p>
+  </div>
+</section>
+
+<p class="end">Разбор по открытым источникам · тарифы Paloma на 7 сентября 2026 · кода не написано ни строки</p>
+</div>

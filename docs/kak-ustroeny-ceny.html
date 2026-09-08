@@ -1,0 +1,247 @@
+<title>Две бани, две модели цен</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#4f565e; --ink-3:#6b727a;
+  --line:#dedbd6; --line-strong:#c7c3bc;
+  --a:#0f6e63; --a-soft:#e3f0ee; --a-line:#9fcdc6;
+  --b:#8a4a12; --b-soft:#fbf1e2; --b-line:#e3c391;
+  --stop:#a3302a; --stop-soft:#fbeae8; --stop-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --a:#57b6a8; --a-soft:#16302c; --a-line:#2f5f57;
+  --b:#d09a5c; --b-soft:#2a2015; --b-line:#5a4527;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#aeb8bf; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --a:#57b6a8; --a-soft:#16302c; --a-line:#2f5f57;
+  --b:#d09a5c; --b-soft:#2a2015; --b-line:#5a4527;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px 96px}
+header.top{padding:54px 0 26px;border-bottom:2px solid var(--ink);margin-bottom:38px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);margin:0 0 13px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,4.6vw,46px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;max-width:17ch}
+.dek{font-size:17.5px;color:var(--ink-2);max-width:62ch;margin:0}
+section{margin-bottom:50px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:18px;margin:28px 0 10px}
+.lead{color:var(--ink-2);max-width:70ch;margin:0 0 22px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+p{max-width:72ch;margin:0 0 14px}
+ul{max-width:72ch;margin:0 0 15px;padding-left:21px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink-3)}
+
+.model{border-radius:14px;padding:22px 25px;margin-bottom:16px;border:1px solid}
+.model.a{background:var(--a-soft);border-color:var(--a-line)}
+.model.b{background:var(--b-soft);border-color:var(--b-line)}
+.model .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+.model.a .tag{background:var(--a);color:#fff}
+.model.b .tag{background:var(--b);color:#fff}
+.model h3{margin:0 0 10px;font-size:21px}
+.model p:last-child,.model ul:last-child{margin-bottom:0}
+.model ul{padding-left:20px}
+
+.scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 15px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.yes{background:var(--a-soft);color:var(--a)}
+.pill.no{background:var(--stop-soft);color:var(--stop)}
+.pill.part{background:var(--b-soft);color:var(--b)}
+
+.note{border-radius:12px;padding:18px 21px;margin:24px 0;max-width:74ch;background:var(--a-soft);border:1px solid var(--a-line)}
+.note.stop{background:var(--stop-soft);border-color:var(--stop-line)}
+.note b{display:block;margin-bottom:7px;font-weight:600}
+.note p{margin:0 0 9px;font-size:15.5px}
+.note p:last-child{margin:0}
+
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 21px;margin:20px 0;font-size:15.5px;max-width:74ch}
+.calc div{display:flex;justify-content:space-between;gap:20px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.calc div:last-child{border-bottom:0;padding-top:10px;font-weight:600;font-size:17px}
+.calc span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+code{font-family:var(--mono);font-size:13.5px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
+a{color:var(--a)}
+.src{font-size:14px;color:var(--ink-3);max-width:72ch}
+.src a{color:var(--ink-2)}
+.end{border-top:2px solid var(--ink);padding-top:15px;margin-top:42px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Разбор рынка · 6 сентября 2026</p>
+  <h1>Две бани, две модели цен</h1>
+  <p class="dek">Проверил, как на самом деле считают деньги в банях и саунах. Оказалось,
+  под одним словом живут два разных бизнеса — и считают они по-разному.
+  Абонементы нужны, но не там, где мы их поставили.</p>
+</header>
+
+<section>
+  <h2>Что выяснилось</h2>
+  <p class="lead">Смотрел каталоги саун Алматы и Астаны, прайсы общественных бань,
+  реальные цифры заведений.</p>
+
+  <div class="model a">
+    <span class="tag">Модель А</span>
+    <h3>Частная сауна и банный комплекс</h3>
+    <p>Гость снимает зал целиком на несколько часов, компанией.</p>
+    <ul>
+      <li><strong>Цена за зал, а не за человека.</strong> «8000 ₸/час до 15 человек»,
+      «22 000 ₸/час до 20 человек». Это правило почти без исключений</li>
+      <li><strong>Минимум обычно 2 часа</strong>, особенно в выходные</li>
+      <li><strong>Разные цены</strong>: будни день, будни вечер, выходные, ночь</li>
+      <li><strong>Доплата за гостей сверх включённых.</strong> «До 4 человек в цене,
+      каждый следующий — доплата за час»</li>
+      <li><strong>Абонементов практически нет.</strong> Вместо них — депозит при брони
+      и скидки постоянным</li>
+    </ul>
+  </div>
+
+  <div class="model b">
+    <span class="tag">Модель Б</span>
+    <h3>Общественная баня и термы</h3>
+    <p>Гость приходит один или вдвоём, платит за себя, парится в общем отделении.</p>
+    <ul>
+      <li><strong>Цена за человека.</strong> Входной билет</li>
+      <li><strong>Разряды и отделения</strong>: мужское, женское, кабинеты</li>
+      <li><strong>Цена зависит от времени</strong>: утро-день, вечер, выходные</li>
+      <li><strong>Льготные категории</strong>: дети до 7 бесплатно, 7–12 лет дешевле,
+      пенсионерам в будни утром скидка</li>
+      <li><strong>Абонементы — обычное дело.</strong> На 4, 8, 10, 15, 30, 60 посещений
+      со сроком действия. Чем больше посещений, тем дешевле каждое</li>
+      <li>Иногда встречается <strong>абонемент-скидка</strong>: платишь за карту
+      и получаешь процент на всё</li>
+    </ul>
+  </div>
+
+  <h3>Реальные цифры</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Заведение</th><th>Модель</th><th>Как считают</th><th class="num">Цена</th></tr></thead>
+    <tbody>
+      <tr><td>Сауны Алматы, средний сегмент</td><td>А</td><td>за зал, час</td><td class="num">5 000–10 000 ₸/ч</td></tr>
+      <tr><td>Большие залы и комплексы</td><td>А</td><td>за зал, час</td><td class="num">10 000–15 000 ₸/ч</td></tr>
+      <tr><td>Elite spa, VIP-зал</td><td>А</td><td>за зал до 15 чел.</td><td class="num">15 000 ₸/ч</td></tr>
+      <tr><td>Общая баня Алматы, средняя</td><td>Б</td><td>за человека</td><td class="num">≈2 000 ₸</td></tr>
+      <tr><td>Общая баня, будни / выходные</td><td>Б</td><td>за человека, без лимита времени</td><td class="num">3 000 / 3 500 ₸</td></tr>
+      <tr><td>Коптевские бани, абонемент</td><td>Б</td><td>5 посещений на месяц</td><td class="num">2 800 ₽ за визит</td></tr>
+      <tr><td>Коптевские бани, абонемент</td><td>Б</td><td>60 посещений на год</td><td class="num">1 800 ₽ за визит</td></tr>
+      <tr><td>Жар-Птица, входной билет</td><td>Б</td><td>за человека, будни утро</td><td class="num">4 500 ₽</td></tr>
+      <tr><td>Жар-Птица, тот же билет</td><td>Б</td><td>за человека, выходные</td><td class="num">6 400 ₽</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="src">Источники:
+  <a href="https://bani.kz/">bani.kz</a>,
+  <a href="https://sauna.kz/">sauna.kz</a>,
+  <a href="https://zoon.kz/almaty/sauna/type/obschestvennaya_banya/">zoon.kz — общественные бани Алматы</a>,
+  <a href="https://koptevskie-bani.ru/programma-loyalnosti/">Коптевские бани — абонементы</a>,
+  <a href="https://jarpticabani.ru/menu/price/">Жар-Птица — прайс</a>,
+  <a href="https://www.the-village-kz.com/village/city/city-guide/4601-sem-ban-almaty">The Village — бани Алматы</a></p>
+</section>
+
+<section>
+  <h2>Что это значит для нас</h2>
+  <p class="lead">Хорошая новость: главное мы угадали. Плохая: в самой массовой модели
+  есть дыра, и она про деньги.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Как считают в жизни</th><th>Модель</th><th>У нас</th></tr></thead>
+    <tbody>
+      <tr><td>Цена за зал по часам</td><td>А</td><td><span class="pill yes">есть</span></td></tr>
+      <tr><td>Разные цены по дням и времени суток</td><td>А и Б</td><td><span class="pill yes">есть, посегментно</span></td></tr>
+      <tr><td>Минимальное время аренды</td><td>А</td><td><span class="pill yes">есть</span></td></tr>
+      <tr><td><strong>Доплата за гостей сверх включённых</strong></td><td>А</td><td><span class="pill no">нет</span></td></tr>
+      <tr><td>Абонемент на посещения со сроком</td><td>Б</td><td><span class="pill yes">есть</span></td></tr>
+      <tr><td>Абонемент на часы</td><td>Б</td><td><span class="pill yes">есть</span></td></tr>
+      <tr><td><strong>Входной билет за человека</strong></td><td>Б</td><td><span class="pill no">нет</span></td></tr>
+      <tr><td><strong>Детский и льготный билет</strong></td><td>Б</td><td><span class="pill no">нет</span></td></tr>
+      <tr><td>Абонемент-скидка на всё</td><td>Б</td><td><span class="pill no">нет</span></td></tr>
+      <tr><td>Депозит при брони</td><td>А</td><td><span class="pill part">в базе есть, кнопки нет</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note stop">
+    <b>Главная находка: число гостей вообще не влияет на цену</b>
+    <p>Мы записываем, сколько человек пришло, но в расчёте это не участвует.
+    А в жизни «до 6 человек в цене, каждый следующий — доплата» встречается постоянно.</p>
+    <p>Пример: зал 8000 ₸/час до 6 человек, доплата 1500 ₸ за человека в час.
+    Пришли восемь на три часа.</p>
+    <div class="calc">
+      <div><span>Зал, 3 часа по 8000 ₸</span><span>24 000 ₸</span></div>
+      <div><span>Двое сверх шести, 3 часа по 1500 ₸</span><span>9 000 ₸</span></div>
+      <div><span>Должно быть</span><span>33 000 ₸</span></div>
+      <div><span>Посчитает наша программа сейчас</span><span>24 000 ₸</span></div>
+    </div>
+    <p>Заведение теряет 9 000 ₸ с одного визита. Это не редкий случай, а обычный вечер пятницы.</p>
+  </div>
+
+  <div class="note">
+    <b>Про абонементы: мы их сделали правильно, но для другого клиента</b>
+    <p>Абонементы существуют и распространены — но в общественных банях, а не в частных
+    саунах. Наши «10 посещений на 90 дней» и «20 часов» — ровно то, что продают
+    Коптевские и Жар-Птица.</p>
+    <p>Только вот <strong>разовый входной билет за человека мы не умеем</strong>.
+    Получается странно: абонемент в общественную баню продать можем, а обычного гостя
+    без абонемента принять — нет. Одно без другого не работает.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Что предлагаю сделать</h2>
+  <p class="lead">Три изменения. Первое обязательно, второе — если целимся
+  и в общественные бани, третье необязательно.</p>
+
+  <h3>1. Доплата за гостей сверх включённых <span class="pill yes">обязательно</span></h3>
+  <p>В тариф добавляются два поля: <strong>сколько человек включено в цену</strong> и
+  <strong>сколько стоит каждый следующий за час</strong>. Расчёт становится:
+  цена зала за время плюс доплата за лишних гостей за то же время.</p>
+  <p>Кассир уже вводит число гостей — менять его работу не придётся. В кабинете
+  добавятся две колонки в редакторе тарифов.</p>
+  <p><strong>Оценка: 2–3 дня</strong> вместе с тестами.</p>
+
+  <h3>2. Входной билет за человека <span class="pill part">если нужны общественные бани</span></h3>
+  <p>Новый вид услуги: цена за человека, с теми же правилами по дням и времени.
+  Плюс категории гостей — взрослый, ребёнок, пенсионер — со своей ценой.
+  Тогда абонементы на посещения обретают смысл: есть и разовый билет, и абонемент.</p>
+  <p>В базе для этого уже всё заложено, не хватает расчёта и экранов.</p>
+  <p><strong>Оценка: 1 неделя.</strong></p>
+
+  <h3>3. Абонемент-скидка <span class="pill part">можно позже</span></h3>
+  <p>Гость покупает карту и получает процент на всё. Ложится на существующие абонементы
+  как ещё один тип.</p>
+  <p><strong>Оценка: 2–3 дня.</strong></p>
+
+  <div class="note">
+    <b>Что нужно решить вам</b>
+    <p><strong>На кого целимся в первую очередь?</strong> Если на частные сауны и
+    комплексы — делаем только пункт 1, и этого достаточно. Если хотим и общественные
+    бани — нужен пункт 2, иначе продукт для них неполный.</p>
+    <p>От ответа зависит и то, как показывать абонементы: для частных саун их можно
+    прятать в настройки, чтобы не путать владельца ненужным разделом.</p>
+  </div>
+</section>
+
+<p class="end">Разбор по открытым источникам · цифры заведений на сентябрь 2026</p>
+</div>

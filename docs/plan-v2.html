@@ -1,0 +1,389 @@
+<title>Вторая версия против Paloma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#575e66; --ink-3:#656c74;
+  --line:#dedbd6; --line-strong:#c7c3bc;
+  --accent:#0f6e63; --accent-soft:#e3f0ee; --accent-line:#9fcdc6;
+  --warn:#9a5209; --warn-soft:#fbf0e0; --warn-line:#e5c087;
+  --stop:#a3302a; --stop-soft:#fbeae8; --stop-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+    --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+    --line:#2c3236; --line-strong:#3d454b;
+    --accent:#57b6a8; --accent-soft:#16302c; --accent-line:#2f5f57;
+    --warn:#d79a55; --warn-soft:#2b2118; --warn-line:#5a4326;
+    --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --accent:#57b6a8; --accent-soft:#16302c; --accent-line:#2f5f57;
+  --warn:#d79a55; --warn-soft:#2b2118; --warn-line:#5a4326;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 96px;display:grid;grid-template-columns:214px minmax(0,1fr);gap:52px;align-items:start}
+@media (max-width:940px){.wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}}
+header.top{grid-column:1/-1;padding:50px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:34px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 13px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(29px,4.3vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 13px;text-wrap:balance;max-width:19ch}
+.dek{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0}
+nav.toc{position:sticky;top:20px;font-size:14px}
+nav.toc p{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+nav.toc a{display:grid;grid-template-columns:20px 1fr;gap:6px;color:var(--ink-2);text-decoration:none;padding:5px 6px;border-radius:7px;line-height:1.35}
+nav.toc a span{font-family:var(--mono);color:var(--ink-3);font-size:11.5px}
+nav.toc a:hover{background:var(--surface);color:var(--accent)}
+@media (max-width:940px){nav.toc{position:static;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:30px}}
+main{min-width:0}
+section{margin-bottom:52px;scroll-margin-top:20px}
+h2{font-family:var(--display);font-weight:700;font-size:25px;letter-spacing:-.015em;margin:0 0 8px;display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:baseline;text-wrap:balance}
+h2 .n{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:3px 10px}
+h3{font-family:var(--display);font-weight:600;font-size:17.5px;margin:28px 0 9px}
+.lead{color:var(--ink-2);max-width:70ch;margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+p{max-width:72ch;margin:0 0 13px}
+ul{max-width:72ch;margin:0 0 15px;padding-left:20px}
+li{margin-bottom:6px}
+li::marker{color:var(--ink-3)}
+.scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:600px}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 15px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.have{background:var(--accent-soft);color:var(--accent)}
+.pill.part{background:var(--warn-soft);color:var(--warn)}
+.pill.none{background:var(--stop-soft);color:var(--stop)}
+.block{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:12px}
+.block.stop{border-left-color:var(--stop)}
+.block h4{margin:0 0 6px;font-family:var(--body);font-size:16px;font-weight:600;display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.block h4 em{font-family:var(--mono);font-style:normal;font-size:11.5px;color:var(--accent);flex:none}
+.block.stop h4 em{color:var(--stop)}
+.block p{margin:0 0 7px;font-size:14.5px;color:var(--ink-2)}
+.block p:last-child{margin:0}
+.block ul{margin:6px 0 0;font-size:14.5px;color:var(--ink-2)}
+.callout{background:var(--warn-soft);border:1px solid var(--warn-line);border-radius:10px;padding:16px 19px;margin:22px 0;max-width:72ch}
+.callout.calm{background:var(--accent-soft);border-color:var(--accent-line)}
+.callout.stop{background:var(--stop-soft);border-color:var(--stop-line)}
+.callout .tag{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);margin-bottom:7px}
+.callout.calm .tag{color:var(--accent)}
+.callout.stop .tag{color:var(--stop)}
+.callout p{margin:0 0 8px;font-size:15px}
+.callout p:last-child{margin:0}
+code{font-family:var(--mono);font-size:13.5px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
+a{color:var(--accent)}
+a:focus-visible,nav.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.end{border-top:2px solid var(--ink);padding-top:15px;margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.src{font-size:13.5px;color:var(--ink-3)}
+.src a{color:var(--ink-2)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">План · вторая версия · 6 сентября 2026</p>
+  <h1>Вторая версия против Paloma</h1>
+  <p class="dek">Что Paloma умеет, где мы сильнее, чего у нас нет — и что должно войти
+  во вторую версию, чтобы её можно было поставить первым двум заведениям.</p>
+</header>
+
+<nav class="toc">
+  <p>Разделы</p>
+  <ol>
+    <li><a href="#p1"><span>1</span>Что я понял из вашей задачи</a></li>
+    <li><a href="#p2"><span>2</span>Что умеет Paloma</a></li>
+    <li><a href="#p3"><span>3</span>Сравнение по пунктам</a></li>
+    <li><a href="#p4"><span>4</span>Состав второй версии</a></li>
+    <li><a href="#p5"><span>5</span>Склад — подробно</a></li>
+    <li><a href="#p6"><span>6</span>Готовы ли к первым клиентам</a></li>
+    <li><a href="#p7"><span>7</span>Что нужно от вас</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section id="p1">
+  <h2><span class="n">1</span>Что я понял из вашей задачи</h2>
+  <p class="lead">Прежде чем строить дальше — свериться с Paloma и брать функциональность
+  как ориентир, а не придумывать своё.</p>
+  <ul>
+    <li>Вторая версия должна быть <strong>не расширенным прототипом, а продуктом</strong>: чтобы
+    осталось только развернуть на сервере.</li>
+    <li>Ориентир по функциям — <strong>Paloma365</strong>, они работают на том же рынке
+    и с теми же заведениями.</li>
+    <li>Вы вспомнили про <strong>склад</strong> — он действительно был в отложенных модулях
+    ТЗ и у Paloma это один из главных козырей.</li>
+    <li>Цель — довести до состояния, когда можно <strong>подключить первых двух клиентов</strong>.</li>
+  </ul>
+  <p>Сейчас у нас 9 560 строк кода, 28 таблиц, 64 эндпоинта, 109 тестов. Работает ядро
+  операций: касса со сменами и таймером, брони с защитой от пересечений, абонементы,
+  оплаты и возвраты, аналитика владельца. Экраны настроек написаны, но ещё не проверены
+  вживую.</p>
+</section>
+
+<section id="p2">
+  <h2><span class="n">2</span>Что умеет Paloma</h2>
+  <p class="lead">Собрал по их сайту и обзорам. Ниже — то, что имеет отношение к баням.</p>
+
+  <ul>
+    <li><strong>Касса работает без интернета</strong> — продажи продолжаются при обрыве связи,
+    данные синхронизируются потом. Это они выносят в заголовок.</li>
+    <li><strong>Фискальный чек по требованиям РК</strong> — встроенная онлайн-касса, номер НТИН
+    где положено, настройка ККМ и ОФД удалённо, запуск за день. ОФД оплачивается отдельно
+    напрямую оператору.</li>
+    <li><strong>Тарификация времени и выбор помещения</strong> — именно для бань и саун.</li>
+    <li><strong>Склад</strong>: остатки, себестоимость, прибыль, инвентаризация, списания,
+    партии и серии, движение товаров, автоматические складские документы, учёт брака.</li>
+    <li><strong>Оплаты</strong>: наличные, карта, бонусы, смешанная, депозит; автоматическая
+    передача суммы на банковский терминал.</li>
+    <li><strong>Мобильное приложение владельца</strong> — выручка, чеки, посещаемость в телефоне.</li>
+    <li><strong>Работает почти на любом железе</strong>: ноутбук, планшет, телефон, POS-моноблок
+    и даже прямо с банковского терминала.</li>
+    <li>Контроль персонала, права доступа, отчётность, интеграции.</li>
+    <li>Цена — от 1100 ₽/мес, 15 дней бесплатно.</li>
+  </ul>
+
+  <p class="src">Источники:
+  <a href="https://lp.paloma365.kz/">lp.paloma365.kz</a>,
+  <a href="https://paloma365.kz/onlajn-kassa/almaty">paloma365.kz — онлайн-касса</a>,
+  <a href="https://paloma.kz/business/">paloma.kz/business</a>,
+  <a href="https://picktech.ru/product/paloma365/">picktech.ru — обзор</a>,
+  <a href="https://coba.tools/paloma365">coba.tools</a></p>
+
+  <div class="callout calm">
+    <span class="tag">Главное наблюдение</span>
+    <p>Paloma — универсальная система: рестораны, магазины, аптеки, автосервисы, бани.
+    Бани для них одно из направлений, а не профиль. Отсюда наш шанс: у них
+    «тарификация времени и выбор помещения», у нас — посегментный расчёт при переходе
+    через тарифную границу, абонементы с леджером и заморозкой, защита броней с учётом
+    времени на уборку. В глубине банной специфики мы уже сильнее.</p>
+    <p>И отсюда же наша слабость: всё остальное — склад, фискализация, офлайн,
+    мобильное приложение — у них есть, а у нас нет.</p>
+  </div>
+</section>
+
+<section id="p3">
+  <h2><span class="n">3</span>Сравнение по пунктам</h2>
+  <p class="lead">Честно, без приукрашивания.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Возможность</th><th>Paloma</th><th>У нас</th><th>Комментарий</th></tr></thead>
+    <tbody>
+      <tr><td>Тарификация времени</td><td><span class="pill have">есть</span></td><td><span class="pill have">сильнее</span></td>
+        <td>Посегментный расчёт через границу тарифа, шаг округления, льготные минуты</td></tr>
+      <tr><td>Бронирование помещений</td><td><span class="pill have">есть</span></td><td><span class="pill have">сильнее</span></td>
+        <td>Непересечение гарантирует СУБД, буфер уборки входит в занятость</td></tr>
+      <tr><td>Абонементы</td><td><span class="pill part">не заявлено</span></td><td><span class="pill have">есть</span></td>
+        <td>Посещения, часы, безлимит; леджер, заморозка, долг перед гостями в отчёте</td></tr>
+      <tr><td>Смены и Z-отчёт</td><td><span class="pill have">есть</span></td><td><span class="pill have">есть</span></td>
+        <td>Неизменяемый снимок, сверка наличных</td></tr>
+      <tr><td>Изоляция арендаторов</td><td><span class="pill have">облако</span></td><td><span class="pill have">сильнее</span></td>
+        <td>RLS на уровне СУБД, не на дисциплине кода</td></tr>
+      <tr><td><strong>Фискальный чек РК</strong></td><td><span class="pill have">есть</span></td><td><span class="pill none">нет</span></td>
+        <td>Заложен интерфейс, реализации нет. Без него работать нельзя по закону</td></tr>
+      <tr><td><strong>Склад с себестоимостью</strong></td><td><span class="pill have">есть</span></td><td><span class="pill part">только остатки</span></td>
+        <td>Нет прихода, себестоимости, инвентаризации, прибыли по товарам</td></tr>
+      <tr><td><strong>Касса без интернета</strong></td><td><span class="pill have">есть</span></td><td><span class="pill none">нет</span></td>
+        <td>Обрыв связи сейчас останавливает продажи</td></tr>
+      <tr><td>Печать чека на принтере</td><td><span class="pill have">есть</span></td><td><span class="pill none">нет</span></td><td>ESC/POS</td></tr>
+      <tr><td>Депозит и бонусы</td><td><span class="pill have">есть</span></td><td><span class="pill none">нет</span></td>
+        <td>Депозит для бань обычный сценарий: гость вносит вперёд</td></tr>
+      <tr><td>Мобильное приложение владельца</td><td><span class="pill have">есть</span></td><td><span class="pill part">адаптивный веб</span></td>
+        <td>Кабинет открывается с телефона, но это не приложение</td></tr>
+      <tr><td>Регистрация и оплата подписки</td><td><span class="pill have">есть</span></td><td><span class="pill none">нет</span></td>
+        <td>Заведение сейчас создаётся скриптом разработчика</td></tr>
+      <tr><td>Работа на сервере</td><td><span class="pill have">облако</span></td><td><span class="pill none">нет</span></td>
+        <td>Всё крутится на одном компьютере</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="p4">
+  <h2><span class="n">4</span>Состав второй версии</h2>
+  <p class="lead">Семь блоков. Порядок выбран так, чтобы каждый следующий имел смысл только
+  после предыдущего — и чтобы после четвёртого уже можно было показывать заведению.</p>
+
+  <div class="block">
+    <h4><em>Блок 1</em>Управление справочниками<span class="pill part">почти готово</span></h4>
+    <p>Владелец заводит абонементы, услуги с тарифами, помещения, товары, сотрудников
+    и настройки филиала сам, без файла и разработчика.</p>
+    <p>API написан и покрыт 23 тестами. Экраны написаны, но не проверены вживую —
+    это первое, что нужно доделать. <strong>Осталось: 1–2 дня.</strong></p>
+  </div>
+
+  <div class="block stop">
+    <h4><em>Блок 2</em>Фискализация РК<span class="pill none">блокирует запуск</span></h4>
+    <p>Без фискального чека заведение не может легально принимать деньги. Это не «ещё
+    одна фича», а условие существования продукта на рынке Казахстана.</p>
+    <ul>
+      <li>Интеграция с выбранным ОФД за интерфейсом <code>FiscalDevice</code> (место уже есть)</li>
+      <li>Очередь повторов при недоступности оператора</li>
+      <li>Печать чека на термопринтере (ESC/POS)</li>
+      <li>Фискальный возврат, а не только наш внутренний</li>
+    </ul>
+    <p><strong>Оценка: 1,5–2 недели</strong> после того, как выбран оператор и есть доступ
+    к его тестовому контуру. Без вашего решения по ОФД блок не стартует.</p>
+  </div>
+
+  <div class="block">
+    <h4><em>Блок 3</em>Склад с себестоимостью<span class="pill part">то, чем меряются</span></h4>
+    <p>Сейчас у нас только количество. Владельцу нужна прибыль, а она считается от
+    себестоимости. Подробности — в разделе 5.</p>
+    <p><strong>Оценка: 2–2,5 недели.</strong></p>
+  </div>
+
+  <div class="block">
+    <h4><em>Блок 4</em>Развёртывание на сервере</h4>
+    <ul>
+      <li>Docker и compose: база, API, оба приложения за одним адресом</li>
+      <li>HTTPS, домен, автоматические миграции при выкатке</li>
+      <li>Ежедневные бэкапы с проверкой восстановления</li>
+      <li>Ограничение попыток ввода PIN — сейчас его можно перебирать</li>
+      <li>Запрет дефолтного секрета подписи в продакшене, нормальные логи, мониторинг</li>
+    </ul>
+    <p><strong>Оценка: 1 неделя.</strong> После этого блока систему уже можно ставить
+    в заведение — при условии, что блок 2 закрыт.</p>
+  </div>
+
+  <div class="block">
+    <h4><em>Блок 5</em>Деньги: депозит и бонусы</h4>
+    <p>Депозит — обычный для бань сценарий: гость вносит сумму вперёд, тратит по ходу.
+    Бонусы — простая накопительная программа. Оба ложатся на существующий леджер платежей.</p>
+    <p><strong>Оценка: 1 неделя.</strong></p>
+  </div>
+
+  <div class="block">
+    <h4><em>Блок 6</em>Касса без интернета</h4>
+    <p>Paloma выносит это в заголовок, и не зря: в бане на окраине связь пропадает.
+    Работа офлайн — это локальное хранилище операций и разрешение конфликтов при синхронизации.
+    Самый сложный блок технически.</p>
+    <p><strong>Оценка: 2–3 недели.</strong> Можно отложить, если первые клиенты
+    с проводным интернетом.</p>
+  </div>
+
+  <div class="block">
+    <h4><em>Блок 7</em>Продуктовость SaaS</h4>
+    <ul>
+      <li>Владелец регистрирует заведение сам, без нас</li>
+      <li>Пробный период и подписка</li>
+      <li>Мобильный вид кабинета (сначала PWA, приложение — позже)</li>
+    </ul>
+    <p><strong>Оценка: 1,5 недели.</strong> Для первых двух клиентов не обязателен:
+    их можно завести руками.</p>
+  </div>
+</section>
+
+<section id="p5">
+  <h2><span class="n">5</span>Склад — подробно</h2>
+  <p class="lead">Вы про него вспомнили, и правильно: это то, на чём владельцы сравнивают
+  системы. «Остатки» есть у всех, а прибыль по товару считают не все.</p>
+
+  <h3>Что добавляем</h3>
+  <ul>
+    <li><strong>Приход по накладной</strong> — поставщик, документ, позиции с ценой закупки.
+    Не «прибавить 20 штук», а документ, к которому можно вернуться.</li>
+    <li><strong>Себестоимость</strong> — средневзвешенная по приходам. Каждая продажа
+    списывает по себестоимости на момент продажи и запоминает её в позиции чека.</li>
+    <li><strong>Прибыль по товарам</strong> — выручка минус себестоимость, по позициям
+    и категориям. Это главный новый отчёт для владельца.</li>
+    <li><strong>Инвентаризация</strong> — пересчёт, расхождение по каждой позиции,
+    автоматическое списание недостачи и оприходование излишка.</li>
+    <li><strong>Списание</strong> с причиной: бой, порча, личное потребление.</li>
+    <li><strong>Перемещение между филиалами</strong> — когда филиалов больше одного.</li>
+  </ul>
+
+  <h3>Чего сознательно не делаем сейчас</h3>
+  <p>Партии и сроки годности — у Paloma есть, но для бани с чаем и вениками это лишнее.
+  Техкарты и производство (для кухни) — тоже: если появится клиент с кухней, добавим отдельно.</p>
+
+  <div class="callout calm">
+    <span class="tag">Архитектурно</span>
+    <p>Себестоимость нельзя хранить полем в товаре — она меняется с каждым приходом.
+    Правильно: движения склада append-only, себестоимость на момент продажи фиксируется
+    снимком в позиции чека. Это тот же принцип, по которому уже сделаны цены и абонементы,
+    поэтому ляжет на существующую модель без ломки.</p>
+  </div>
+</section>
+
+<section id="p6">
+  <h2><span class="n">6</span>Готовы ли к первым клиентам</h2>
+  <p class="lead">Прямой ответ на ваш вопрос.</p>
+
+  <div class="callout stop">
+    <span class="tag">Что блокирует</span>
+    <p>Одна вещь: <strong>фискализация</strong>. Без неё заведение не может принимать деньги
+    легально — значит, поставить систему нельзя ни первому клиенту, ни второму. Всё
+    остальное можно обойти или доделать по ходу пилота, это — нет.</p>
+  </div>
+
+  <h3>Минимум для первых двух клиентов</h3>
+  <p>Блоки 1 → 2 → 4, то есть управление справочниками, фискализация и сервер.
+  <strong>Примерно 3–4 недели</strong> при условии, что оператор ОФД выбран сразу.</p>
+  <p>С этим набором заведение работает полноценно: принимает гостей, бьёт легальные чеки,
+  ведёт смены, продаёт абонементы, владелец видит отчёты. Склада с себестоимостью ещё нет —
+  но бар в бане обычно небольшой, и на пилоте это переживаемо.</p>
+
+  <h3>Для уверенной продажи следующим</h3>
+  <p>Плюс блоки 3 и 5 — склад и депозит. <strong>Итого 6–7 недель</strong> от старта.
+  Тогда при сравнении с Paloma мы не проигрываем ни по одному пункту, кроме офлайна
+  и мобильного приложения.</p>
+
+  <h3>Насколько это «полноценный продукт»</h3>
+  <p>После блоков 1–5 это полноценный продукт для бань — с оговорками: клиентов заводим мы
+  сами (нет самостоятельной регистрации), при обрыве интернета касса встаёт, у владельца
+  веб вместо приложения. Для первых десяти клиентов, с которыми вы на связи лично,
+  это нормально. Для массовой продажи нужны блоки 6 и 7.</p>
+</section>
+
+<section id="p7">
+  <h2><span class="n">7</span>Что нужно от вас</h2>
+  <p class="lead">Три решения, без которых я не могу двигаться дальше по плану.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Решение</th><th>Почему нужно сейчас</th><th>Что будет без ответа</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Какой ОФД</strong><br><span class="src">Webkassa, Kassa24, другой</span></td>
+        <td>От оператора зависит модель чека и состав позиций. Нужен доступ к тестовому контуру</td>
+        <td>Блок 2 не стартует, продукт нельзя поставить клиенту</td>
+      </tr>
+      <tr>
+        <td><strong>Где размещаем</strong><br><span class="src">свой сервер, облако РК, зарубежное</span></td>
+        <td>Персональные данные клиентов по закону РК хранятся в Казахстане</td>
+        <td>Блок 4 сделаю «в общем виде», потом переделывать</td>
+      </tr>
+      <tr>
+        <td><strong>Кто первые два клиента</strong></td>
+        <td>Есть ли у них кухня, сколько филиалов, какой интернет, есть ли уже ККМ</td>
+        <td>Могу сделать не то: например, офлайн окажется критичным с первого дня</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Пока ответов нет</span>
+    <p>Начинаю с того, что от решений не зависит: доверяю экраны настроек (блок 1) и
+    делаю склад (блок 3) — он нужен в любом случае и ни от какого внешнего выбора не зависит.
+    Параллельно готовлю блок 4 в части, не завязанной на конкретный хостинг: Docker,
+    миграции при выкатке, ограничение попыток PIN, бэкапы.</p>
+  </div>
+</section>
+
+<p class="end">План к обсуждению · сравнение с Paloma по открытым источникам на 6 сентября 2026</p>
+</main>
+</div>

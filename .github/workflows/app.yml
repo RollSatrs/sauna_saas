@@ -1,0 +1,51 @@
+# Сборка настольной кассы. Tauri собирает только под ту систему, где запущен,
+# поэтому Windows-версию для касс собираем здесь, а не на рабочем Mac.
+name: Настольная касса
+
+on:
+  push:
+    tags: ["app-v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            имя: Windows
+          - os: macos-latest
+            имя: macOS
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.имя }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/pos/src-tauri
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Собрать приложение
+        run: pnpm --filter @sauna/pos exec tauri build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kassa-${{ matrix.имя }}
+          path: |
+            apps/pos/src-tauri/target/release/bundle/nsis/*.exe
+            apps/pos/src-tauri/target/release/bundle/dmg/*.dmg
+          if-no-files-found: warn
