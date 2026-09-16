@@ -1,0 +1,417 @@
+### android_front_table_storage_script
+id, table_name, table_script
+
+### bugs
+id, idlink, description, account_id, apid, wpid, category
+
+### c_base
+key_name, id, key_value
+
+### c_base_config
+id, idout, key_name, key_value, comp_name, user_name, dtedit, apid, wpid, input_type
+
+### c_key_bindings
+id, key_name, key_value, key_system, form, action
+
+### chat
+id, idout, idlink, parentid, isgroup, name, from_employee, from_ap, to_ap, to_employee, msg, dt, viewed
+
+### d_balance
+idx_d_balance_clientid, idx_d_balance_orderid, id, idlink, idout, employeeid, clientid, orderid, deposit, points, frfront, dt, dtedit
+
+### d_balance_bydate
+Zeh, id, dtedit, dt, clientid, total_balance
+
+### d_balance_total
+Zl, id, clientid, deposit, points, dtedit
+
+### d_bank_income
+Zu, id, guid, idout, idlink, parentid, isgroup, name, dt, employeeid, organizationid, clientid, cashid, type_inout, amount, conducted, change_id, note
+
+### d_bank_outcome
+id, idout, idlink, parentid, isgroup, name, dt, employeeid, organizationid, cashid, clientid, type_inout, amount, change_id, conducted, note, guid
+
+### d_cancellation
+id, guid, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, type_inout, cook_dishes, note, conducted, organizationid, dtedit
+
+### d_cash_income
+idx_d_cash_income_sync, id, idout, idlink, parentid, isgroup, name, dt, employeeid, organizationid, clientid, cashid, type_inout, amount, change_id, conducted, note, guid
+
+### d_cash_movement
+id, idout, idlink, parentid, isgroup, name, dt, employeeid, organizationid, cashid, type_inout, cashtoid, amount, change_id, conducted, note, guid
+
+### d_cash_outcome
+idx_d_cash_outcome_sync, id, idout, idlink, parentid, isgroup, name, dt, employeeid, organizationid, cashid, clientid, type_inout, amount, change_id, conducted, note, guid
+
+### d_changes
+IDINDEX, idx_d_changes_ap_closed, id, idlink, name, employeeid, dtopen, dtclosed, closed, idautomated_point, idworkplace, note, start_sum
+
+### d_inventory
+id, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, type_inout, note, conducted, organizationid, total, totalplanned, totaldiff, dtedit, guid
+
+### d_ofd_numbers
+id, order_id, ofd_number, cash_type
+
+### d_order
+idx_d_order_change_closed, idx_d_order_closed_idlink, idx_d_order_object_change, idx_d_order_request_id, idx_d_order_guid, id, guid, idlink, idout, parentid, creationdt, changeid, employeeid, clientid, objectid, paymentid, servicepercent, handservicepercent, discountpercent, discountsum, printed, closed, dtclose, note, guestcount, totalsum, idautomated_point, servicesum, handservicesum, sumfromclient, wpid, discountid, t_certificate_id, barcode, emp_pay, idlink_online, request_id, need_to_fiscalized, d_order_lastaction, price_type_id
+
+### d_order_online_fr
+id, order_id, types_payment_id, result, dtedit
+
+### d_order_temp
+id, guid, idlink, idout, parentid, creationdt, changeid, employeeid, clientid, objectid, paymentid, servicepercent, handservicepercent, discountpercent, discountsum, printed, closed, dtclose, note, guestcount, totalsum, idautomated_point, servicesum, handservicesum, sumfromclient, wpid, discountid, t_certificate_id, barcode, price_type_id, need_to_fiscalized
+
+### d_order_tuvis_offline
+t3, id, dtedit, idout, idlink, order_idlink, order_id, summ, qrcode, note, table, uploaded, message
+
+### d_receipt
+by_conducted, by_dt, id, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, clientid, type_inout, note, conducted, organizationid, total, dtedit, extendmode, guid, pricetypeid
+
+### d_selling
+by_conducted, by_dt, id, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, cook_dishes, clientid, type_inout, note, conducted, organizationid, total, invoice_no, invoice_contract, invoice_payment_terms, invoice_attorney, delivery_invoice, dtedit, guid
+
+### d_stop_list
+idx_d_stop_list_menu_item_id, idx_d_stop_list_apid, idx_d_stop_list_menu_item_id_apid, id, employeeid, apid, menu_item_id
+
+### d_urv_transactions
+uid, flag, id, dt, state, id_employee, id_location, id_pointurv, idout, idlink, parentid, isgroup, name, dtedit, event, roleid
+
+### df_request
+idx_df_request_ap_closed_dtedit, idx_df_request_idout, id, idout, idlink, parentid, isgroup, name, client_id, ap_id, tel, adress, note, create_ap_id, create_dt, closed, order_id, idlink_order_id, status_id, foreign_order_id, foreign_system_name, totalsum, discountsum, courier_id, paymentid_order, paymentid_delivery, delivery_sum, use_delivery, request_type_id, is_payed, dtedit, dt, emp_id, objectid, cooktime, servicesum, cancel_reason
+
+### mail_report_queue
+id, changeid, sended, file_name
+
+### p_interface_statistic
+id, interface, interface_name, lastaction
+
+### push_messages
+id, dt, dtedit, message, type, issend, result, idout, idlink, parentid, isgroup
+
+### r_client_sum
+bl, id, idout, idlink, parentid, isgroup, name, clientid, summa, idap
+
+### r_client_sum_quantity_goods
+id, idout, idlink, clientid, discountid, quantity, quantitygifts, idap
+
+### r_documents_links
+id, idout, idlink, parentid, isgroup, doc_table, doc_id, base_table, base_id
+
+### r_items_quantity
+WZ, id, itemid, quantity, barcode, idlink
+
+### r_prices_types
+by_item, by_pricetype, by_itempricetype, idx_r_prices_item_type_dt, id, idout, idlink, parentid, isgroup, itemid, pricetypeid, price, dt
+
+### r_print_order
+id, orderid, status, iface, printed, dtedit
+
+### s_automated_point
+P5, PW, id, name, menuid, menu_root_id, pwdexit, cashid, slipid, splzid, cashclientid, slipclientid, servicepercent, useservicepercent, printsubordinfastfood, printsubord, printorder, printorderpay, zreportonclose, with_gifts, giftpaytype, usechoosetable, uselocation, askCount, askPrice, useChangePrice, typeOfDiscountService, infostring, doNotUseMenuDesign, divChangeWorkplace, blockZeroSale, searchInMenu, nameForPrint, useBuyerDisplay, rememberAboutDiscount, switchOffCompAfterClose, alwaysUseNote, useFR, noSaldoButton, pwdorderunlock, pwdrefuse, pwdclient, pwdReturn, pwdStopList, pwdDivide, pwdChangePrice, pwdAddClientFromFront, pwdClose, pwdservicepercent, pwdCombo, pwdDiscount, pwdDeleteFromOrder, allowdividepaytype, askguestcount, organisation, waiterCanTakePayment, useCumulativeSystem, cumulativeTypePay, delete_orders, useTableDesign, warehouseid, pwdReportRemains, warn_about_remains, defaultFolderDuringAddClient, old_price_id, jTimeStart, jTimeEnd, useURV, idpointurv, sell_price_id, buy_price_id, pwdReportItogoviyReport, pwdReportX, pwdReportAktReal, cash_can_change_order, choose_price_type_front, not_allow_negative_remains_sale, materialsSumMoreServiceSum, pwdReportMaterial, mark_deleted, pwdPrintCopy, pwdChangeTable, address, pwdChangeCassTab, creditTypePay
+
+### s_bank
+id, guid, idout, idlink, parentid, isgroup, mark_deleted, name, accnumber, closedperiod, dtedit
+
+### s_barcode_perfixes
+Ww, id, item_type, perfix
+
+### s_calculations
+id, guid, idout, idlink, parentid, isgroup, name, itemid, composition, dt, quantity, measureid, output, dtedit, out_measureid, mark_deleted
+
+### s_cash
+id, idout, idlink, parentid, isgroup, name, closedperiod
+
+### s_certificates
+idx_s_certificates_itemid, id, idout, idlink, parentid, isgroup, name, dtstart, dtend, sum, percent, itemid
+
+### s_clients
+id, parentid, isgroup, name, fullname, partnertype, discount, servicepercent, shtrih, birthday, email, phone, address, info, organizationid, details, search_client_name, search_client_phone, search_client_address, mark_deleted, photo, marketing_src, rnn, iikbank, beneficiary_bank, BIK
+
+### s_combo_groups
+id, idout, idlink, parentid, isgroup, name, price, mincount, maxcount, defaultitem, itemid
+
+### s_combo_items
+id, idout, idlink, parentid, isgroup, name, itemid, price, idcombogroup, printer
+
+### s_discount
+DZ, id, name, percentvalue, usediscountsincafe, usediscountsinfastfood, usegiftsincafe, usegiftsinfastfood, useserviceincafe, servicepercent, useserviceinfastfood, usebalanceincafe, usebalanceinfastfood, usePositionDiscount, flag_sum, usecertificates, certificateid, useCumulativeDiscount, sumForCumulativeDiscount, quantityForCumulativeDiscount, usesumdiscount, sumvalue, useCumulativeSystem, cumulativeSystemPercent, useCumulativeSystemInFastFood, useCumulativeSystemInCafe
+
+### s_email_report
+id, idout, idlink, parentid, isgroup, name, email, ap_id
+
+### s_employee
+id, name, login, ident, password, isonline, lastaction, isuser, mark_deleted, e_servicepercent, e_itempercent, e_itemservicepercent, workplaceid
+
+### s_front_status
+id, apid, wpid, key_name, key_value, dtedit
+
+### s_giftlevels
+dH, id, idout, idlink, parentid, isgroup, name, leveltype, levelnum, pointscount, itemcount, itemid, price, ballcount, leveldiscountid
+
+### s_gifts
+id, idout, idlink, parentid, isgroup, name, levelid, itemid, quantity
+
+### s_interfaces
+id, name, value
+
+### s_items
+MAINSHTRINDEX, idx_s_items_i_useInMenu, idx_s_items_mark_deleted, idx_s_items_useInMenu_markDeleted, idx_s_items_parentid, idx_s_items_itemid, id, parentid, isgroup, check_in_egais, name, measurement, weight, complex, price, isservice, discount, service, i_printer, i_useInMenu, mainShtrih, loss_cold, loss_hot, idout, mark_deleted, idlink, plu, articul, cook_time, description, description2, search_item_name, picture, critical_min, dtedit, nds_type_id, need_marking, lastinprice, categoryid, nkt, cook_type, product_type
+
+### s_items_plu
+id, idout, idlink, parentid, isgroup, name, item_id
+
+### s_items_recommends
+id, guid, idout, idlink, parentid, isgroup, dst_s_item_id, src_s_item_id, mark_deleted, dtedit
+
+### s_journal
+id, idout, idlink, parentid, isgroup, name, dtstart, dtend, authorid, clientid, employeeid, note, dt_j, idap, orderid, objectid, color, mark_deleted
+
+### s_location
+id, name, pointid, mark_deleted
+
+### s_marketing_src
+id, guid, idout, idlink, parentid, isgroup, name, dtedit
+
+### s_marks
+MARKSINDEX, id, idout, didout, tidout, apid, wpid, order_id, itemid, mark, kind, typesale, mark_deleted, dtedit, d_orderidout, t_order
+
+### s_marks_all
+MARKSINDEX, id, apid, wpid, order_id, itemid, didout, tidout, mark, kind, typesale, mark_deleted, idout, d_orderidout, t_order
+
+### s_menu
+id, name
+
+### s_modifier
+id, FK_smodifier_snote_id, id_note, modifier_id, mincount, maxcount, dtedit
+
+### s_nds_type
+id, isgroup, name, value, NumInFR
+
+### s_nomination_banknotes
+id, key_value, dt
+
+### s_note
+id, name, itemid, modifier_id
+
+### s_objects
+id, name, locationid, servicepercent, pos_port, mark_deleted
+
+### s_organizations
+id, idout, idlink, parentid, isgroup, name, fullname, details, rnn, iikbank, address, nds, nds_type_id, leader_role, leader_name, accountant_name, chargeperson_role, chargeperson_name, beneficiary_bank, BIK, dtedit
+
+### s_pictures
+id, idout, idlink, parentid, isgroup, name, items_id, status, dtedit, description
+
+### s_pointurv
+id, idout, idlink, parentid, isgroup, name, login, password, cookie_key, last_action, isonline, id_location
+
+### s_prices_types
+id, idout, idlink, parentid, isgroup, name
+
+### s_prices_types_link
+id, idout, idlink, parentid, isgroup, name, clientid, pricetypeid
+
+### s_printers
+XD_, id, name, sysname
+
+### s_request_status
+id, idout, idlink, parentid, isgroup, name
+
+### s_request_types
+id, guid, idout, idlink, parentid, isgroup, name, dtedit
+
+### s_role
+id, idout, idlink, parentid, isgroup, name, mark_deleted, dtedit
+
+### s_scripts
+id, idout, idlink, name, script, dtedit, apid, wpid
+
+### s_shtrih
+OTHERSHTRINDEX, idx_s_shtrih_itemid, id, itemid, shtrih, specificationid, measureid, price
+
+### s_slim_ip
+Xh, id, ip, upload
+
+### s_stop_list
+front, id, idout, isgroup, parent_itemid, employeeid, apid, menu_item_id, dtedit, mark_deleted, datefrom, dateto, mon, tue, wed, thu, fri, sat, sun, source, remains
+
+### s_subdivision
+bF, id, name, printerid, warehouseid
+
+### s_tarifs
+id, idout, idlink, parentid, isgroup, name, dtstart, itemid, interval_default, price_default
+
+### s_time_price
+id, idout, idlink, parentid, isgroup, name, timestart, timeend, datebegin, dateend, one, two, three, four, five, six, seven
+
+### s_turniket_journal
+id, parentid, idout, code, order_id, order_idlink, dtedit, dtsale, dtopen, dtclose, client_id, employee_id
+
+### s_type_inout
+id, idout, idlink, parentid, isgroup, is_income, is_outcome, show_in_front, name, outlay
+
+### s_types_of_payment
+id, name, mark_deleted, idlink
+
+### s_types_of_payment_associated
+TYPEASPAYINDEX, id, cash_id, bank_id, workplace_id, types_payment_id, typeinoutid, fiscal, dtedit, visible, mark_deleted
+
+### s_units_of_measurement
+id, idout, idlink, parentid, isgroup, name
+
+### s_warehouse
+Fb, id, idout, idlink, parentid, isgroup, name, closedperiod, allow_negative_remains
+
+### t_calculations
+Z9, id, idout, idlink, parentid, isgroup, name, calculationid, itemid, quantity, measureid, multip, loss_cold, loss_hot, dtedit
+
+### t_cancellation
+id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, price, specificationid, note, dtedit
+
+### t_clients_relations
+id, id_parent_client, id_child_client
+
+### t_discount_ap
+id, discountid, apid
+
+### t_discount_clients
+id, clientid, discountid
+
+### t_discount_items
+id, itemid, discountid, discountpercent, servicepercent, depositpercent
+
+### t_discount_items_gifts
+id, idout, itemid, discountid, quantitygifts
+
+### t_discount_time
+id, idout, idlink, parentid, isgroup, name, timestart, timeend, datebegin, dateend, one, two, three, four, five, six, seven, discountid
+
+### t_employee_front_rights
+id, idout, idlink, parentid, isgroup, name, view_total_report, view_akt, view_remainder_report, view_return_report, view_salon_report, view_refuse_report, view_x_report, can_unblock_order, can_return, can_div_order, can_change_employee, can_stop_list, can_move_items, can_object_design, can_print_label, can_add_money, can_take_money, can_move_money, view_report_cash, can_change_note, can_refuse_row, can_change_price, can_change_quantity, can_view_client, can_add_client, can_delete_row, can_service, can_discount, can_deposit_replenishment, can_deposit_removal, empid, view_material_report, can_bank_expense
+
+### t_employee_interface
+id, name, employeeid, rollid
+
+### t_employee_item_service
+id, idout, idlink, parentid, isgroup, name, empid, itemid, percent
+
+### t_employee_role
+id, idout, idlink, parentid, isgroup, name, employeeid, rollid, dtedit, mark_deleted
+
+### t_employee_workplace
+id, employeeid, wpid
+
+### t_inventory
+by_document, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, plannedquantity, quantity, measureid, multip, price, specificationid, dtedit
+
+### t_menu_items
+jV, idx_t_menu_items_menuid, idx_t_menu_items_menuid_parentid, id, parentid, isgroup, name, menuid, price, itemid, printer, sortid
+
+### t_object_design
+id, idout, idlink, parentid, isgroup, name, objectid, status, object_h, object_w, object_shape
+
+### t_object_design_link
+idx_t_object_design_link_orderid, idx_t_object_design_link_objectid, id, objectid, orderid
+
+### t_object_tarif
+id, idout, idlink, parentid, isgroup, name, idobject, tarifid
+
+### t_order
+Y3, idx_t_order_orderid_parentid, idx_t_order_analog_lookup, id, idlink, parentid, orderid, itemid, price, sum, quantity, iddoc, dt, printed, printerid, complex, note, servicesum, discountsum, salesum, measure_id, coocked, viewed, notedelete, type_key, type_value0, type_value1, type_value2, groupsign, itNormal, itService, itComplexParent, itComplexChild, itMaterialParent, itMaterialChild, itCertificate, itMark
+
+### t_order_object_tarif_link
+id, object_id, order_id, dt, tarifid, dt_stop
+
+### t_order_object_tarif_link_finished
+id, orderid, objectid
+
+### t_order_price_type
+id, idout, idlink, parentid, isgroup, name, orderid, pricetypeid, sum, sum_client
+
+### t_order_temp
+n7, T3, idx_t_order_temp_orderid_parentid, idx_t_order_temp_analog_lookup, id, idlink, parentid, orderid, itemid, price, sum, quantity, iddoc, dt, printed, printerid, complex, note, servicesum, discountsum, salesum, measure_id, coocked, notedelete, type_key, type_value0, type_value1, type_value2, groupsign, itNormal, itService, itComplexParent, itComplexChild, itMaterialParent, itMaterialChild, itCertificate, itMark
+
+### t_payment_transactions
+id, idout, d_order_guid, total_amount, external_status, internal_status, payment_type_id, payment_device_id, dtedit
+
+### t_receipt
+by_document, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, specificationid, total, dtedit, markup, rounding, newprice
+
+### t_selling
+by_document, by_itemid, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, price, specificationid, dtedit
+
+### t_sub_t_order
+id, idlink, d_order_id, t_order_id, key_name, key_value, dtedit
+
+### t_tarifs
+id, idout, idlink, parentid, isgroup, name, mon, tue, wed, thu, fri, sat, sun, timeStart_tar, timeEnd_tar, interval, price, tarifid
+
+### t_time_price_ap
+id, idout, idlink, parentid, isgroup, name, timepriceid, idautomatedpoint
+
+### t_time_price_items
+idx_t_time_price_items_timepriceid, idx_t_time_price_items_itemid, idx_t_time_price_items_timepriceid_itemid, id, idout, idlink, parentid, isgroup, name, timepriceid, itemid, price, categoryid
+
+### t_waiter_devices
+deviceid, id, devicetoken, platform, empid, dt
+
+### t_workplace
+workplaceid, id, login, password, isonline, lastaction, cashid, bankid, smartpay_token, use_webkassa, typeinoutid, encashid, encashtypeinoutid
+
+### temp_cash
+id, cashid, cashname, inout_type, inout_name, sum_start, sum_in, sum_out, sum_end
+
+### temp_dep
+id, clid, fio, employ, depos, fromfront, dtime
+
+### temp_material
+id, item_id, warehouseid, warehousename, typeinoutid, typeinoutname, measureid, measurename, before_quantity, before_costprice, before_costsum, after_quantity, after_costprice, after_costsum, income_quantity, income_costprice, income_costsum, outcome_quantity, outcome_costprice, outcome_costsum
+
+### temp_remains
+TMPREMAINSINDEX, idx_temp_remains_item_wh, id, idout, idlink, parentid, isgroup, name, item_id, quantity, warehouseid, dt
+
+### tf_request
+idx_tf_request_request_id, id, idout, idlink, parentid, isgroup, name, request_id, itemid, quantity, price, sum, note, complex, dtedit
+
+### tmp_clientcode
+id, clientid, TempCode, dtedit
+
+### tmp_d_cancellation
+id, guid, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, type_inout, cook_dishes, note, conducted, organizationid, is_saved, dtedit
+
+### tmp_d_inventory
+id, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, type_inout, note, conducted, organizationid, total, totalplanned, totaldiff, is_saved, dtedit, guid
+
+### tmp_d_receipt
+by_conducted, by_dt, id, guid, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, clientid, type_inout, note, conducted, organizationid, total, is_saved, dtedit, extendmode, pricetypeid
+
+### tmp_d_selling
+by_conducted, by_dt, id, idout, idlink, parentid, isgroup, name, dt, employeeid, warehouseid, cook_dishes, clientid, type_inout, note, conducted, organizationid, total, invoice_no, invoice_contract, invoice_payment_terms, invoice_attorney, delivery_invoice, is_saved, dtedit, guid
+
+### tmp_t_cancellation
+id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, price, specificationid, note, is_saved, dtedit
+
+### tmp_t_inventory
+by_document, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, plannedquantity, quantity, measureid, multip, price, specificationid, is_saved, dtedit
+
+### tmp_t_receipt
+by_document, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, specificationid, total, is_saved, dtedit, markup, rounding, newprice
+
+### tmp_t_selling
+by_document, by_itemid, id, idout, idlink, parentid, isgroup, dt, documentid, itemid, quantity, measureid, multip, price, specificationid, is_saved, dtedit
+
+### web_socket_messages
+id, message, create_dt, dtedit, status
+
+### z_logs
+id, idlink, dt, desc, ip, userid, usertype, type, front_descr, wp_id
+
+### z_manage_msg
+id, idlink, workplace_id, change_id, title_msg, msg, dt
+
+### z_module_logs
+id, idout, dt, app_type, operation, wpid, employeeid, descr
+
+### z_strange_actions
+idx_z_strange_actions_idlink, id, idout, idlink, parentid, isgroup, name, action, descr, orderid, itemid, dt, order_value, change_id, empid
+

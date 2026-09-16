@@ -1,0 +1,537 @@
+<title>Вопросы перед первыми клиентами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f2f1ee; --surface:#ffffff; --surface-2:#e9e7e3;
+  --ink:#16191c; --ink-2:#575e66; --ink-3:#656c74;
+  --line:#dedbd6; --line-strong:#c7c3bc;
+  --ok:#0f6e63; --ok-soft:#e3f0ee; --ok-line:#9fcdc6;
+  --wait:#9a5209; --wait-soft:#fbf0e0; --wait-line:#e5c087;
+  --stop:#a3302a; --stop-soft:#fbeae8; --stop-line:#e2aca7;
+  --display:Manrope,"Segoe UI",system-ui,sans-serif;
+  --body:Inter,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --wait:#d79a55; --wait-soft:#2b2118; --wait-line:#5a4326;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}}
+:root[data-theme="dark"]{
+  --bg:#14171a; --surface:#1c2023; --surface-2:#262b2f;
+  --ink:#e9eef1; --ink-2:#a9b3ba; --ink-3:#8b959c;
+  --line:#2c3236; --line-strong:#3d454b;
+  --ok:#57b6a8; --ok-soft:#16302c; --ok-line:#2f5f57;
+  --wait:#d79a55; --wait-soft:#2b2118; --wait-line:#5a4326;
+  --stop:#e08079; --stop-soft:#2e1a18; --stop-line:#5e332f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px 96px}
+header.top{padding:46px 0 22px;border-bottom:2px solid var(--ink);margin-bottom:22px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);margin:0 0 12px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.2vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance;max-width:20ch}
+.dek{font-size:16.5px;color:var(--ink-2);max-width:64ch;margin:0}
+
+.respondent{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 18px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+input[type="text"],textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;padding:9px 12px}
+textarea{min-height:62px;resize:vertical;line-height:1.5}
+input[type="text"]::placeholder,textarea::placeholder{color:var(--ink-3)}
+input[type="text"]:focus-visible,textarea:focus-visible{outline:2px solid var(--ok);outline-offset:1px;border-color:var(--ok)}
+
+.banner{border-radius:10px;padding:13px 16px;margin:0 0 18px;background:var(--wait-soft);border:1px solid var(--wait-line);font-size:14.5px}
+.banner b{color:var(--wait)}
+
+.toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.toolbar .line{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.count{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.count strong{color:var(--ink);font-weight:500}
+.meter{flex:1;min-width:140px;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s ease}
+.toggle{font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.jump{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.jump a{font-size:12.5px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:3px 8px;white-space:nowrap}
+.jump a span{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:5px;font-variant-numeric:tabular-nums}
+.jump a.done{border-color:var(--ok-line)}
+.jump a.done span{color:var(--ok)}
+.jump a:hover{border-color:var(--line-strong);color:var(--ink)}
+
+section.group{padding-top:26px;scroll-margin-top:118px}
+section.group > h2{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.015em;margin:0 0 4px;display:flex;align-items:baseline;gap:10px}
+section.group > h2 .letter{font-family:var(--mono);font-weight:500;font-size:13px;color:var(--ink-3)}
+section.group > p.lead{color:var(--ink-2);margin:0 0 6px;max-width:66ch;font-size:15px}
+
+.q{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding:18px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.qid{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);padding-top:3px;font-variant-numeric:tabular-nums}
+.q.answered .qid{color:var(--ok)}
+.q.answered .qid::after{content:" ✓"}
+.q.later .qid{color:var(--wait)}
+.qbody{min-width:0}
+.qhead{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.q h3{font-family:var(--body);font-weight:600;font-size:16.5px;line-height:1.45;margin:0;max-width:60ch;text-wrap:pretty}
+.prio{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;border:1px solid;border-radius:999px;padding:2px 8px;white-space:nowrap;margin-top:2px}
+.prio.stop{color:var(--stop);background:var(--stop-soft);border-color:var(--stop-line)}
+.prio.wait{color:var(--wait);background:var(--wait-soft);border-color:var(--wait-line)}
+.prio.ok{color:var(--ink-3);background:var(--surface-2);border-color:var(--line)}
+.why{color:var(--ink-2);font-size:14px;margin:5px 0 10px;max-width:66ch}
+.hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:0 0 6px}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 10px}
+.opt{font:inherit;font-size:14px;line-height:1.35;text-align:left;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:18px;padding:6px 13px;cursor:pointer}
+.opt:hover{border-color:var(--ink-3)}
+.opt[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt:focus-visible,.toggle:focus-visible,.later:focus-visible,.jump a:focus-visible,summary:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+.qfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;flex-wrap:wrap}
+.later{font:inherit;font-size:13px;color:var(--ink-2);background:none;border:1px dashed var(--line-strong);border-radius:999px;padding:3px 11px;cursor:pointer}
+.later[aria-pressed="true"]{color:var(--wait);border-color:var(--wait);border-style:solid;background:var(--wait-soft)}
+.status{font-family:var(--mono);font-size:11px;color:var(--ink-3);min-height:1em}
+.status.err{color:var(--stop)}
+.status.ok{color:var(--ok)}
+
+details.plain{margin-top:44px;border-top:2px solid var(--ink);padding-top:14px}
+details.plain summary{font-family:var(--display);font-weight:600;font-size:17px;cursor:pointer}
+details.plain p{color:var(--ink-2);font-size:14.5px;margin:8px 0 10px}
+details.plain pre{font-family:var(--mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0;max-height:420px;overflow:auto;color:var(--ink)}
+.end{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-top:30px}
+
+@media (max-width:620px){
+  .respondent{grid-template-columns:1fr}
+  .q{grid-template-columns:1fr}
+  .qid{padding-top:0}
+}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">К встрече с автором идеи · сентябрь 2026</p>
+  <h1>Вопросы перед первыми клиентами</h1>
+  <p class="dek">Ответы на них решают, что делаем до установки в первое заведение, а что после.
+  Отмечайте вариант или пишите своими словами — всё сохраняется само. Если ответа пока нет,
+  нажмите «уточню позже».</p>
+</header>
+
+<div class="respondent">
+  <div class="field"><label for="r-name">Кто отвечает</label><input type="text" id="r-name" placeholder="Имя и роль в проекте" autocomplete="off"></div>
+  <div class="field"><label for="r-note">Встреча</label><input type="text" id="r-note" placeholder="Дата, кто ещё был" autocomplete="off"></div>
+</div>
+
+<div class="banner" id="banner" hidden></div>
+
+<div class="toolbar">
+  <div class="line">
+    <span class="count" id="count">Отвечено <strong>0</strong> из 0</span>
+    <span class="meter" aria-hidden="true"><i id="meter"></i></span>
+    <button type="button" class="toggle" id="only-open" aria-pressed="false">Только без ответа</button>
+  </div>
+  <nav class="jump" id="jump" aria-label="Разделы"></nav>
+</div>
+
+<main id="groups"></main>
+
+<details class="plain">
+  <summary>Все вопросы текстом</summary>
+  <p>Чтобы переслать в WhatsApp или распечатать. Выделите текст и скопируйте.</p>
+  <pre id="plain"></pre>
+</details>
+
+<p class="end">Вопросы собраны из ТЗ (§14), предложения по тарифам, разбора моделей цен, аудита Paloma и среза готовности от 11.09.2026</p>
+</div>
+
+<script>
+const PRIO = {stop: "без ответа не начнём", wait: "нужно до пилота", ok: "можно позже"};
+
+const SECTIONS = [
+  {id: "A", title: "Первые клиенты", lead: "От этого зависит, что доделывать до пилота и сколько это займёт."},
+  {id: "B", title: "Цены и расчёт", lead: "Как заведение берёт деньги с гостя. Ошибка здесь — недосчитанные деньги каждый вечер."},
+  {id: "C", title: "Бронирование", lead: "Как гости записываются и что происходит, если не пришли."},
+  {id: "D", title: "Деньги, чек и касса", lead: "Фискальный чек, оборудование, кто что может делать с деньгами."},
+  {id: "E", title: "Бар и товары", lead: "Что продают кроме посещения."},
+  {id: "F", title: "Интернет и сервер", lead: "Где будет жить система."},
+  {id: "G", title: "Наш продукт", lead: "Сколько брать с владельцев и что строить после запуска."},
+  {id: "H", title: "Paloma", lead: "Последнее, что не удалось проверить у конкурента."}
+];
+
+const QUESTIONS = [
+  {id: "A1", s: "A", p: "stop", t: "Кто первые клиенты? Сколько заведений готовы попробовать и где они?",
+   why: "Под одно заведение доделываем точечно, под несколько — сразу общий вариант.",
+   opts: ["Одно заведение", "2–3 заведения", "Больше трёх", "Пока не договорились"],
+   ph: "Названия, город, контакт владельца"},
+  {id: "A2", s: "A", p: "stop", t: "Какой тип заведения у первого клиента?",
+   why: "Для общественной бани нужны билет за человека и льготы — это плюс 1–1,5 недели до запуска.",
+   opts: ["Частная сауна или комплекс — платят за зал по часам", "Общественная баня — билет за человека", "И то и другое в одном месте", "Не знаю"]},
+  {id: "A3", s: "A", p: "wait", t: "Сколько у него помещений и филиалов?",
+   why: "Второй филиал из кабинета пока не добавляется — если нужен сразу, доделываем до пилота.",
+   opts: ["1 филиал", "2 филиала", "3 и больше"], ph: "Например: 4 зала и общее отделение"},
+  {id: "A4", s: "A", p: "wait", multi: true, t: "Чем заведение считает сейчас?",
+   why: "Если есть программа — переносим клиентов, абонементы и цены. Если тетрадь — начинаем с нуля.",
+   opts: ["Paloma", "Другая программа", "Excel или Google-таблица", "Тетрадь"], ph: "Какая программа, сколько клиентов в базе"},
+  {id: "A5", s: "A", p: "wait", t: "Что их больше всего не устраивает в том, как сейчас?",
+   why: "Именно это покажем на пилоте первым.",
+   opts: [], ph: "Своими словами: теряются брони, недостача в кассе, долго считать, не видно выручку…"},
+  {id: "A6", s: "A", p: "wait", t: "Когда первый клиент хочет начать?",
+   why: "По текущей оценке до установки частной сауне 5–7 недель, если оператор ОФД выбран сейчас.",
+   opts: ["В этом месяце", "Через 1–2 месяца", "Когда будет готово"]},
+
+  {id: "B1", s: "B", p: "stop", multi: true, t: "Как заведение берёт деньги за посещение?",
+   why: "От этого зависит, как считает касса. Можно выбрать несколько.",
+   opts: ["За зал по часам", "Пакетом: например 3 часа за фиксированную цену", "За человека", "Фиксированно за вечер или ночь"],
+   ph: "Примеры цен: будни днём, вечер, выходные"},
+  {id: "B2", s: "B", p: "wait", t: "Есть ли минимальное время аренды?",
+   why: "Минимум уже умеем — нужно знать значение по умолчанию.",
+   opts: ["Нет", "1 час", "2 часа", "3 часа и больше"]},
+  {id: "B3", s: "B", p: "stop", t: "Сколько гостей входит в цену зала и сколько стоит каждый следующий?",
+   why: "Сейчас касса число гостей записывает, но не берёт за них деньги. Это первое, что доделываем — ни у нас, ни у Paloma этого нет.",
+   opts: ["Число гостей на цену не влияет", "Есть доплата за гостей сверх нормы"],
+   ph: "Например: до 6 человек в цене, каждый следующий +1 500 ₸ в час"},
+  {id: "B4", s: "B", p: "wait", t: "Гость пришёл в 17:00 по дневной цене и остался до 20:00, а с 18:00 действует вечерняя. Как считать?",
+   why: "Прямо влияет на выручку в вечерний прайм и на споры у стойки.",
+   opts: ["Каждый час по своей цене (так сейчас)", "Всё по цене времени входа", "Всё по более дорогой цене"]},
+  {id: "B5", s: "B", p: "wait", t: "Сколько минут задержки на выходе не берут и как округляют время?",
+   why: "Сейчас по умолчанию 5 льготных минут и округление вверх.",
+   opts: ["До 5 минут бесплатно", "До 10 минут", "До 15 минут", "Считаем поминутно"],
+   ph: "Шаг округления: по 15, 30 или 60 минут"},
+  {id: "B6", s: "B", p: "ok", t: "В праздники цены другие?",
+   why: "Если да — праздничные дни нужно задавать заранее, как выходные.",
+   opts: ["Да, как в выходные", "Да, отдельная цена", "Нет"]},
+  {id: "B7", s: "B", p: "wait", multi: true, t: "Если общественная баня: какие льготные категории и цены?",
+   why: "Льготных категорий нет ни у нас, ни у Paloma — делаем под ваши правила.",
+   opts: ["Дети", "Пенсионеры", "Студенты", "Льгот нет", "Не про нас — частная сауна"],
+   ph: "Например: дети до 7 лет бесплатно, до 14 — 50%, пенсионерам −30% по будням"},
+  {id: "B8", s: "B", p: "wait", multi: true, t: "Продают ли абонементы, и какие?",
+   why: "Абонементы у нас уже работают — главное отличие от Paloma, где их нет.",
+   opts: ["На число посещений", "На часы", "Безлимит на срок", "Семейный на несколько человек", "Абонементы не продают"],
+   ph: "Например: 10 посещений на 90 дней за 30 000 ₸. Семейный — общий баланс или у каждого свой?"},
+  {id: "B9", s: "B", p: "wait", multi: true, t: "Какие скидки дают и сколько процентов кассир может дать сам?",
+   why: "Скидки на кассе пока нет — делаем до пилота.",
+   opts: ["Постоянным гостям", "Компаниям", "В определённые часы", "Промокоды", "В день рождения", "Скидок не дают"],
+   ph: "Лимит кассира: например до 10%, больше — с разрешения управляющего"},
+
+  {id: "C1", s: "C", p: "ok", multi: true, t: "Как гости записываются?",
+   why: "Если много пишут в WhatsApp — онлайн-запись и уведомления поднимаются в приоритете.",
+   opts: ["Звонок", "WhatsApp", "Instagram", "2ГИС или сайт", "Приходят без записи"]},
+  {id: "C2", s: "C", p: "wait", t: "Берут ли предоплату при брони и что делают при неявке?",
+   why: "Предоплаты и депозита у нас пока нет. Нужно понять — до пилота или можно позже.",
+   opts: ["Предоплату не берут", "Фиксированная сумма", "Процент от брони", "Полная оплата вперёд"],
+   ph: "При неявке: предоплата сгорает, возвращаем или переносим бронь"},
+  {id: "C3", s: "C", p: "wait", t: "Сколько времени нужно на уборку между гостями?",
+   why: "Время уборки входит в занятость зала — две брони не встанут вплотную.",
+   opts: ["15 минут", "30 минут", "1 час", "Уборка не нужна"]},
+  {id: "C4", s: "C", p: "ok", t: "Нужна ли запись к конкретному сотруднику — массажисту, пармейстеру?",
+   why: "Сотрудник тогда становится ресурсом с расписанием — заметная доработка броней.",
+   opts: ["Да, сразу", "Нет", "Позже"]},
+
+  {id: "D1", s: "D", p: "stop", t: "Какой оператор фискальных чеков (ОФД) выбираем?",
+   why: "Главный блокиратор запуска: без выбора не начать фискализацию — 2–3 недели работы.",
+   opts: ["Webkassa", "re:Kassa", "Nurkassa", "У клиента уже есть свой ККМ", "Не знаю — посоветуйте"]},
+  {id: "D2", s: "D", p: "wait", multi: true, t: "Что уже стоит на стойке администратора?",
+   why: "От этого зависит: программа для Windows или браузер, какой принтер поддерживать.",
+   opts: ["Компьютер или ноутбук с Windows", "Планшет", "Принтер чеков", "Денежный ящик", "Сканер штрихкодов", "Ничего — будут закупать"],
+   ph: "Модели, если знаете"},
+  {id: "D3", s: "D", p: "wait", multi: true, t: "Как гости платят картой?",
+   why: "Автоматическая передача суммы на терминал — отдельная интеграция, 3–5 дней на каждый банк.",
+   opts: ["Терминал Kaspi", "Терминал Halyk", "Kaspi QR", "Перевод по номеру", "Только наличные"]},
+  {id: "D4", s: "D", p: "wait", t: "Кто может делать возврат денег?",
+   why: "Сейчас возврат может оформить любой сотрудник — закрываем это первым. У Paloma возврат возможен только с паролем владельца.",
+   opts: ["Только владелец", "Владелец и управляющий", "Любой кассир"]},
+  {id: "D5", s: "D", p: "ok", multi: true, t: "Как владелец забирает выручку и берут ли деньги из кассы на расходы?",
+   why: "Если берут на закуп — нужны статьи расходов, иначе вечерняя сверка не сойдётся.",
+   opts: ["Инкассация каждый день", "Раз в несколько дней", "Из кассы на расходы не берут", "Берут на закуп"],
+   ph: "Например: веники, такси, хозтовары"},
+  {id: "D6", s: "D", p: "ok", t: "Гость пришёл до пересменки, а заплатил после. На какую смену записать выручку?",
+   why: "Важно для заведений, работающих ночью: смену с гостями в зале закрыть нельзя.",
+   opts: ["На смену, в которую заплатил (так сейчас)", "На смену, в которую пришёл"]},
+
+  {id: "E1", s: "E", p: "wait", multi: true, t: "Что продают кроме посещения?",
+   why: "Кухня требует техкарт — отдельный большой блок. Для бара хватит простого учёта.",
+   opts: ["Чай и напитки", "Веники, простыни, шапки", "Бар с алкоголем", "Кухня", "Массаж и процедуры"]},
+  {id: "E2", s: "E", p: "ok", t: "Нужен ли учёт закупа и прибыли по товарам с первого дня?",
+   why: "Склад с себестоимостью и инвентаризацией — 2–2,5 недели.",
+   opts: ["Да, сразу", "Хватит остатков в штуках", "Позже"]},
+
+  {id: "F1", s: "F", p: "wait", t: "Какой интернет в заведении?",
+   why: "Касса работает без интернета, но брони и оплата картой без связи недоступны.",
+   opts: ["Стабильный проводной", "Мобильный", "Часто пропадает"]},
+  {id: "F2", s: "F", p: "stop", t: "Где размещаем систему?",
+   why: "Данные гостей по закону РК хранятся в Казахстане. Без решения нет запуска.",
+   opts: ["Сервер в Казахстане, арендуем мы", "Облако в РК", "У заказчика есть свой сервер", "Решайте сами"],
+   ph: "Если облако — какое"},
+
+  {id: "G1", s: "G", p: "wait", t: "Сколько брать с владельцев за подписку?",
+   why: "Paloma для бань — от 12 600 ₸ в месяц.",
+   opts: ["5 000 и 9 000 ₸ в месяц", "7 000 и 12 000 ₸ в месяц", "За каждый филиал", "Первым клиентам бесплатно"],
+   ph: "Своя цифра или срок бесплатного пилота"},
+  {id: "G2", s: "G", p: "ok", t: "Что строим раньше после запуска: склад или оплату подписки?",
+   why: "Первым клиентам можно выставлять счёт вручную — тогда оплату подписки можно отложить.",
+   opts: ["Склад с себестоимостью", "Регистрацию и оплату подписки", "Сначала депозит и скидки"]},
+  {id: "G3", s: "G", p: "wait", t: "Кто со стороны заведения будет на пилоте и отвечать на вопросы?",
+   why: "Пилот — неделя рядом с живым кассиром.",
+   opts: [], ph: "Имя, должность, телефон"},
+
+  {id: "H1", s: "H", p: "wait", t: "Можно ли получить доступ к кабинету Paloma (точка RollanBanya24)?",
+   why: "В кабинете настройки тарифов, прав и отчёты — последняя непроверенная часть Paloma.",
+   opts: ["Да, дадим логин", "Зайдём вместе", "Нет"]},
+  {id: "H2", s: "H", p: "ok", t: "Что в Paloma обязательно повторить, а что там раздражает?",
+   why: "Разбор показал логику Paloma, но не то, как с ней живут на стойке.",
+   opts: [], ph: "Своими словами"}
+];
+
+const QMAP = Object.fromEntries(QUESTIONS.map((q) => [q.id, q]));
+const SMAP = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
+const state = Object.fromEntries(QUESTIONS.map((q) => [q.id, {choice: q.multi ? [] : null, note: "", later: false}]));
+const els = {};
+const timers = {};
+const dirty = new Set();
+let db = null;
+let onlyOpen = false;
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid !== null && kid !== undefined) el.append(kid);
+  return el;
+}
+
+function isAnswered(a) {
+  const hasChoice = Array.isArray(a.choice) ? a.choice.length > 0 : a.choice !== null && a.choice !== "";
+  return hasChoice || a.note.trim() !== "";
+}
+
+function render() {
+  const main = document.getElementById("groups");
+  const jump = document.getElementById("jump");
+  for (const s of SECTIONS) {
+    const qs = QUESTIONS.filter((q) => q.s === s.id);
+    const link = h("a", {href: "#sec-" + s.id}, s.title, h("span", {}, "0/" + qs.length));
+    els["jump-" + s.id] = link;
+    jump.append(link);
+
+    const sec = h("section", {class: "group", id: "sec-" + s.id},
+      h("h2", {}, h("span", {class: "letter"}, s.id), s.title),
+      h("p", {class: "lead"}, s.lead));
+    for (const q of qs) sec.append(renderQ(q));
+    main.append(sec);
+  }
+  document.getElementById("plain").textContent = plainText();
+}
+
+function renderQ(q) {
+  const optButtons = q.opts.map((label) => {
+    const b = h("button", {type: "button", class: "opt", "aria-pressed": "false",
+      onclick: () => choose(q.id, label)}, label);
+    return b;
+  });
+  const note = h("textarea", {rows: "2", "aria-label": "Комментарий к вопросу " + q.id,
+    placeholder: q.ph || (q.opts.length ? "Уточнение, если нужно" : "Ответ")});
+  note.addEventListener("input", () => {
+    state[q.id].note = note.value;
+    dirty.add(q.id);
+    refreshQ(q.id);
+    updateProgress();
+    queueSave(q.id, 800);
+  });
+  const later = h("button", {type: "button", class: "later", "aria-pressed": "false",
+    onclick: () => { state[q.id].later = !state[q.id].later; dirty.add(q.id); refreshQ(q.id); updateProgress(); queueSave(q.id, 0); }},
+    "уточню позже");
+  const status = h("span", {class: "status", "aria-live": "polite"});
+  const art = h("article", {class: "q", id: "q-" + q.id},
+    h("div", {class: "qid"}, q.id),
+    h("div", {class: "qbody"},
+      h("div", {class: "qhead"}, h("h3", {}, q.t), h("span", {class: "prio " + q.p}, PRIO[q.p])),
+      h("p", {class: "why"}, q.why),
+      q.opts.length ? h("p", {class: "hint"}, q.multi ? "можно несколько" : "один вариант") : null,
+      q.opts.length ? h("div", {class: "opts"}, optButtons) : null,
+      note,
+      h("div", {class: "qfoot"}, later, status)));
+  els[q.id] = {art, optButtons, note, later, status};
+  return art;
+}
+
+function choose(id, label) {
+  const q = QMAP[id];
+  const a = state[id];
+  if (q.multi) {
+    a.choice = a.choice.includes(label) ? a.choice.filter((x) => x !== label) : [...a.choice, label];
+  } else {
+    a.choice = a.choice === label ? null : label;
+  }
+  dirty.add(id);
+  refreshQ(id);
+  updateProgress();
+  queueSave(id, 0);
+}
+
+function refreshQ(id) {
+  const q = QMAP[id];
+  const a = state[id];
+  const e = els[id];
+  q.opts.forEach((label, i) => {
+    const on = q.multi ? a.choice.includes(label) : a.choice === label;
+    e.optButtons[i].setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  if (document.activeElement !== e.note && e.note.value !== a.note) e.note.value = a.note;
+  e.later.setAttribute("aria-pressed", a.later ? "true" : "false");
+  const answered = isAnswered(a);
+  e.art.classList.toggle("answered", answered);
+  e.art.classList.toggle("later", !answered && a.later);
+  e.art.hidden = onlyOpen && answered;
+}
+
+function updateProgress() {
+  const total = QUESTIONS.length;
+  const done = QUESTIONS.filter((q) => isAnswered(state[q.id])).length;
+  const later = QUESTIONS.filter((q) => !isAnswered(state[q.id]) && state[q.id].later).length;
+  const blocking = QUESTIONS.filter((q) => q.p === "stop" && !isAnswered(state[q.id])).length;
+  const count = document.getElementById("count");
+  count.replaceChildren("Отвечено ", h("strong", {}, String(done)), " из " + total,
+    later ? " · отложено " + later : "",
+    blocking ? " · без ответа, блокирующих: " + blocking : "");
+  document.getElementById("meter").style.width = (done / total * 100).toFixed(1) + "%";
+  for (const s of SECTIONS) {
+    const qs = QUESTIONS.filter((q) => q.s === s.id);
+    const d = qs.filter((q) => isAnswered(state[q.id])).length;
+    const link = els["jump-" + s.id];
+    link.querySelector("span").textContent = d + "/" + qs.length;
+    link.classList.toggle("done", d === qs.length);
+  }
+}
+
+function setStatus(id, kind, text) {
+  const s = els[id].status;
+  s.className = "status" + (kind === "ok" ? " ok" : kind === "err" ? " err" : "");
+  s.textContent = text || "";
+}
+
+function queueSave(id, delay) {
+  clearTimeout(timers[id]);
+  if (!db) { setStatus(id, "", "не сохраняется в этом просмотре"); return; }
+  setStatus(id, "", "сохраняю…");
+  timers[id] = setTimeout(() => save(id), delay);
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function save(id) {
+  delete timers[id];
+  const q = QMAP[id];
+  const a = state[id];
+  const body = {
+    question: q.t, section: SMAP[q.s].title, priority: PRIO[q.p],
+    choice: q.multi ? [...a.choice] : a.choice,
+    note: a.note, later: a.later, updatedAt: new Date().toISOString()
+  };
+  const ref = db.collection("answers").doc(id);
+  try {
+    try { await ref.set(body); }
+    catch (err) {
+      if (err && err.code === "unavailable") { await sleep(400 + Math.random() * 600); await ref.set(body); }
+      else throw err;
+    }
+    if (!timers[id]) dirty.delete(id);
+    setStatus(id, "ok", "сохранено " + new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}));
+  } catch (err) {
+    const code = err && err.code;
+    const msg = code === "quota_exceeded" ? "не сохранилось: хранилище заполнено"
+      : code === "revoked" || code === "not_granted" ? "не сохранилось: нет доступа к записи"
+      : "не сохранилось — измените ответ ещё раз";
+    setStatus(id, "err", msg);
+  }
+}
+
+function applyRemote(id, v) {
+  if (!QMAP[id] || dirty.has(id)) return;
+  const q = QMAP[id];
+  const a = state[id];
+  a.choice = q.multi ? (Array.isArray(v.choice) ? v.choice.filter((x) => typeof x === "string") : [])
+                     : (typeof v.choice === "string" ? v.choice : null);
+  if (document.activeElement !== els[id].note) a.note = typeof v.note === "string" ? v.note : "";
+  a.later = v.later === true;
+  refreshQ(id);
+  if (typeof v.updatedAt === "string") {
+    const t = new Date(v.updatedAt);
+    if (!isNaN(t)) setStatus(id, "ok", "сохранено " + t.toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}));
+  }
+}
+
+function showBanner(html) {
+  const b = document.getElementById("banner");
+  b.innerHTML = html;
+  b.hidden = false;
+}
+
+function wireRespondent() {
+  const name = document.getElementById("r-name");
+  const meet = document.getElementById("r-note");
+  let t = null;
+  const push = () => {
+    if (!db) return;
+    clearTimeout(t);
+    t = setTimeout(() => {
+      db.doc("meta/respondent").set({name: name.value, meeting: meet.value, updatedAt: new Date().toISOString()})
+        .catch(() => {});
+    }, 800);
+  };
+  name.addEventListener("input", push);
+  meet.addEventListener("input", push);
+  return {name, meet};
+}
+
+function plainText() {
+  const out = ["ВОПРОСЫ ПЕРЕД ПЕРВЫМИ КЛИЕНТАМИ", ""];
+  for (const s of SECTIONS) {
+    out.push(s.id + ". " + s.title.toUpperCase());
+    for (const q of QUESTIONS.filter((x) => x.s === s.id)) {
+      out.push(q.id + " (" + PRIO[q.p] + ") " + q.t);
+      if (q.opts.length) out.push("   Варианты: " + q.opts.join(" / "));
+    }
+    out.push("");
+  }
+  return out.join("\n");
+}
+
+document.getElementById("only-open").addEventListener("click", (e) => {
+  onlyOpen = !onlyOpen;
+  e.currentTarget.setAttribute("aria-pressed", onlyOpen ? "true" : "false");
+  for (const q of QUESTIONS) refreshQ(q.id);
+});
+
+render();
+for (const q of QUESTIONS) refreshQ(q.id);
+updateProgress();
+const respondent = wireRespondent();
+
+const noStore = "<b>Ответы здесь не сохраняются.</b> Откройте страницу по ссылке в claude.ai — тогда всё записывается само. Или запишите ответы отдельно: текст вопросов в самом низу.";
+
+if (window.claude && typeof window.claude.use === "function") {
+  window.claude.use("db").then((store) => {
+    if (!store) { showBanner(noStore); return; }
+    db = store;
+    db.collection("answers").onSnapshot((snap) => {
+      for (const d of snap.docs) { const v = d.data(); if (v) applyRemote(d.id, v); }
+      updateProgress();
+    }, () => {
+      showBanner("<b>Связь с хранилищем прервалась.</b> Обновите страницу, чтобы ответы снова сохранялись.");
+    });
+    db.doc("meta/respondent").onSnapshot((snap) => {
+      const v = snap.exists ? snap.data() : null;
+      if (!v) return;
+      if (document.activeElement !== respondent.name && typeof v.name === "string") respondent.name.value = v.name;
+      if (document.activeElement !== respondent.meet && typeof v.meeting === "string") respondent.meet.value = v.meeting;
+    }, () => {});
+  }).catch(() => showBanner(noStore));
+} else {
+  showBanner(noStore);
+}
+</script>

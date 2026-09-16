@@ -1,4 +1,4 @@
-<title>Готовность к первым клиентам</title>
+<title>Единый план до первого пилота</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -36,37 +36,38 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font
 header.top{padding:50px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:34px}
 .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ok);margin:0 0 13px}
 h1{font-family:var(--display);font-weight:700;font-size:clamp(29px,4.3vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 13px;text-wrap:balance;max-width:19ch}
-.dek{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0}
-section{margin-bottom:48px}
+.dek{font-size:17px;color:var(--ink-2);max-width:66ch;margin:0}
+section{margin-bottom:52px}
 h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance}
-h3{font-family:var(--display);font-weight:600;font-size:17px;margin:26px 0 9px}
+h3{font-family:var(--display);font-weight:600;font-size:17px;margin:28px 0 9px}
 .lead{color:var(--ink-2);max-width:70ch;margin:0 0 20px;padding-bottom:15px;border-bottom:1px solid var(--line)}
 p{max-width:72ch;margin:0 0 13px}
 ul{max-width:72ch;margin:0 0 14px;padding-left:20px}
 li{margin-bottom:6px}
 li::marker{color:var(--ink-3)}
 
-/* сводка готовности */
-.gauge{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0 0 26px}
+.gauge{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 14px}
 .gauge div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
 .gauge .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:5px}
-.gauge .v{font-size:25px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gauge .v{font-size:25px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;display:block}
 .gauge .n{font-size:13px;color:var(--ink-2)}
-.gauge.stop{border-color:var(--stop)}
+.gauge .stop{border-color:var(--stop)}
+.gauge .stop .v{color:var(--stop)}
 
 .rows{display:flex;flex-direction:column;gap:2px;margin-bottom:18px}
 .row{display:grid;grid-template-columns:26px 1fr auto;gap:13px;align-items:start;background:var(--surface);border:1px solid var(--line);padding:13px 16px}
 .row:first-child{border-radius:10px 10px 0 0}
 .row:last-child{border-radius:0 0 10px 10px}
-.row .mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:1px}
-.row.ok .mark{background:var(--ok-soft);color:var(--ok)}
-.row.wait .mark{background:var(--wait-soft);color:var(--wait)}
-.row.stop .mark{background:var(--stop-soft);color:var(--stop)}
+.row:only-child{border-radius:10px}
+.mark{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+.ok .mark{background:var(--ok-soft);color:var(--ok)}
+.part .mark{background:var(--wait-soft);color:var(--wait)}
+.stop .mark{background:var(--stop-soft);color:var(--stop)}
 .row b{font-weight:600;display:block;margin-bottom:2px}
-.row span{color:var(--ink-2);font-size:14.5px}
-.row .how{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;white-space:nowrap;padding-top:2px}
+.row > div > span{color:var(--ink-2);font-size:14.5px;display:block}
+.row .how{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;white-space:nowrap;padding-top:3px}
 
-.callout{border-radius:10px;padding:16px 19px;margin:22px 0;max-width:72ch;background:var(--wait-soft);border:1px solid var(--wait-line)}
+.callout{border-radius:10px;padding:16px 19px;margin:22px 0;max-width:74ch;background:var(--wait-soft);border:1px solid var(--wait-line)}
 .callout.stop{background:var(--stop-soft);border-color:var(--stop-line)}
 .callout.ok{background:var(--ok-soft);border-color:var(--ok-line)}
 .callout .tag{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--wait);margin-bottom:7px}
@@ -76,155 +77,208 @@ li::marker{color:var(--ink-3)}
 .callout p:last-child{margin:0}
 
 .scroll{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:14px;min-width:580px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:700px}
 th{text-align:left;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:11px 15px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
 td{padding:11px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+td small{display:block;color:var(--ink-2);font-size:13px;margin-top:3px}
 tr:last-child td{border-bottom:0}
-td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-code{font-family:var(--mono);font-size:13.5px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
-.step{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 17px;margin-bottom:8px}
-.step em{font-family:var(--mono);font-style:normal;font-size:12px;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok-line);border-radius:999px;padding:2px 9px}
-.step b{font-weight:600}
-.step span{color:var(--ink-2);font-size:14.5px;display:block;margin-top:2px}
-.step .t{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:2px 6px;border-radius:4px}
+
+.chip{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;border-radius:999px;padding:2px 8px;white-space:nowrap;border:1px solid}
+.chip.stop{color:var(--stop);background:var(--stop-soft);border-color:var(--stop-line)}
+.chip.wait{color:var(--wait);background:var(--wait-soft);border-color:var(--wait-line)}
+.chip.ok{color:var(--ok);background:var(--ok-soft);border-color:var(--ok-line)}
+
 .end{border-top:2px solid var(--ink);padding-top:15px;margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
 a{color:var(--ok)}
+a:focus-visible{outline:2px solid var(--ok);outline-offset:2px;border-radius:2px}
+@media (max-width:620px){
+  .row{grid-template-columns:26px 1fr}
+  .row .how{grid-column:2;text-align:left;padding-top:0}
+}
 </style>
 
 <div class="wrap">
 <header class="top">
-  <p class="eyebrow">Состояние продукта · 6 сентября 2026</p>
-  <h1>Готовность к первым клиентам</h1>
-  <p class="dek">Что уже работает и проверено, что мешает поставить систему в заведение,
-  и сколько до этого осталось. Оценки обновлены после того, как офлайн-режим
-  и настройки владельца были сделаны.</p>
+  <p class="eyebrow">После ответов заказчика и разбора кабинета Paloma · 16 сентября 2026</p>
+  <h1>Единый план до первого пилота</h1>
+  <p class="dek">Что уже работает, что меняем именно до первого заведения, что оставляем
+  настройкой заведения и что делаем после пилота. Заменяет прежний срез готовности:
+  часть прошлых приоритетов снялась ответами Асета, часть добавилась.</p>
 </header>
 
 <section>
   <div class="gauge">
-    <div><span class="k">Строк кода</span><span class="v">10 276</span><span class="n">29 таблиц, 70+ эндпоинтов</span></div>
-    <div><span class="k">Тестов</span><span class="v">116</span><span class="n">все проходят</span></div>
-    <div><span class="k">Ядро продукта</span><span class="v">готово</span><span class="n">касса, брони, абонементы, отчёты</span></div>
-    <div class="gauge stop"><span class="k">До первого клиента</span><span class="v">3–4 недели</span><span class="n">упирается в фискализацию</span></div>
+    <div><span class="k">Ядро</span><span class="v">работает</span><span class="n">смена, брони, приём гостя, расчёт времени, абонементы, отчёты; ядро тарификации 25 из 25 тестов</span></div>
+    <div><span class="k">До пилота</span><span class="v">8 пунктов</span><span class="n">из них 3 — правки безопасности</span></div>
+    <div class="stop"><span class="k">Блокирует</span><span class="v">ОФД не выбран</span><span class="n">и нет решения по серверу — заказчик ответил «решайте сами»</span></div>
+    <div><span class="k">Первый клиент</span><span class="v">3+ филиала</span><span class="n">сейчас на Paloma, хочет начать в этом месяце</span></div>
   </div>
 </section>
 
 <section>
-  <h2>Что работает сегодня</h2>
-  <p class="lead">Всё перечисленное проверено не «на словах»: рядом указано, чем именно.</p>
-
-  <h3>Касса</h3>
-  <div class="rows">
-    <div class="row ok"><span class="mark">✓</span><div><b>Привязка кассы и вход по PIN</b><span>Руководитель привязывает компьютер к филиалу один раз, дальше сотрудник входит четырьмя цифрами. Украденное устройство отзывается за один запрос</span></div><span class="how">13 тестов + браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Смены и Z-отчёт</b><span>Открытие с суммой в ящике, закрытие со сверкой, неизменяемый снимок итогов</span></div><span class="how">браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Приём гостя и таймер</b><span>По брони — одно нажатие, без брони — четыре. Таймер идёт от серверного времени, перезагрузка его не сбивает</span></div><span class="how">27 тестов + браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Тарификация по сегментам</b><span>Визит через границу тарифа считается по частям: 20 минут по дневному, остальное по вечернему</span></div><span class="how">23 теста ядра</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Товары, продления, расчёт, оплата</b><span>Наличные с расчётом сдачи, карта, смешанная оплата, возврат обратной операцией</span></div><span class="how">браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Работа без интернета</b><span>Зал и карточки визитов из снимка, операции копятся в очереди и уходят при возврате связи. Повтор безопасен даже при гонке</span></div><span class="how">7 тестов + браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Ставится как программа</b><span>Ярлык, окно без адресной строки, открывается вообще без сети</span></div><span class="how">браузер, офлайн</span></div>
-  </div>
-
-  <h3>Бронирование</h3>
-  <div class="rows">
-    <div class="row ok"><span class="mark">✓</span><div><b>Шахматка и запись гостя</b><span>Помещения по строкам, часы по столбцам, клик по свободной клетке</span></div><span class="how">браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Защита от двойной записи</b><span>Непересечение гарантирует база с учётом времени на уборку — обойти нельзя даже из кода</span></div><span class="how">тест на гонку</span></div>
-  </div>
-
-  <h3>Абонементы</h3>
-  <div class="rows">
-    <div class="row ok"><span class="mark">✓</span><div><b>Продажа, списание, заморозка</b><span>Посещения, часы, безлимит. Баланс — свёртка леджера, двойное списание невозможно</span></div><span class="how">11 тестов</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Подсказка на кассе</b><span>Система сама предлагает подходящий абонемент гостя и показывает, что спишется</span></div><span class="how">браузер</span></div>
-  </div>
-
-  <h3>Кабинет владельца</h3>
-  <div class="rows">
-    <div class="row ok"><span class="mark">✓</span><div><b>Настройка заведения</b><span>Абонементы, услуги с тарифами, помещения, товары, сотрудники с PIN, настройки филиала — всё из интерфейса</span></div><span class="how">23 теста + браузер</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Отчёты</b><span>Выручка с динамикой, средний чек, загрузка по часам и дням, смены с расхождениями, долг по абонементам</span></div><span class="how">12 тестов + браузер</span></div>
-  </div>
-
-  <h3>Основание</h3>
-  <div class="rows">
-    <div class="row ok"><span class="mark">✓</span><div><b>Изоляция заведений</b><span>Данные разных организаций разделены на уровне СУБД, а не проверками в коде</span></div><span class="how">тесты изоляции</span></div>
-    <div class="row ok"><span class="mark">✓</span><div><b>Деньги неизменяемы</b><span>Платежи и списания нельзя отредактировать — только обратной операцией. Закрытая смена не правится</span></div><span class="how">тесты</span></div>
-  </div>
-</section>
-
-<section>
-  <h2>Что мешает подключить клиента</h2>
-  <p class="lead">Три позиции, без которых поставить систему в заведение нельзя. Остальное можно
-  доделывать по ходу.</p>
+  <h2>Что изменили ответы заказчика</h2>
+  <p class="lead">Отвечал Асет 16 сентября, все 34 вопроса. Четыре ответа развернули план.</p>
 
   <div class="rows">
-    <div class="row stop"><span class="mark">!</span><div><b>Фискализация — главный блокиратор</b><span>В Казахстане заведение не может легально принимать деньги без фискального чека. Место в коде подготовлено (интерфейс <code>FiscalDevice</code>), но реализации нет: она зависит от выбранного оператора</span></div><span class="how">1,5–2 недели</span></div>
-    <div class="row stop"><span class="mark">!</span><div><b>Система живёт только на одном компьютере</b><span>Нет сервера, домена, HTTPS, автоматических бэкапов. Сейчас всё поднимается локально командой разработчика</span></div><span class="how">1 неделя</span></div>
-    <div class="row stop"><span class="mark">!</span><div><b>Чек не печатается</b><span>Гость уходит без бумаги. Нужен драйвер термопринтера — и он же потребуется для фискального чека</span></div><span class="how">входит в блок фискализации</span></div>
+    <div class="row ok"><span class="mark">−</span><div><b>Доплата за гостей не нужна</b><span>«Число гостей на цену не влияет». Это была наша задача номер один — снимаем с ближайших работ и оставляем настройкой на будущее</span></div><span class="how">было: 3–4 дня</span></div>
+    <div class="row part"><span class="mark">+</span><div><b>Считать по времени входа</b><span>Гость пришёл в 17:00 и сидел до 20:00 — всё по дневной цене. У нас ядро считает посегментно. Нужен переключатель на услуге, посегментный расчёт не убираем</span></div><span class="how">1–2 дня</span></div>
+    <div class="row part"><span class="mark">+</span><div><b>Филиалов сразу три и больше</b><span>Добавить филиал из кабинета сейчас нельзя совсем. Это перестало быть «потом»</span></div><span class="how">4–5 дней</span></div>
+    <div class="row part"><span class="mark">+</span><div><b>Выручка — на смену прихода</b><span>У нас сейчас относится к смене оплаты</span></div><span class="how">1 день</span></div>
   </div>
 
-  <h3>Дыры в защите, которые надо закрыть до боевой работы</h3>
-  <div class="rows">
-    <div class="row wait"><span class="mark">·</span><div><b>PIN можно перебирать</b><span>Ограничения на число попыток нет: четырёхзначный код подбирается за минуты</span></div><span class="how">1 день</span></div>
-    <div class="row wait"><span class="mark">·</span><div><b>Секрет подписи имеет значение по умолчанию</b><span><code>dev-secret-change-me</code> — если забыть заменить на сервере, токены подделываются</span></div><span class="how">1 час</span></div>
-    <div class="row wait"><span class="mark">·</span><div><b>Нет бэкапов и мониторинга</b><span>Потеря базы = потеря всей истории заведения</span></div><span class="how">входит в блок сервера</span></div>
-  </div>
-</section>
-
-<section>
-  <h2>Чего нет, но для первых клиентов не критично</h2>
-  <p class="lead">Это можно делать уже во время пилота, наблюдая за реальной работой.</p>
-  <div class="scroll">
-  <table>
-    <thead><tr><th>Чего нет</th><th>Почему можно подождать</th><th class="num">Оценка</th></tr></thead>
-    <tbody>
-      <tr><td>Склад с себестоимостью и прибылью по товарам</td><td>Бар в бане небольшой; сейчас есть количественный учёт остатков. Но это то, чем меряются при сравнении с Paloma</td><td class="num">2–2,5 нед.</td></tr>
-      <tr><td>Скидка на кассе</td><td>Лимит скидки в настройках есть, интерфейса нет. Пока цена берётся по тарифу без исключений</td><td class="num">2–3 дня</td></tr>
-      <tr><td>Внесение и изъятие наличных из интерфейса</td><td>Сервер это умеет, кнопки на кассе нет — размен и инкассация пока мимо системы</td><td class="num">1 день</td></tr>
-      <tr><td>Депозит и бонусы</td><td>Обычный для бань сценарий, но на пилоте переживаемо</td><td class="num">1 неделя</td></tr>
-      <tr><td>Регистрация заведения владельцем</td><td>Первых клиентов заводим сами, это две минуты</td><td class="num">1,5 нед.</td></tr>
-      <tr><td>Мобильное приложение владельца</td><td>Кабинет открывается с телефона, вёрстка адаптивная</td><td class="num">позже</td></tr>
-      <tr><td>Программа для Windows (Tauri)</td><td>Каркас готов, сборка настроена. Нужна для прямого доступа к принтеру — соберём вместе с фискализацией</td><td class="num">3–4 дня</td></tr>
-    </tbody>
-  </table>
-  </div>
-</section>
-
-<section>
-  <h2>Кратчайший путь до первого клиента</h2>
-  <p class="lead">Четыре шага. Второй начинается только после вашего решения по оператору.</p>
-
-  <div class="step"><em>1</em><div><b>Защита и подготовка к серверу</b><span>Ограничение попыток PIN, запрет работы с секретом по умолчанию, Docker, миграции при выкатке, бэкапы</span></div><span class="t">3–4 дня</span></div>
-  <div class="step"><em>2</em><div><b>Фискализация и печать чека</b><span>Интеграция с выбранным ОФД, очередь повторов, термопринтер, фискальный возврат. Здесь же собираем программу для Windows</span></div><span class="t">1,5–2 недели</span></div>
-  <div class="step"><em>3</em><div><b>Развёртывание</b><span>Сервер, домен, HTTPS, автоматические бэкапы с проверкой восстановления, мониторинг</span></div><span class="t">3–4 дня</span></div>
-  <div class="step"><em>4</em><div><b>Пилот в одном заведении</b><span>Неделя наблюдения за реальным кассиром. Почти все ошибки в тарификации и времени обнаруживаются именно там</span></div><span class="t">1 неделя</span></div>
-
-  <div class="callout ok">
-    <span class="tag">Итого</span>
-    <p><strong>3–4 недели до первого клиента</strong>, если оператор ОФД выбран сейчас.
-    Плюс неделя пилота до второго.</p>
-    <p>Через 6–7 недель, добавив склад с себестоимостью и депозит, мы не проигрываем
-    Paloma ни по одному пункту, кроме мобильного приложения.</p>
-  </div>
-</section>
-
-<section>
-  <h2>Что нужно от вас</h2>
-  <p class="lead">Без этих трёх ответов второй шаг не начинается.</p>
-  <div class="scroll">
-  <table>
-    <thead><tr><th>Вопрос</th><th>Что от него зависит</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Какой ОФД</strong><br>Webkassa, Kassa24, другой</td><td>Модель чека, состав позиций, требования к НТИН. Нужен доступ к тестовому контуру оператора</td></tr>
-      <tr><td><strong>Где размещаем</strong><br>свой сервер, облако в РК</td><td>Персональные данные клиентов по закону РК хранятся в Казахстане. От выбора зависит блок 3</td></tr>
-      <tr><td><strong>Кто первые клиенты</strong><br>и что у них есть</td><td>Есть ли кухня, сколько филиалов, какой интернет, есть ли уже ККМ и принтер. От этого зависит, что доделать до пилота, а что после</td></tr>
-    </tbody>
-  </table>
-  </div>
+  <p>Заодно упростилось: минимального времени нет, праздничных цен нет, уборка между гостями
+  не нужна, предоплату за бронь не берут, абонементы не продают, записи к конкретному
+  сотруднику не нужно. Всё это у нас уже есть — просто по умолчанию выключаем.</p>
 
   <div class="callout">
-    <span class="tag">Пока ответов нет</span>
-    <p>Могу двигать первый шаг — защиту и подготовку к серверу. Он ни от каких
-    внешних решений не зависит и нужен в любом случае.</p>
+    <span class="tag">Что осталось без ответа</span>
+    <p><strong>Оператор ОФД не выбран</strong> — ответ «должно быть индивидуально настроено».
+    Так не выйдет: под каждого оператора своя интеграция. Без выбора фискализация не начинается.</p>
+    <p><strong>Противоречие по типу заведения:</strong> в начале «и частная сауна, и общественная
+    баня в одном месте», в ценах — «не про нас, частная сауна» и «абонементы не продают».
+    От этого зависит, нужен ли билет за человека с льготными категориями.</p>
+    <p><strong>Нет конкретных цен зала</strong> — «всё зависит от тарифа». Без цифр настраивать нечего.</p>
   </div>
 </section>
 
-<p class="end">Отчёт о состоянии · обновляет сроки из документа «Вторая версия против Paloma»</p>
+<section>
+  <h2>Что показал кабинет Paloma</h2>
+  <p class="lead">Полный аудит — в <code>docs/paloma-razbor.md</code>. Здесь только то, что влияет на план.</p>
+
+  <div class="rows">
+    <div class="row part"><span class="mark">₸</span><div><b>Paloma для такой бани стоит 24 900 ₸ в месяц</b><span>Помодульно: точка 1 800 + рабочее место 3 600 × 2 + «Тарифы» 3 600 + «Склад» 3 600 + депозит, подарки, сертификат по 500 + «Калькуляции» 1 800 + УРВ 5 400. Тарификатор — отдельный платный модуль</span></div><span class="how">было: 12 600</span></div>
+    <div class="row part"><span class="mark">₸</span><div><b>Платят за каждое рабочее место</b><span>Наше «касс сколько нужно» за 7 000 ₸ — сильный аргумент, но проверьте экономику: у Paloma вторая касса стоит 3 600 ₸ в месяц</span></div><span class="how">к решению</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Модель прав на сеть</b><span>Право = роль + разрешённые интерфейсы кассы + список рабочих мест + галочка «просмотр» по каждой торговой точке + 33 права фронта + пароль на действие. Берём идею, но упрощаем: у владельца бани нет времени на шесть экранов</span></div><span class="how">в план</span></div>
+    <div class="row ok"><span class="mark">✓</span><div><b>Мелочи, которые стоит повторить</b><span>«Закрыть незакрытые смены» из кабинета, сводка по точкам с разрезами «гости / чеки / виды оплаты», «Советник» с автопроверкой настроек, импорт товаров из файла для переезда с Paloma</span></div><span class="how">в план</span></div>
+    <div class="row part"><span class="mark">!</span><div><b>Фискализация — это выбор оператора из списка</b><span>В кабинете Paloma нет раздела фискализации вообще: онлайн-касса подключается интеграцией на рабочее место. В списке Webkassa, ReKassa, Nurkassa, KaspiKassa, Trinity, e-POS и другие — подключение без доплаты. У демо-точки не подключено ничего</span></div><span class="how">подтверждает блокиратор</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>1. Что уже готово</h2>
+  <p class="lead">Проверено тестами и по коду 11–16 сентября. Это не трогаем.</p>
+  <ul>
+    <li>Привязка кассы, вход по PIN, отзыв устройства</li>
+    <li>Смены: открытие с суммой, закрытие со сверкой, неизменяемый Z-отчёт; смену с гостями в зале закрыть нельзя</li>
+    <li>Приём гостя, таймер от серверного времени, продления, товары и услуги в счёте</li>
+    <li>Расчёт времени по правилам «дни × часы» с минимумом, шагом округления и льготными минутами; разбор суммы по сегментам виден на кассе</li>
+    <li>Бронирование: шахматка, буфер уборки, непересечение гарантирует база</li>
+    <li>Абонементы: посещения, часы, безлимит, заморозка, семейные, частичное покрытие</li>
+    <li>Оплата наличными, картой, смешанная; возврат обратной операцией; идемпотентность</li>
+    <li>Работа кассы без интернета с очередью операций</li>
+    <li>Кабинет владельца: справочники и отчёты (выручка, средний чек, загрузка, смены, абонементы, клиенты)</li>
+    <li>Изоляция заведений на уровне СУБД</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2. Что меняем до первого пилота</h2>
+  <p class="lead">Восемь пунктов. Первые три — безопасность, их делаем в любом случае и первыми.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Что</th><th>Почему именно сейчас</th><th>Откуда требование</th><th class="num">Оценка</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Права на возврат</strong><small>проверка права на сервере + скрыть кнопку в кассе</small></td><td>Сейчас возврат может оформить любая роль. Асет: возврат — владелец и управляющий. У Paloma без пароля владельца возврат невозможен вовсе</td><td><span class="chip stop">безопасность</span></td><td class="num">1 день</td></tr>
+      <tr><td><strong>Лимит попыток PIN</strong></td><td>Четыре цифры подбираются за минуты</td><td><span class="chip stop">безопасность</span></td><td class="num">1 день</td></tr>
+      <tr><td><strong>Запрет секрета по умолчанию</strong><small>сервер не стартует с <code>dev-secret-change-me</code></small></td><td>Забудем заменить на сервере — токены подделываются</td><td><span class="chip stop">безопасность</span></td><td class="num">1 час</td></tr>
+      <tr><td><strong>Расчёт по времени входа</strong><small>настройка услуги: «по времени входа» или «по частям»; посегментный расчёт остаётся</small></td><td>Первый клиент считает по входу. Наш посегментный расчёт остаётся для тех, кто считает иначе</td><td><span class="chip wait">ответ Асета</span></td><td class="num">1–2 дня</td></tr>
+      <tr><td><strong>Филиалы</strong><small>добавление филиала из кабинета, сотрудники и права по филиалам, переключение и разрез отчётов по филиалам</small></td><td>У первого клиента три и больше точек. Сейчас добавить филиал нельзя</td><td><span class="chip wait">ответ Асета</span></td><td class="num">4–5 дней</td></tr>
+      <tr><td><strong>Внесение, изъятие, инкассация на кассе</strong><small>сервер готов, нужны экран и строка в Z-отчёте</small></td><td>Без этого вечерняя сверка не сходится с первого дня</td><td><span class="chip wait">эксплуатация</span></td><td class="num">1 день</td></tr>
+      <tr><td><strong>Скидка на кассе</strong><small>в пределах лимита кассира, выше — подтверждение управляющего</small></td><td>Скидки дают каждый день; сейчас интерфейса нет совсем</td><td><span class="chip wait">эксплуатация</span></td><td class="num">2–3 дня</td></tr>
+      <tr><td><strong>Перенос, отмена и неявка брони</strong></td><td>Гости переносят записи постоянно; сейчас можно только удалить и создать заново</td><td><span class="chip wait">эксплуатация</span></td><td class="num">2–3 дня</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>И отдельно — то, что не зависит от нас</h3>
+  <div class="rows">
+    <div class="row stop"><span class="mark">!</span><div><b>Фискальный чек и печать</b><span>Интеграция с выбранным оператором, очередь повторов, фискальный возврат, термопринтер, программа для Windows. На стойке у клиента только ноутбук — принтер придётся закупать</span></div><span class="how">2–3 недели после выбора ОФД</span></div>
+    <div class="row stop"><span class="mark">!</span><div><b>Сервер</b><span>Размещение в Казахстане, домен, HTTPS, миграции при выкатке, ежедневные бэкапы с проверкой восстановления, мониторинг. Заказчик сказал «решайте сами» — значит, решение и ответственность наши</span></div><span class="how">1 неделя</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>3. Что оставляем настройкой заведения</h2>
+  <p class="lead">Первый клиент работает так, второй будет иначе. Ничего из этого не удаляем
+  и не зашиваем под одного клиента — прячем в настройки с разумными значениями по умолчанию.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Настройка</th><th>У первого клиента</th><th>Зачем оставляем</th></tr></thead>
+    <tbody>
+      <tr><td>Как считать время: по входу или по частям</td><td>по времени входа</td><td>Посегментный расчёт — наше преимущество перед Paloma, у неё выбора нет</td></tr>
+      <tr><td>Минимальное время аренды</td><td>нет</td><td>Частные сауны обычно ставят 2 часа</td></tr>
+      <tr><td>Шаг округления и льготные минуты</td><td>5 минут бесплатно</td><td>У каждого заведения свои правила «задержался на десять минут»</td></tr>
+      <tr><td>Буфер уборки между бронями</td><td>не нужен → 0 минут</td><td>Комплексам с парилками уборка нужна обязательно</td></tr>
+      <tr><td>Предоплата брони и что при неявке</td><td>не берут</td><td>Залог при записи — обычная практика частных саун</td></tr>
+      <tr><td>Абонементы</td><td>не продают → раздел скрыт</td><td>Общественные бани живут на абонементах, у Paloma их нет вовсе</td></tr>
+      <tr><td>Билет за человека и льготные категории</td><td>пока не нужно</td><td>Ответы противоречивы: если появится общественное отделение — включаем</td></tr>
+      <tr><td>Доплата за гостей сверх включённых</td><td>не влияет на цену</td><td>Массовая схема рынка; у Paloma этого нет ни в каком виде</td></tr>
+      <tr><td>Спрашивать число гостей на кассе</td><td>можно не спрашивать</td><td>Нужно для загрузки и среднего чека на гостя</td></tr>
+      <tr><td>Праздничные цены</td><td>нет</td><td>Ставится как обычное правило по датам</td></tr>
+      <tr><td>Выручка на смену прихода или оплаты</td><td>на смену прихода</td><td>Ночные заведения считают иначе</td></tr>
+      <tr><td>Процент обслуживания</td><td>не начисляют</td><td>Комплексы с банщиками начисляют</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout ok">
+    <span class="tag">Принцип</span>
+    <p>Где заведения работают по-разному — настройка заведения, а не переписывание системы
+    под одного клиента. Пресет «частная сауна / общественная баня» ставит все значения
+    разом, чтобы владелец не проходил двадцать переключателей.</p>
+  </div>
+</section>
+
+<section>
+  <h2>4. После пилота</h2>
+  <p class="lead">Порядок — по тому, как часто это спрашивают и что даёт продавать дороже.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Что</th><th>Почему не сейчас</th><th class="num">Оценка</th></tr></thead>
+    <tbody>
+      <tr><td>Депозит клиента и предоплата брони</td><td>Первый клиент не берёт предоплату. У Paloma это отдельный модуль за 500 ₸</td><td class="num">1 неделя</td></tr>
+      <tr><td>Настраиваемые права и пароль управляющего на действия</td><td>До пилота хватит фиксированных ролей плюс закрытая дыра с возвратом</td><td class="num">1 неделя</td></tr>
+      <tr><td>Журнал подозрительных действий для владельца</td><td>Данные уже пишутся, нужен экран. У Paloma это отдельный раздел</td><td class="num">2–3 дня</td></tr>
+      <tr><td>Склад с себестоимостью и инвентаризацией</td><td>Асет: «позже». Продают только чай и напитки</td><td class="num">2–2,5 недели</td></tr>
+      <tr><td>Импорт товаров и клиентов из файла</td><td>Нужен для переезда с Paloma — но после того, как система заработает</td><td class="num">3–4 дня</td></tr>
+      <tr><td>Проверка настроек заведения (по образцу «Советника»)</td><td>Подсказывает, что не заполнены тарифы, цены и права</td><td class="num">3–4 дня</td></tr>
+      <tr><td>Сертификаты, скидки по расписанию</td><td>Полезно, но не с первого дня</td><td class="num">1 неделя</td></tr>
+      <tr><td>Терминал Kaspi, уведомления в Telegram</td><td>Удобство. У Paloma терминал — платная интеграция 500 ₸ на кассу</td><td class="num">по 3–5 дней</td></tr>
+      <tr><td>Разбить счёт, изменить вид оплаты после оплаты</td><td>Для бани редкий сценарий, для комплекса с компанией — нет</td><td class="num">3–4 дня</td></tr>
+      <tr><td>Регистрация заведения владельцем и оплата подписки</td><td>Первых клиентов заводим сами. Асет: сначала склад, потом биллинг</td><td class="num">1,5–2 недели</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>5. Деньги: что делать с ценой подписки</h2>
+  <p class="lead">Асет выбрал 7 000 и 12 000 ₸ в месяц. Кабинет Paloma показал реальную цену конкурента.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Конфигурация</th><th>Paloma</th><th>Мы по ответу Асета</th></tr></thead>
+    <tbody>
+      <tr><td>Баня, 1 точка, 2 кассы, тарификатор, склад, депозит, УРВ</td><td class="num">24 900 ₸/мес</td><td class="num">12 000 ₸/мес</td></tr>
+      <tr><td>Только тарификатор и касса, 1 рабочее место</td><td class="num">9 000 ₸/мес<small>1 800 точка + 3 600 место + 3 600 тарифы</small></td><td class="num">7 000 ₸/мес</td></tr>
+      <tr><td>Три филиала по две кассы</td><td class="num">от 45 000 ₸/мес<small>каждая точка и каждая касса считаются отдельно</small></td><td class="num">нужно решить</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Вопрос к обсуждению: берём ли мы, как Paloma, за каждое рабочее место. При трёх филиалах
+  разница между «за заведение» и «за кассу» — десятки тысяч тенге в месяц. Пока в плане
+  оставляю нашу модель «за заведение», но с пометкой, что на сети она недозарабатывает.</p>
+</section>
+
+<section>
+  <h2>6. Что ещё не проверено</h2>
+  <div class="rows">
+    <div class="row part"><span class="mark">?</span><div><b>Как Paloma считает переход через границу тарифа</b><span>В демо-аккаунте нет ни одной продажи, тариф один круглосуточный. Проверить можно только на боевом аккаунте работающей бани</span></div><span class="how">нужен живой клиент</span></div>
+    <div class="row part"><span class="mark">?</span><div><b>Какими отчётами владелец пользуется реально</b><span>В демо «Недавние» и «Избранное» пустые</span></div><span class="how">вопрос Асету</span></div>
+    <div class="row part"><span class="mark">?</span><div><b>Цены залов первого клиента</b><span>Без конкретных цифр по будням, вечеру и выходным настраивать нечего</span></div><span class="how">вопрос Асету</span></div>
+    <div class="row stop"><span class="mark">!</span><div><b>Оператор ОФД</b><span>Список Paloma подтверждает выбор: Webkassa, ReKassa, Nurkassa, KaspiKassa и другие. Решение всё ещё за заказчиком</span></div><span class="how">блокирует запуск</span></div>
+  </div>
+</section>
+
+<p class="end">Единый план · заменяет срез готовности от 11 сентября · основан на ответах Асета и аудите кабинета Paloma 16.09.2026</p>
 </div>

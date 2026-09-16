@@ -1,0 +1,289 @@
+﻿1;1;Добавить;Add
+1;2;Отмена;Cancel
+1;3;Ед. измерения:;measurements:
+1;4;Товары:;Items:
+1;5;Количество:;Count:
+1;6;Цена:;Price:
+1;7;Сумма:;Amount:
+1;8;Произошла ошибка при открытии окна ...;While opening the window an error occurred ...
+1;9;Укажите цену;Enter the price
+1;10;Укажите сумму;Specify an amount
+1;11;Укажите количество;Specify a number
+2;1;Добро пожаловать;You are  welcome
+2;2;Пожалуйста, пройдите авторизацию;Please log in
+2;3;Воспользуйтесь магнитной картой;Use a magnetic card
+2;4;или введите код вручную;or enter the code manually
+2;5;Ввести код вручную:;Enter the code manually:
+2;6;УЧЕТ РАБОЧЕГО ВРЕМЕНИ;WORKING TIME RECORD
+2;7;Сейчас на работе;Now at work
+2;8;Закрыть;close
+2;9;Сотрудник;Collaborator
+2;10;Время;Time
+2;11;Произошла ошибка при открытии окна УРВ...;While opening the URV window an error occurred ...
+2;12;Добро пожаловать ;You are welcome 
+2;13;До свидания ;Good bye
+2;14;Введите пароль;Enter the password
+2;15;Вчера;Yesterday
+3;1;Ошибка выполнения запроса ;An error in performing request 
+4;1;Товар;Items:
+4;2;Цена;Price
+4;3;ШтрихКод;barcode
+4;4;Тип цены:;The type of price
+4;5;Тип поиска;The type of search
+4;6;Наименование;Name
+4;7;Штрих-код;Bar code
+4;8;PLU-код;PLU-code
+4;9;Код товара;Item code
+4;10;Товар;Goods
+4;11;Кол-во;Qty.
+4;12;Ед. изм.;Meas.
+4;13;Сумма;Amount
+4;14;Закрыть;close
+4;15;Создать;Create
+4;16;Код;Сode
+4;17;Дата;Date
+4;18;Организация;Organization
+4;19;№ документа;№ of document
+4;20;Склад;Warehouse
+4;21;Поставщик;Supplier
+4;22;Статья расходов;Item of expenditure
+4;23;Проведен;Conducted
+4;24;Сумма;Amount
+4;25;Автор документа;The document author
+4;26;Комментарий;Comment
+4;27;Код:;Сode:
+4;28;Комментарий:;Comment:
+4;29;Дата:;Date:
+4;30;Организация:;Organization:
+4;31;Автор:;Author:
+4;32;Поставщик:;Supplier:
+4;33;Склад:;Warehouse:
+4;34;Статья расходов:;Item of expenditure:
+4;35;Открыть;Open
+4;36;Удалить все;Delete all
+4;37;Удалить;Delete
+4;38;Удалить товар;Delete the item
+4;39;Провести;To conduct
+4;40;Отмена;Cancel
+4;41;Сохранить;Save
+4;42;Сумма:;Amount:
+4;43;Розничная;Retail
+4;44;В документе имеются несохраненные изменения, удалить их?;The document has unsaved changes, delete them?
+4;45;Внимание, при выходе все несохраненные данные будут утеряны, продолжить?;Caution! After the exit all unsaved data will be lost, would you like to continue?
+4;46;Удалить все товары из документа?;Do you want to delete all items from the document?
+4;47;Документ проведен, удаление невозможно!;The document was conducted, deleting is not available!
+4;48;Удалить документ и все товары в нем?;Would you like to delete the document and all the items in it?
+4;49;Удалить товар из документа?;Would you like to remove an item from the document?
+4;50;Ошибка соединения;Connection error
+4;51;Ошибка ...;Error. ..
+4;52;Ошибка выполнения запроса при выборе меню!;Error running query in the selection menu!
+4;53;Не удалось вставить данные в бек;Failed to insert data into back
+4;54;Склад;Warehouse
+4;55;Организация;Organization
+4;56;Поставщики;Supplier
+4;57;Статья расходов;Item of expenditure
+4;58;Товар отсутсвует в базе, хотите создать;The element is missing in base, Do you want to create the item?
+4;59;Создать товар;Create Item
+4;60;Автоматически добавить в документ;Add in doc automatically
+4;61;ЗАГРУЗКА...;LOADING...
+4;62;Вверх;Up
+4;63;Вниз;Down 
+4;64;Нет соединения с внешним сервером, создание документа невозможно...;No connection with an external server, the creation of the document impossible...
+5;1;Товар не найден хотите добавить?;Product is not found, do you want to add?
+5;2;Да;Yes
+5;3;Прочитано;Read
+5;4;Нет;No
+5;5;Поиск...;Search...
+5;6;Выберите товар и нажмите добавить;Select the product and click add
+5;7;Наименование;Name
+5;8;Стоимость;Cost
+5;9;Отменить;Cancel
+5;10;Установите Вашу цену товара;Set your item price
+5;11;Название:;Name:
+5;12;добавить товар в счет;Add item in check
+5;13;Закрыть;Close
+5;14;Выбрать;Choose
+5;15;Цена:;Price:
+5;16;Произошла ошибка при подборе номенклатуры...;An error was occurred in the selection of the item...
+5;17;Укажите цену;Enter the price
+5;18;Нет связи с Глобальной базой товаров. Проверьте интернет!;No connection to the Global product base. Check the Internet!
+5;19;Товар добавлен;The product added
+5;20;Не удалось записать товар в локальную базу данных;Could not write the item to local database
+5;21;WEB-Сессия занята, попробуйте позже;WEB Session is bisy, try it later
+5;22;* Рекомендуем Вам выбрать выделенный шрифтом товар;* We recommend that you select the font product
+6;1;Закрыть;Close
+6;2;ЖУРНАЛ;JOURNAL
+6;3;Масштаб:;Scale:
+6;4;Интервал:;Interval:
+6;5;Создание элемента...;Create an item...
+6;6;Дата создания записи, меньше текущей даты...;The record creation date is  less than the current date...
+6;7;Время начала записи, меньше текущего времени...;The recording start time, less than the current time...
+6;8;Время начала записи, меньше времени начала работы... ПРОДОЛЖИТЬ?;The recording start time, less than the start time... CONTINUE?
+6;9;Время начала записи, больше времени окончания работы... ПРОДОЛЖИТЬ?;The recording start time, more than the time of the end of work... CONTINUE?
+6;10;Время окончания записи, больше времени окончания работы... ПРОДОЛЖИТЬ?;The recording finish time, more than the time of the end of work... CONTINUE?
+6;11;Время окончания записи, больше времени начала записи... ПРОДОЛЖИТЬ?;The recording finish time more than the record start time CONTINUE?
+6;12;ОШИБКА ПРИ УБИВАНИИ ЗАПИСЕЙ...;AN ERROR WHEN DELETING RECORDS...
+6;13;Примечание:;Note:
+6;14;Дата:;Date:
+6;15;Время c:;Time beg:
+6;16;по:;to:
+6;17;Создать запись;Create record
+7;1;Сохранить;Save
+7;2;Закрыть;Close
+7;3;Удалить;Delete
+7;4;Примечание:;Note:
+7;5;Запись на дату:;Record on date:
+7;6;Время с:;Time from:
+7;7;по:;to:
+7;8;Клиент:;Client:
+7;9;Сотрудник:;Worker:
+7;10;Цвет записи:;Record color:
+7;11;Очистить;Clean
+7;12;Контактный номер:;Contact number:
+7;13;Стол:;Table:
+7;14;Дата создания записи, меньше текущей даты...;The record creation date is  less than the current date...
+7;15;Время начала записи, меньше текущего времени...;The recording start time, less than the current time...
+7;16;Время начала записи, меньше времени начала работы... ПРОДОЛЖИТЬ?;The recording start time, less than the start time... CONTINUE?
+7;17;Время начала записи, больше времени окончания работы... ПРОДОЛЖИТЬ?;The recording start time, more than the time of the end of work... CONTINUE?
+7;18;Время окончания записи, больше времени окончания работы... ПРОДОЛЖИТЬ?;The recording finish time, more than the time of the end of work... CONTINUE?
+7;19;Время окончания записи, больше времени начала записи... ПРОДОЛЖИТЬ?;The recording finish time more than the record start time...  CONTINUE?
+7;20;Хотите удалить запись?;Do you want to delete a record?
+7;21;Не выбран клиент...;No customer selected...
+7;22;Не выбран столик...;No table selected...
+7;23;Ошибка при добавлении журнала записи...;An error while adding log record?
+8;1;Столик;Table
+8;2;Выбрать;Choose
+8;3;Отмена;Cancel
+9;1;Да;Yes
+9;2;Прочитано;Read
+9;3;Нет;No
+9;4;* Не рекомендуется отменять синхронизацию, в этом случае достоверность данных в базе не гарантируется.;* It is not recommended to cancel synchronization, in this case the reliability of the data in the database is not guaranteed.
+9;5;Инструкции на сайте: wiki2.paloma365.com;The instructions on the website: wiki2.paloma365.com
+9;6;По всем вопросам можете писать в техническую поддержку из своего личного кабинета.;For all questions you can write to the technical support from your personal account.
+10;1;Закрыть;Close
+10;2;Принять;Take
+10;3;Сменить язык: РУССКИЙ;Change the language: RUSSIAN
+10;4;Сменить язык: АНГЛИЙСКИЙ;Change the language: ENGLISH
+11;1;Фасовка;Packing
+11;2;Этикетка;Label
+11;3;Принтер;Printer
+11;4;Инвентаризация;Inventory
+11;5;Товар;Goods
+11;6;Цена;Price
+11;7;ШтрихКод;barcode
+11;8;Принтер для печати;Printer for printing
+11;9;Тип поиска;Type of search
+11;10;Наименование;Name
+11;11;Штрих-код;Bar code
+11;12;PLU-код;PLU-code
+11;13;Код товара;Item code
+11;14;Кол-во этикеток;Number of labels
+11;15;Тип этикетки;Label type
+11;16;Стандартная;Standard
+11;17;Старая\Новая цена;Old\New price
+11;18;Уменьшенная;Reduced
+11;19;Введите штрихкод товара;Enter the barcode of the product
+11;20;Выбранный товар:;Selected product:
+11;21;Закрыть;Close
+11;22;Удалить;Remove
+11;23;Печать;Print
+11;24;Печать этикетки;Label printing
+11;25;   Выберите товар; Select product
+11;26;Сумма: 0;Amount: 0
+11;27;Цена: 0;Price: 0
+11;28;Просмотреть данные;To view the data
+11;29;Отправить данные;Send data
+11;30;   Вес: \ Кол-во:  ; Weight: \ Qty: 
+11;31;Получать вес автоматически;Getting weight automatically
+11;32;Цена:;Price:
+11;33;Сумма:;Amount:
+11;34;Розничная;Retail
+11;35;Введите количество;Enter the number
+11;36;Вес:;Weight:
+11;37;Кол-во:;Qty.:
+11;38;Введите количество этикеток;Enter the number of labels
+11;39;Введите вес или количество!;Enter weight or quantity!
+11;40;Ошибка при печати;Printing error
+11;41;Название товара:;Name of item:
+11;42;Отсканированное количество:;The scanned number:
+11;43;Штрихкод товара:;The barcode of the product:
+11;44;Ошибка выполнения запроса при выборе меню!;Error running query in the selection menu!
+11;45;ПОИСК...;FIND...
+11;46;Введите целое число;Enter an integer
+12;1;Отмена;Cancel
+12;2;Выбрать;Choose
+12;3;Вверх;Up
+12;4;Вниз;Down
+12;5;Поиск:;Find:
+13;1;Сохранить;Save
+13;2;Отмена;Cancel
+13;3;Ед. измерения:;measurements:
+13;4;Наименование:;Name:
+13;5;Цена:;Price:
+13;6;Штрих-код:;Barcode:
+13;7;Ошибка при открытии формы;error opening form
+13;8;Укажите стоимость товара;Enter the cost of Item
+13;9;Укажите штрих-код товара;Enter the bar code of Item
+13;10;Товар добавлен;Product has been added
+13;11;Не удалось записать товар в локальную базу данных;Failed to write item to local database
+13;12;Нет соединения с внешним сервером;No connection to external server
+13;13;Штрих-код не указан;No barcode specified
+13;14;Товар с указанным Штрих-кодом не найден в глобальной базе;The item with the specified Bar code are not found in the global database
+13;15;Товар с указанным Штрих-кодом уже присутствует в базе;The item with the specified Bar code are already present in the database
+13;16;Поиск товара в глобальной базе;Find item in Global Base
+13;17;Товар с указанным Наименованием уже присутствует в базе;The item with the specified name are already present in the database
+14;1;U_ORDERDISP Сокет открыт;U_ORDERDISP Socket open
+14;2;U_ORDERDISP Соединение установлено;U_ORDERDISP Connection success
+14;3;U_ORDERDISP Соединение закрыто;U_ORDERDISP Connection closed
+14;4;U_ORDERDISP Возникла ошибка;U_ORDERDISP Socket error
+15;1;Закрыть;Close
+15;2;Готовые;Ready
+15;3;Новые;New
+15;4;Сумма;Summ
+15;5;Ошибка при открытии формы: ;error opening form: 
+15;6;Проставить заказу статус - ГОТОВО?;Change order status on - READY?
+15;7;Проставить заказу статус - ВЫДАН?;Change order status on - GONE?
+16;1;"Денежный модуль не включен! Для включения ""денежного"" модуля в личном кабинете в настройках рабочего места, нужно указать кассу!";"The money module is not included! To include the ""money"" module in your account in the settings of the workplace, you need to specify the cashier!"
+16;2;Закрыть;Close
+16;3;Поступление денег в кассу;Receipt of money in cash
+16;4;Расход денег из кассы;Cash outflow from cash desk
+16;5;Пополнение депозита;Deposit replenishment
+16;6;Отчет по кассе;Cashier report
+16;7;Тип Документа;Document Type
+16;8;Статус;Status
+16;9;Дата;date
+16;10;Сумма;Summ
+16;11;Статья;Article
+16;12;Контрагент;Client
+16;13;Примечание;Note
+16;14;Автоматическая выгрузка кассы в БЕК!;Automatic unloading of cash in BACK!
+16;15;Отсутствует интернет, работа с данной операцией невозможна;There is no Internet, work with transaction is impossible!
+16;16;Поступление;Receiption
+16;17;Pacход;Bypass
+16;18;Передан;Transferred
+16;19;Не передан;Not transferred
+16;20;Отсутствует интернет, работа с кассовыми операциями невозможна!;There is no Internet, work with cash transactions is impossible!
+16;21;ЗАГРУЗКА...;LOADING...
+17;1;Статья доходов:;Income item:
+17;2;Сумма:;Amount:
+17;3;Комментарий:;A comment:
+17;4;Контрагент:;Counterparty:
+17;5;Отмена;Cancel
+17;6;Принять;To accept
+17;7;Поступление денег в кассу;Receipt of money in cash
+17;8;Смена не открыта!;Change is not open!
+17;9;Изъятие денег из кассы;Withdrawal of money from the cash desk
+17;10;Статья расходов:;Item of expenses:
+17;11;Не выбран контрагент!;Not selected counterparty!
+17;12;Неправильно введено значение суммы...;The amount value was entered incorrectly...
+17;13;'Ошибка при внесении денег в кассу...;'An error occurred while making money to the cashier ...
+17;14;"Нажали на кнопку ""Принять"" на форме внесения или изъятия денег в кассу!";"Click on the ""Accept"" button on the form of depositing or withdrawing money to the cashier!"
+17;15;Ошибка при добавлении документа!;An error occurred while adding the document!
+17;16;Введите сумму;Enter amount
+17;17;Ошибка печати на фискальный принтер...;Error printing to fiscal printer...
+17;18;Ошибка при выполнении операции!;Ошибка при выполнении операции!
+17;19;Предыдущая операция была с теми же параметрами.;The previous operation had the same parameters.
+17;20;Выполнить операцию?;To perform the operation?
+17;21;Нельзя выполнить операцию для группы контрагентов;You cannot perform an operation on a business partner group
+18;1;Выгружен;Uploaded
+18;2;Не выгружен;Unloaded
