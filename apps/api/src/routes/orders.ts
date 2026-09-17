@@ -84,6 +84,10 @@ export function registerOrderRoutes(app: FastifyInstance): void {
     }
 
     return withTenant(ctx.orgId, async (client) => {
+      const existingOrder = (await client.query(
+        "SELECT branch_id FROM orders WHERE id = $1", [id])).rows[0];
+      if (!existingOrder) return reply.code(404).send({ error: "заказ не найден" });
+
       const payment = (await client.query(
         "SELECT * FROM payments WHERE id = $1 AND order_id = $2", [paymentId, id])).rows[0];
       if (!payment) return reply.code(404).send({ error: "платёж не найден" });
@@ -95,9 +99,13 @@ export function registerOrderRoutes(app: FastifyInstance): void {
         return reply.code(400).send({ error: "сумма возвратов превышает платёж" });
       }
 
+      // В отличие от оплаты, возврат оформляет не тот, кто открыл смену —
+      // управляющий или владелец возвращают деньги из смены дежурного кассира.
+      // Поэтому ищем открытую смену филиала заказа, а не ctx.branchId: у
+      // владельца он может быть пустым — он не привязан к одному филиалу.
       const shift = (await client.query(
-        `SELECT id FROM shifts WHERE branch_id = $1 AND status = 'open' AND opened_by = $2
-         ORDER BY opened_at DESC LIMIT 1`, [ctx.branchId, ctx.userId])).rows[0];
+        `SELECT id FROM shifts WHERE branch_id = $1 AND status = 'open'
+         ORDER BY opened_at DESC LIMIT 1`, [existingOrder.branch_id])).rows[0];
       if (!shift) return reply.code(409).send({ error: "смена не открыта" });
 
       const refund = (await client.query(
