@@ -4,6 +4,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// dev.mjs передаёт реальный порт API через переменную окружения: он может
+// отличаться от 3001, если этот порт занят другим проектом на машине.
+const apiPort = process.env.API_PORT ?? "3001";
+
 export default defineConfig({
   plugins: [
     react(),
@@ -60,11 +64,11 @@ export default defineConfig({
   // иначе прокси на API пришлось бы поднимать отдельно.
   preview: {
     port: 4173,
-    proxy: { "/v1": { target: "http://localhost:3001", changeOrigin: true } },
+    proxy: { "/v1": { target: `http://localhost:${apiPort}`, changeOrigin: true } },
   },
   server: {
     port: 5173,
     // Прокси на API убирает CORS из уравнения: касса и сервер выглядят одним origin.
-    proxy: { "/v1": { target: "http://localhost:3001", changeOrigin: true } },
+    proxy: { "/v1": { target: `http://localhost:${apiPort}`, changeOrigin: true } },
   },
 });

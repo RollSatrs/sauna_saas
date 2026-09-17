@@ -1,8 +1,19 @@
 #!/usr/bin/env node
 // Поднимает API и кассу одной командой. Логи обоих процессов идут в один поток
 // с префиксом, чтобы не держать два терминала.
+//
+// Порты не жёсткие: на машине разработчика часто уже что-то висит на 3000/3001
+// (другой проект) — вместо отказа стартовать ищем первый свободный порт от
+// привычного номера и дальше. PID и порты своих процессов записываем в
+// .dev-pids.json, чтобы `pnpm stop` останавливал именно их, а не всё подряд,
+// что слушает эти номера — иначе она могла бы убить чужой процесс, если он
+// случайно занял тот же порт.
 import { spawn, execSync } from "node:child_process";
 import { connect } from "node:net";
+import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const PIDFILE = fileURLToPath(new URL("../.dev-pids.json", import.meta.url));
 
 const parts = [
   { name: "api", color: "\x1b[36m", port: 3001, cmd: "node", args: ["--watch", "apps/api/src/server.ts"] },
@@ -10,11 +21,6 @@ const parts = [
   { name: "owner", color: "\x1b[33m", port: 5174, cmd: "pnpm", args: ["--filter", "@sauna/owner", "exec", "vite"] },
 ];
 
-/**
- * Занятый порт — самая частая причина странного запуска: Vite молча уезжает
- * на соседний порт, а касса начинает стучаться не туда. Лучше остановиться
- * и сказать, что делать, чем стартовать наполовину.
- */
 // Проверяем подключением, а не попыткой занять порт: Vite слушает IPv6-адрес,
 // и попытка занять тот же номер по IPv4 конфликта не покажет.
 function отвечает(хост, порт) {
@@ -33,29 +39,32 @@ async function портЗанят(порт) {
   return v4 || v6;
 }
 
-const занятые = [];
-for (const { name, port } of parts) {
-  if (await портЗанят(port)) занятые.push({ name, port });
-}
-
-if (занятые.length > 0) {
-  console.error("\n\x1b[31mПорты уже заняты — похоже, программа где-то запущена.\x1b[0m\n");
-  for (const { name, port } of занятые) {
-    let кто = "";
-    try {
-      const pid = execSync(`lsof -tnP -iTCP:${port} -sTCP:LISTEN`, { stdio: ["ignore", "pipe", "ignore"] })
-        .toString().trim().split("\n")[0];
-      if (pid) кто = ` (процесс ${pid})`;
-    } catch { /* lsof может быть недоступен */ }
-    console.error(`  ${name}: порт ${port}${кто}`);
+/** Первый свободный порт начиная с предпочитаемого — до +20, дальше явно что-то не так. */
+async function свободныйПорт(предпочитаемый) {
+  for (let порт = предпочитаемый; порт < предпочитаемый + 20; порт++) {
+    if (!(await портЗанят(порт))) return порт;
   }
-  console.error("\nЗакройте прежний запуск (Ctrl+C в том окне) или освободите порты:");
-  console.error("  \x1b[36mpnpm stop\x1b[0m\n");
-  process.exit(1);
+  throw new Error(`не нашлось свободного порта рядом с ${предпочитаемый}`);
 }
 
-const children = parts.map(({ name, color, cmd, args }) => {
-  const child = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+const назначенные = [];
+for (const часть of parts) {
+  const порт = await свободныйПорт(часть.port);
+  if (порт !== часть.port) {
+    console.log(`\x1b[33m${часть.name}: порт ${часть.port} занят (другой проект?), беру ${порт}\x1b[0m`);
+  }
+  назначенные.push({ ...часть, port: порт });
+}
+
+const apiPort = назначенные.find((p) => p.name === "api").port;
+
+const children = назначенные.map(({ name, color, port, cmd, args }) => {
+  // API-порт нужен и кассе, и кабинету: их vite.config.ts проксирует /v1
+  // на него, а не на захардкоженный 3001 — иначе прокси бил бы мимо, если
+  // API поднялся на соседнем порту.
+  const env = { ...process.env, API_PORT: String(apiPort) };
+  const полныеАргументы = name === "api" ? args : [...args, "--port", String(port), "--strictPort"];
+  const child = spawn(cmd, полныеАргументы, { stdio: ["ignore", "pipe", "pipe"], env });
   const print = (chunk) => {
     for (const line of String(chunk).split("\n")) {
       if (line.trim()) console.log(`${color}${name}\x1b[0m ${line}`);
@@ -63,9 +72,18 @@ const children = parts.map(({ name, color, cmd, args }) => {
   };
   child.stdout.on("data", print);
   child.stderr.on("data", print);
-  return child;
+  return { name, port, child };
 });
 
-const stop = () => { children.forEach((c) => c.kill("SIGTERM")); process.exit(0); };
+writeFileSync(PIDFILE, JSON.stringify(
+  children.map(({ name, port, child }) => ({ name, port, pid: child.pid })), null, 2));
+
+console.log("\n" + children.map(({ name, port }) => `  ${name}: http://localhost:${port}`).join("\n") + "\n");
+
+const stop = () => {
+  children.forEach(({ child }) => child.kill("SIGTERM"));
+  try { execSync(`rm -f ${JSON.stringify(PIDFILE)}`); } catch { /* уже нет файла */ }
+  process.exit(0);
+};
 process.on("SIGINT", stop);
 process.on("SIGTERM", stop);

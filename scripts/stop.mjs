@@ -1,24 +1,34 @@
 #!/usr/bin/env node
-// Останавливает всё, что осталось от прошлого запуска: API и оба приложения.
+// Останавливает то, что осталось от прошлого `pnpm dev` — по записанным PID,
+// а не по номеру порта: на машине разработчика на тех же портах может висеть
+// чужой, никак не связанный процесс (другой проект), и бить по порту означало
+// бы убить его вслепую.
+import { existsSync, readFileSync, unlinkSync } from "node:fs";
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const порты = [3001, 5173, 5174];
-let остановлено = 0;
+const PIDFILE = fileURLToPath(new URL("../.dev-pids.json", import.meta.url));
 
-for (const порт of порты) {
-  try {
-    const pids = execSync(`lsof -tnP -iTCP:${порт} -sTCP:LISTEN`,
-      { stdio: ["ignore", "pipe", "ignore"] }).toString().trim().split("\n").filter(Boolean);
-    for (const pid of pids) {
-      try {
-        process.kill(Number(pid), "SIGTERM");
-        console.log(`  порт ${порт}: остановлен процесс ${pid}`);
-        остановлено++;
-      } catch { /* уже завершился */ }
-    }
-  } catch { /* на порту никого нет */ }
+if (!existsSync(PIDFILE)) {
+  console.log("  нечего останавливать — .dev-pids.json нет (уже остановлено или не запускалось)");
+  process.exit(0);
 }
 
+const записи = JSON.parse(readFileSync(PIDFILE, "utf8"));
+let остановлено = 0;
+
+for (const { name, port, pid } of записи) {
+  try {
+    process.kill(pid, "SIGTERM");
+    console.log(`  ${name} (порт ${port}): остановлен процесс ${pid}`);
+    остановлено++;
+  } catch {
+    console.log(`  ${name}: процесс ${pid} уже не работает`);
+  }
+}
+
+try { unlinkSync(PIDFILE); } catch { /* уже нет файла */ }
+
 console.log(остановлено === 0
-  ? "  всё уже остановлено"
-  : `\n  готово, можно запускать: pnpm dev`);
+  ? "  всё уже было остановлено"
+  : "\n  готово, можно запускать: pnpm dev");
