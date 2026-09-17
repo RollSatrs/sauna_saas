@@ -128,7 +128,7 @@ describe("возврат", () => {
     const refunded = await call("POST", `/v1/orders/${receipt.id}/refunds`, {
       paymentId: cashPayment.id, amount: 100000,
       reason: "гость отказался от чая", idempotencyKey: "rep-refund-0001",
-    });
+    }, owner);
     assert.equal(refunded.status, 200);
 
     const summary = await call("GET", `/v1/reports/summary?${range}`, undefined, owner);
@@ -146,7 +146,7 @@ describe("возврат", () => {
     const r = await call("POST", `/v1/orders/${receipt.id}/refunds`, {
       paymentId: cashPayment.id, amount: cashPaid,
       reason: "проверка границы", idempotencyKey: "rep-refund-0002",
-    });
+    }, owner);
     assert.equal(r.status, 400);
     assert.match(r.body.error, /превышает платёж/);
   });

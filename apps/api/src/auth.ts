@@ -3,8 +3,20 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { Ctx } from "./db.ts";
 
-const SECRET = process.env.JWT_SECRET ?? "dev-secret-change-me";
+const SECRET_ПО_УМОЛЧАНИЮ = "dev-secret-change-me";
+const SECRET = process.env.JWT_SECRET ?? SECRET_ПО_УМОЛЧАНИЮ;
 const TTL_SECONDS = 12 * 60 * 60; // смена длиннее суток не бывает
+
+// Секрет по умолчанию годится только для разработки: он лежит в открытом
+// репозитории, и с ним токен кассира подделывает кто угодно. Забытая на
+// сервере переменная — это не предупреждение в логе, а дыра, поэтому
+// продакшен с таким секретом просто не стартует.
+if (SECRET === SECRET_ПО_УМОЛЧАНИЮ && process.env.NODE_ENV === "production") {
+  throw new Error(
+    "JWT_SECRET не задан: запуск в продакшене с секретом по умолчанию запрещён. " +
+    "Задайте случайную строку от 32 символов в переменной окружения JWT_SECRET.",
+  );
+}
 
 const b64 = (input: string | Buffer): string =>
   Buffer.from(input).toString("base64url");

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, formatTenge, newKey } from "./api.ts";
+import { api, auth, formatTenge, newKey } from "./api.ts";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/ui/dialog";
@@ -20,6 +20,11 @@ export function Receipts({ onChanged }: { onChanged: () => void }) {
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Возврат оформляет управляющий или владелец — так решено с заказчиком.
+  // Сервер кассиру откажет в любом случае; кнопку прячем, чтобы не звать
+  // человека на заведомый отказ у стойки при госте.
+  const можноВозврат = ["owner", "manager"].includes(auth.context()?.role ?? "");
 
   const load = async () => {
     try { setReceipts((await api<{ receipts: Receipt[] }>("/v1/shifts/current/receipts")).receipts); }
@@ -74,14 +79,16 @@ export function Receipts({ onChanged }: { onChanged: () => void }) {
                     {p.refunded > 0 && <span className="warn"> · возвращено {formatTenge(p.refunded)}</span>}
                   </span>
                   <span className="price">{formatTenge(p.amount)}</span>
-                  <button className="btn small ghost" style={{ flex: "none" }}
-                          disabled={p.refunded >= p.amount}
-                          onClick={() => {
-                            setRefunding({ orderId: r.id, paymentId: p.id, max: p.amount - p.refunded });
-                            setAmount(String((p.amount - p.refunded) / 100));
-                          }}>
-                    Возврат
-                  </button>
+                  {можноВозврат && (
+                    <button className="btn small ghost" style={{ flex: "none" }}
+                            disabled={p.refunded >= p.amount}
+                            onClick={() => {
+                              setRefunding({ orderId: r.id, paymentId: p.id, max: p.amount - p.refunded });
+                              setAmount(String((p.amount - p.refunded) / 100));
+                            }}>
+                      Возврат
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

@@ -65,6 +65,12 @@ export function registerOrderRoutes(app: FastifyInstance): void {
   // Возврат — обратная операция со ссылкой на оригинал, а не правка платежа.
   app.post("/v1/orders/:id/refunds", async (request, reply) => {
     const ctx = request.ctx;
+    // Возврат — единственная операция кассы, которая достаёт деньги из ящика
+    // обратно, поэтому её оставляем управляющему и владельцу. Кассир проводит
+    // возврат через них: так недостача всегда имеет имя.
+    if (!can(ctx, "payment.refund")) {
+      return reply.code(403).send({ error: "возврат оформляет управляющий или владелец" });
+    }
     const { id } = request.params as { id: string };
     const { paymentId, amount, reason, idempotencyKey } = (request.body ?? {}) as {
       paymentId?: string; amount?: number; reason?: string; idempotencyKey?: string;

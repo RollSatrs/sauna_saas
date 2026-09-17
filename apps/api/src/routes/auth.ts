@@ -4,6 +4,19 @@ import { issueToken } from "../auth.ts";
 import { audit, withTenant, withoutTenant } from "../db.ts";
 import { can } from "../auth.ts";
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Счётчик неудачных PIN живёт в базе (см. миграцию 012): перезапуск сервера
+ * не должен обнулять защиту, а при нескольких копиях API счётчик обязан быть
+ * общим. Возвращает, сколько секунд осталось ждать; ноль — можно пробовать.
+ */
+async function секундыПаузы(функция: string, deviceId: string): Promise<number> {
+  if (!UUID.test(deviceId)) return 0;
+  return withoutTenant(async (client) =>
+    Number((await client.query(`SELECT ${функция}($1) AS seconds`, [deviceId])).rows[0]?.seconds ?? 0));
+}
+
 export function registerAuthRoutes(app: FastifyInstance): void {
   // Шаг 1: телефон и пароль. Пароль проверяется внутри СУБД — его хеш
   // роли приложения недоступен даже на чтение.
@@ -73,6 +86,14 @@ export function registerAuthRoutes(app: FastifyInstance): void {
       return reply.code(400).send({ error: "PIN состоит из 4-8 цифр" });
     }
 
+    const пауза = await секундыПаузы("pin_lock_seconds", deviceId);
+    if (пауза > 0) {
+      return reply.code(429).send({
+        error: `слишком много неверных попыток, подождите ${пауза} с`,
+        retryAfterSeconds: пауза,
+      });
+    }
+
     let rows;
     try {
       rows = await withoutTenant(async (client) =>
@@ -81,7 +102,20 @@ export function registerAuthRoutes(app: FastifyInstance): void {
     } catch (error) {
       return reply.code(401).send({ error: (error as Error).message, unbound: true });
     }
-    if (rows.length === 0) return reply.code(401).send({ error: "неверный PIN" });
+    if (rows.length === 0) {
+      // Промах считаем только после того, как устройство опознано: иначе
+      // счётчик можно было бы накрутить чужой кассе, зная её идентификатор.
+      const блокировка = await секундыПаузы("pin_note_failure", deviceId);
+      if (блокировка > 0) {
+        return reply.code(429).send({
+          error: `слишком много неверных попыток, подождите ${блокировка} с`,
+          retryAfterSeconds: блокировка,
+        });
+      }
+      return reply.code(401).send({ error: "неверный PIN" });
+    }
+    // Верный PIN снимает счётчик промахов и паузу.
+    await секундыПаузы("pin_note_success", deviceId);
 
     const m = rows[0];
     const { token, expiresAt } = issueToken({
