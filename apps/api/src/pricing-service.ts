@@ -40,6 +40,19 @@ export async function loadRules(
 }
 
 /**
+ * Как считать переход через границу тарифа для этой услуги: посегментно
+ * (по умолчанию) или по тарифу на момент входа. Настройка услуги, а не филиала —
+ * у разных услуг одного заведения может быть разное ожидание гостя.
+ */
+export async function loadTimePricingMode(
+  client: Client, serviceId: string,
+): Promise<"segments" | "at_start"> {
+  const { rows } = await client.query(
+    "SELECT time_pricing_mode FROM services WHERE id = $1", [serviceId]);
+  return rows[0]?.time_pricing_mode === "at_start" ? "at_start" : "segments";
+}
+
+/**
  * Плановое окончание визита: старт плюс заказанное время и все продления.
  * Отдельным полем не храним — иначе оно разойдётся с таблицей продлений.
  */
@@ -60,13 +73,14 @@ export async function quoteVisit(client: Client, visit: {
   // последовательно: Promise.all здесь дал бы ложное ощущение параллельности.
   const branch = await loadBranchPricing(client, visit.branch_id);
   const rules = await loadRules(client, visit.service_id, visit.branch_id);
+  const mode = await loadTimePricingMode(client, visit.service_id);
   const ext = await client.query<{ total: number }>(
     "SELECT COALESCE(SUM(minutes),0)::bigint AS total FROM visit_extensions WHERE visit_id = $1",
     [visit.id]);
   const planned = plannedEnd(visit, Number(ext.rows[0].total));
   const actual = visit.ended_at ?? at;
   const to = actual > planned ? actual : planned;
-  return quoteTime({ rules, branch, from: visit.started_at, to });
+  return quoteTime({ rules, branch, from: visit.started_at, to, mode });
 }
 
 export async function quoteExtraService(

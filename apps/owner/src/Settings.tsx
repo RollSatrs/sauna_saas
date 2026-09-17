@@ -177,6 +177,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
           title="Услуги и цены"
           sub="Почасовые — аренда помещений. Штучные — веник, массаж, простыня"
           onAdd={() => setФорма({ вид: "service", kind: "time_based", defaultDuration: 120,
+            timePricingMode: "segments",
             rules: [{ days: "все", from: "00:00", to: "24:00", price: "", priority: 0, minUnits: 1 }] })}
           addLabel="Добавить услугу">
           <table>
@@ -201,6 +202,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                     <button className="btn small" onClick={() => setФорма({
                       вид: "service", id: s.id, name: s.name, kind: s.kind,
                       defaultDuration: s.default_duration_min ?? 60,
+                      timePricingMode: s.time_pricing_mode ?? "segments",
                       price: s.kind === "extra" ? тенге(s.rules?.[0]?.price ?? 0) : "",
                       rules: (s.rules ?? []).map((r: any) => ({
                         days: маскаВДни(r.dowMask), from: r.from, to: r.to,
@@ -435,6 +437,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
               onSave={() => сохранить(форма.id ? "PATCH" : "POST",
                 форма.id ? `/v1/manage/services/${форма.id}` : "/v1/manage/services",
                 { name: форма.name, kind: форма.kind, defaultDuration: форма.defaultDuration,
+                  timePricingMode: форма.timePricingMode,
                   price: форма.price, rules: форма.rules },
                 форма.id ? "Услуга изменена" : "Услуга создана")}>
           <Поле label="Название">
@@ -463,6 +466,21 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                 <Input type="number" min={15} step={15} value={форма.defaultDuration ?? 120}
                        className="h-11!"
                        onChange={(e) => setФорма({ ...форма, defaultDuration: Number(e.target.value) })} />
+              </Поле>
+              <Поле label="Если визит переходит в другой тариф"
+                    hint="Например, гость зашёл днём, а вышел вечером">
+                <Select value={форма.timePricingMode ?? "segments"}
+                        onValueChange={(v) => setФорма({ ...форма, timePricingMode: v })}>
+                  <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="segments" className="h-11">
+                      Считать по частям — точнее, но сложнее объяснить гостю
+                    </SelectItem>
+                    <SelectItem value="at_start" className="h-11">
+                      Считать по тарифу на момент входа — весь визит одной ценой
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </Поле>
               <Поле label="Тарифы"
                     hint="Если правила пересекаются, побеждает то, у которого приоритет выше">

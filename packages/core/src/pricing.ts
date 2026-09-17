@@ -118,16 +118,20 @@ export function billedMinutesFor(actualMinutes: number, branch: BranchPricing): 
 }
 
 /**
- * Почасовая услуга. Интервал режется по границам тарифов и считается посегментно:
- * гость, вошедший в 17:40, платит 20 минут по дневному тарифу и остаток по вечернему.
+ * Почасовая услуга. По умолчанию интервал режется по границам тарифов и
+ * считается посегментно: гость, вошедший в 17:40, платит 20 минут по дневному
+ * тарифу и остаток по вечернему. Услуга может быть настроена на режим
+ * «по времени входа»: тогда весь визит целиком считается по тарифу, который
+ * действовал в момент старта, даже если визит перешёл в другой тариф.
  */
 export function quoteTime(input: {
   rules: readonly PriceRule[];
   branch: BranchPricing;
   from: Date;
   to: Date;
+  mode?: "segments" | "at_start";
 }): TimeQuote {
-  const { rules, branch, from, to } = input;
+  const { rules, branch, from, to, mode = "segments" } = input;
   const hourly = rules.filter((r) => r.unit === "hour");
   if (hourly.length === 0) throw new PricingError("для услуги не задано ни одного почасового тарифа");
 
@@ -142,27 +146,32 @@ export function quoteTime(input: {
   const billedMinutes = Math.max(rounded, minimum);
   const minimumApplied = billedMinutes > rounded;
 
-  const segments: Segment[] = [];
   const billedEnd = addMinutes(from, billedMinutes);
-  let cursor = from;
-
-  while (cursor.getTime() < billedEnd.getTime()) {
-    const rule = ruleAt(hourly, cursor, branch.timezone);
-    if (!rule) throw new PricingError(`тариф не задан на ${cursor.toISOString()}`);
-    const boundary = nextBoundary(hourly, cursor, branch.timezone);
-    const segmentEnd = boundary < billedEnd ? boundary : billedEnd;
-    const minutes = minutesBetween(cursor, segmentEnd);
-    if (minutes <= 0) throw new PricingError("тарификация не продвигается: проверьте границы правил");
-    segments.push({
-      from: cursor,
-      to: segmentEnd,
-      minutes,
-      ruleId: rule.id,
-      ratePerHour: rule.amount,
-      amount: Math.round((minutes * rule.amount) / 60),
-    });
-    cursor = segmentEnd;
-  }
+  const segments: Segment[] = mode === "at_start"
+    ? [{
+        from, to: billedEnd, minutes: billedMinutes,
+        ruleId: opening.id, ratePerHour: opening.amount,
+        amount: Math.round((billedMinutes * opening.amount) / 60),
+      }]
+    : (() => {
+        const result: Segment[] = [];
+        let cursor = from;
+        while (cursor.getTime() < billedEnd.getTime()) {
+          const rule = ruleAt(hourly, cursor, branch.timezone);
+          if (!rule) throw new PricingError(`тариф не задан на ${cursor.toISOString()}`);
+          const boundary = nextBoundary(hourly, cursor, branch.timezone);
+          const segmentEnd = boundary < billedEnd ? boundary : billedEnd;
+          const minutes = minutesBetween(cursor, segmentEnd);
+          if (minutes <= 0) throw new PricingError("тарификация не продвигается: проверьте границы правил");
+          result.push({
+            from: cursor, to: segmentEnd, minutes,
+            ruleId: rule.id, ratePerHour: rule.amount,
+            amount: Math.round((minutes * rule.amount) / 60),
+          });
+          cursor = segmentEnd;
+        }
+        return result;
+      })();
 
   return {
     actualMinutes,

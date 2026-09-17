@@ -79,6 +79,28 @@ describe("почасовая тарификация", () => {
     assert.equal(q.total - naive, tenge(5000));
   });
 
+  test("режим «по времени входа»: пересечение 18:00 не режется, весь визит по дневному", () => {
+    const q = quoteTime({ rules, branch, from: at(9, 17, 40), to: at(9, 19, 40), mode: "at_start" });
+    assert.equal(q.segments.length, 1);
+    assert.equal(q.segments[0].ruleId, "day");
+    assert.equal(q.billedMinutes, 120);
+    assert.equal(q.total, tenge(12000)); // 2 часа по дневному тарифу целиком
+  });
+
+  test("режим «по времени входа»: минимум и округление действуют как обычно", () => {
+    const q = quoteTime({ rules, branch, from: at(12, 12), to: at(12, 13), mode: "at_start" });
+    assert.equal(q.actualMinutes, 60);
+    assert.equal(q.billedMinutes, 120); // минимум выходного тарифа — 2 часа
+    assert.equal(q.minimumApplied, true);
+    assert.equal(q.total, tenge(24000));
+  });
+
+  test("без указания режима считаем как раньше — посегментно", () => {
+    const segmented = quoteTime({ rules, branch, from: at(9, 17, 40), to: at(9, 19, 40) });
+    const entry = quoteTime({ rules, branch, from: at(9, 17, 40), to: at(9, 19, 40), mode: "segments" });
+    assert.deepEqual(segmented, entry);
+  });
+
   test("выходной: минимальная длительность тарифа поднимает сумму", () => {
     const q = quoteTime({ rules, branch, from: at(12, 12), to: at(12, 13) });
     assert.equal(q.actualMinutes, 60);

@@ -136,6 +136,28 @@ describe("услуги и тарифы", () => {
     assert.equal(r.body.quote.segments.length >= 1, true);
   });
 
+  test("режим «по времени входа» считает весь визит по тарифу на момент старта", async () => {
+    const created = await call("POST", "/v1/manage/services", {
+      name: "Кедровая бочка", kind: "time_based", defaultDuration: 60,
+      timePricingMode: "at_start",
+      rules: [
+        { days: "все", from: "00:00", to: "14:00", price: 5000, priority: 0, minUnits: 1 },
+        { days: "все", from: "14:00", to: "24:00", price: 9000, priority: 0, minUnits: 1 },
+      ],
+    });
+    assert.equal(created.status, 200);
+    assert.equal(created.body.service.time_pricing_mode, "at_start");
+
+    // 13:00–15:00 по Алматы (UTC+5): визит переходит границу 14:00.
+    const r = await call("POST", "/v1/pricing/quote", {
+      serviceId: created.body.service.id,
+      from: "2030-06-10T08:00:00.000Z", to: "2030-06-10T10:00:00.000Z",
+    }, cashier);
+    assert.equal(r.status, 200);
+    assert.equal(r.body.quote.segments.length, 1, "по времени входа не режется на куски");
+    assert.equal(Number(r.body.quote.total), 1000000, "оба часа по тарифу на момент входа — 5000 ₸/ч");
+  });
+
   test("услуга без тарифов не сохраняется", async () => {
     const r = await call("POST", "/v1/manage/services",
       { name: "Без цены", kind: "time_based", rules: [] });

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { withTenant } from "../db.ts";
-import { loadBranchPricing, loadRules } from "../pricing-service.ts";
+import { loadBranchPricing, loadRules, loadTimePricingMode } from "../pricing-service.ts";
 import { quoteTime } from "@sauna/core";
 
 export function registerCatalogRoutes(app: FastifyInstance): void {
@@ -9,7 +9,7 @@ export function registerCatalogRoutes(app: FastifyInstance): void {
     const ctx = request.ctx;
     return withTenant(ctx.orgId, async (client) => {
       const services = await client.query(
-          `SELECT id, name, kind, unit, default_duration_min, resource_type_id
+          `SELECT id, name, kind, unit, default_duration_min, resource_type_id, time_pricing_mode
            FROM services WHERE archived_at IS NULL ORDER BY kind, name`);
       const products = await client.query(
           `SELECT p.id, p.name, p.category, p.unit, p.price,
@@ -70,8 +70,9 @@ export function registerCatalogRoutes(app: FastifyInstance): void {
     return withTenant(ctx.orgId, async (client) => {
       const branch = await loadBranchPricing(client, ctx.branchId!);
       const rules = await loadRules(client, serviceId, ctx.branchId!);
+      const mode = await loadTimePricingMode(client, serviceId);
       try {
-        const quote = quoteTime({ rules, branch, from: new Date(from), to: new Date(to) });
+        const quote = quoteTime({ rules, branch, from: new Date(from), to: new Date(to), mode });
         return { quote };
       } catch (error) {
         return reply.code(400).send({ error: (error as Error).message });
