@@ -120,6 +120,19 @@ describe("продажи и загрузка", () => {
 });
 
 describe("возврат", () => {
+  test("кассиру возврат недоступен — это право управляющего и владельца", async () => {
+    const receipts = await call("GET", "/v1/shifts/current/receipts");
+    const receipt = receipts.body.receipts[0];
+    const cashPayment = receipt.payments.find((p: any) => p.method === "cash");
+
+    const r = await call("POST", `/v1/orders/${receipt.id}/refunds`, {
+      paymentId: cashPayment.id, amount: 1,
+      reason: "проверка прав", idempotencyKey: "rep-refund-forbidden",
+    }, cashier);
+    assert.equal(r.status, 403);
+    assert.match(r.body.error, /управляющий или владелец/);
+  });
+
   test("возврат уменьшает выручку и виден в отчёте по сменам", async () => {
     const receipts = await call("GET", "/v1/shifts/current/receipts");
     const receipt = receipts.body.receipts[0];

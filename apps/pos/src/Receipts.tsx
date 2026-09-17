@@ -22,8 +22,8 @@ export function Receipts({ onChanged }: { onChanged: () => void }) {
   const [busy, setBusy] = useState(false);
 
   // Возврат оформляет управляющий или владелец — так решено с заказчиком.
-  // Сервер кассиру откажет в любом случае; кнопку прячем, чтобы не звать
-  // человека на заведомый отказ у стойки при госте.
+  // Сервер кассиру откажет в любом случае, но кнопку не прячем молча:
+  // кассир должен понимать, что дело не в поломке, а позвать управляющего.
   const можноВозврат = ["owner", "manager"].includes(auth.context()?.role ?? "");
 
   const load = async () => {
@@ -79,7 +79,7 @@ export function Receipts({ onChanged }: { onChanged: () => void }) {
                     {p.refunded > 0 && <span className="warn"> · возвращено {formatTenge(p.refunded)}</span>}
                   </span>
                   <span className="price">{formatTenge(p.amount)}</span>
-                  {можноВозврат && (
+                  {можноВозврат ? (
                     <button className="btn small ghost" style={{ flex: "none" }}
                             disabled={p.refunded >= p.amount}
                             onClick={() => {
@@ -88,6 +88,12 @@ export function Receipts({ onChanged }: { onChanged: () => void }) {
                             }}>
                       Возврат
                     </button>
+                  ) : (
+                    p.refunded < p.amount && (
+                      <span className="hint" style={{ flex: "none" }} title="Возврат оформляет управляющий или владелец">
+                        возврат — через управляющего
+                      </span>
+                    )
                   )}
                 </div>
               ))}

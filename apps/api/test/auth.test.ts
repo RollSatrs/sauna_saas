@@ -187,6 +187,26 @@ describe("вход по PIN", () => {
     const r = await call("POST", `/v1/devices/${deviceId}/revoke`, {}, session.body.token);
     assert.equal(r.status, 403);
   });
+
+  test("PIN блокируется после пяти промахов подряд", async () => {
+    // Отдельное устройство: не делить счётчик промахов с другими тестами файла.
+    const owner = await call("POST", "/v1/auth/login", { phone: "+77010000001", password: "owner123" });
+    const fresh = await call("POST", "/v1/auth/device",
+      { phone: "+77010000001", password: "owner123", branchId, name: "Касса для блокировки" });
+    const { id: freshId, token: freshToken } = fresh.body.device;
+
+    let last;
+    for (let i = 0; i < 5; i++) {
+      last = await call("POST", "/v1/auth/pin", { deviceId: freshId, deviceToken: freshToken, pin: "9999" });
+    }
+    assert.equal(last!.status, 429, "пятый подряд промах должен уже упереться в паузу");
+    assert.ok(last!.body.retryAfterSeconds > 0);
+    assert.match(last!.body.error, /слишком много неверных попыток/);
+
+    // Пауза действует даже на верный PIN: подобрать успели или нет — неважно.
+    const withCorrectPin = await call("POST", "/v1/auth/pin", { deviceId: freshId, deviceToken: freshToken, pin: "1234" });
+    assert.equal(withCorrectPin.status, 429);
+  });
 });
 
 describe("границы филиала", () => {
