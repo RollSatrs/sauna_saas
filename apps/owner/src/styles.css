@@ -264,8 +264,8 @@ td .chip { margin-left: 8px; }
 
 /* редактор тарифов */
 .rule-editor { display: flex; flex-direction: column; gap: 8px; }
-.rule-row { display: grid; grid-template-columns: 1.5fr .8fr .8fr 1fr .8fr 34px; gap: 6px; }
-.rule-head { display: grid; grid-template-columns: 1.5fr .8fr .8fr 1fr .8fr 34px; gap: 6px;
+.rule-row { display: grid; grid-template-columns: 1.5fr .8fr .8fr 1fr 34px; gap: 6px; }
+.rule-head { display: grid; grid-template-columns: 1.5fr .8fr .8fr 1fr 34px; gap: 6px;
              font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
 @media (max-width: 560px) {
   .rule-row, .rule-head { grid-template-columns: 1fr 1fr; }
