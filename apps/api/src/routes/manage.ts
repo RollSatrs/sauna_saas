@@ -52,19 +52,44 @@ async function записатьТарифы(
   if (!Array.isArray(правила) || правила.length === 0) {
     throw new ОшибкаВвода("у услуги должен быть хотя бы один тариф");
   }
-  await client.query("UPDATE price_rules SET is_active = false WHERE service_id = $1", [serviceId]);
-  for (const [i, п] of правила.entries()) {
+
+  const проверенные = правила.map((п, i) => {
     const с = время((п as any).from ?? "00:00", `тариф ${i + 1}: начало`);
     const до = время((п as any).to ?? "24:00", `тариф ${i + 1}: конец`);
     if (до <= с) throw new ОшибкаВвода(`тариф ${i + 1}: конец должен быть позже начала`);
+    return {
+      priority: целое((п as any).priority ?? 0, `тариф ${i + 1}: приоритет`, 0, 100),
+      dowMask: МАСКИ[(п as any).days ?? "все"] ?? 127,
+      from: с,
+      to: до,
+      price: тиыны((п as any).price, `тариф ${i + 1}: цена`),
+      minUnits: Number((п as any).minUnits ?? 1),
+    };
+  });
+
+  for (let i = 0; i < проверенные.length; i += 1) {
+    for (let j = i + 1; j < проверенные.length; j += 1) {
+      const a = проверенные[i];
+      const b = проверенные[j];
+      const общиеДни = (a.dowMask & b.dowMask) !== 0;
+      const общееВремя = a.from < b.to && b.from < a.to;
+      if (a.priority === b.priority && общиеДни && общееВремя) {
+        throw new ОшибкаВвода(
+          `тарифы ${i + 1} и ${j + 1} пересекаются без явного порядка — ` +
+          "разделите время или дни действия",
+        );
+      }
+    }
+  }
+
+  await client.query("UPDATE price_rules SET is_active = false WHERE service_id = $1", [serviceId]);
+  for (const п of проверенные) {
     await client.query(
       `INSERT INTO price_rules (org_id, service_id, priority, dow_mask, time_from, time_to,
                                 amount, unit, min_units, is_active)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,true)`,
-      [ctx.orgId, serviceId, целое((п as any).priority ?? 0, `тариф ${i + 1}: приоритет`, 0, 100),
-       МАСКИ[(п as any).days ?? "все"] ?? 127, с, до,
-       тиыны((п as any).price, `тариф ${i + 1}: цена`), единица,
-       Number((п as any).minUnits ?? 1)]);
+      [ctx.orgId, serviceId, п.priority, п.dowMask, п.from, п.to,
+       п.price, единица, п.minUnits]);
   }
 }
 
@@ -169,7 +194,7 @@ export function registerManageRoutes(app: FastifyInstance): void {
                   'id', r.id, 'priority', r.priority, 'dowMask', r.dow_mask,
                   'from', to_char(r.time_from,'HH24:MI'), 'to', to_char(r.time_to,'HH24:MI'),
                   'price', r.amount, 'minUnits', r.min_units
-                ) ORDER BY r.priority DESC) FILTER (WHERE r.id IS NOT NULL), '[]') AS rules
+                ) ORDER BY r.priority, r.created_at) FILTER (WHERE r.id IS NOT NULL), '[]') AS rules
          FROM services s
          LEFT JOIN price_rules r ON r.service_id = s.id AND r.is_active
          GROUP BY s.id ORDER BY s.archived_at NULLS FIRST, s.kind, s.name`)).rows,
@@ -383,6 +408,10 @@ export function registerManageRoutes(app: FastifyInstance): void {
       const шаг = целое(b.pricingStep ?? было.settings.pricing_step_min, "шаг тарификации", 5, 120);
       const льгота = целое(b.graceMinutes ?? было.settings.grace_minutes, "льготные минуты", 0, 119);
       if (льгота >= шаг) throw new ОшибкаВвода("льготные минуты должны быть меньше шага тарификации");
+      const режимКаталога = String(b.catalogMode ?? было.settings.catalog_mode ?? "private");
+      if (!["private", "public", "mixed"].includes(режимКаталога)) {
+        throw new ОшибкаВвода("режим каталога должен быть private, public или mixed");
+      }
       const стало = (await client.query(
         `UPDATE branches SET name=$2, address=$3, settings = settings || $4::jsonb
          WHERE id=$1 RETURNING *`,
@@ -394,6 +423,7 @@ export function registerManageRoutes(app: FastifyInstance): void {
            cashier_discount_limit_percent:
              целое(b.discountLimit ?? было.settings.cashier_discount_limit_percent ?? 10,
                    "лимит скидки кассира, %", 0, 100),
+           catalog_mode: режимКаталога,
          })])).rows[0];
       await audit(client, request.ctx, { entityType: "branch", entityId: id,
                                          action: "update", before: было, after: стало });

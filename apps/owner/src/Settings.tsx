@@ -11,6 +11,13 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 
 type Раздел = "plans" | "services" | "resources" | "products" | "staff" | "branch";
+type РежимКаталога = "private" | "public" | "mixed";
+type Филиал = {
+  id: string;
+  name: string;
+  address?: string | null;
+  settings?: { catalog_mode?: РежимКаталога; [key: string]: unknown };
+};
 
 const РАЗДЕЛЫ: { id: Раздел; label: string }[] = [
   { id: "plans", label: "Абонементы" },
@@ -29,6 +36,10 @@ const ДНИ = [
 
 const маскаВДни = (m: number) => (m === 31 ? "будни" : m === 96 ? "выходные" : "все");
 const тенге = (тиыны: number) => String(Math.round(Number(тиыны) / 100));
+const режимКаталога = (филиал: Филиал): РежимКаталога => {
+  const режим = филиал.settings?.catalog_mode;
+  return режим === "public" || режим === "mixed" ? режим : "private";
+};
 
 /** Поле формы с подписью: подпись всегда видна, не плейсхолдером. */
 function Поле({ label, hint, children }: {
@@ -69,11 +80,12 @@ function Окно({ open, title, description, onClose, onSave, busy, error, chil
 }
 
 export function Settings({ branches }: { branches: { id: string; name: string }[] }) {
-  const [раздел, setРаздел] = useState<Раздел>("plans");
+  const [раздел, setРаздел] = useState<Раздел>("services");
   const [данные, setДанные] = useState<any>({});
   // Услуги нужны не только своему разделу: на них ссылаются помещения
   // и абонементы. Поэтому держим их отдельно и грузим независимо от вкладки.
   const [услуги, setУслуги] = useState<any[]>([]);
+  const [филиалы, setФилиалы] = useState<Филиал[]>(branches);
   const [форма, setФорма] = useState<any | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,8 +109,26 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
     } catch { /* список останется прежним */ }
   }, []);
 
+  const загрузитьФилиалы = useCallback(async () => {
+    try {
+      setФилиалы((await api<{ branches: Филиал[] }>("/v1/branches")).branches);
+    } catch { /* используем переданный список и безопасный режим private */ }
+  }, []);
+
   useEffect(() => { void загрузить(); }, [загрузить]);
   useEffect(() => { void загрузитьУслуги(); }, [загрузитьУслуги]);
+  useEffect(() => { void загрузитьФилиалы(); }, [загрузитьФилиалы]);
+
+  const режимы = филиалы.length > 0 ? филиалы.map(режимКаталога) : ["private"];
+  const показыватьЧастный = режимы.some((режим) => режим === "private" || режим === "mixed");
+  const показыватьОбщественный = режимы.some((режим) => режим === "public" || режим === "mixed");
+  const видимыеРазделы = РАЗДЕЛЫ.filter((пункт) =>
+    (пункт.id !== "plans" || показыватьОбщественный) &&
+    (пункт.id !== "resources" || показыватьЧастный));
+
+  useEffect(() => {
+    if (!видимыеРазделы.some((пункт) => пункт.id === раздел)) setРаздел("services");
+  }, [показыватьЧастный, показыватьОбщественный, раздел]);
 
   const сохранить = async (метод: string, путь: string, тело: unknown, успех: string) => {
     setBusy(true); setError(null);
@@ -108,6 +138,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
       setTimeout(() => setСообщение(null), 3500);
       await загрузить();
       if (путь.includes("/services")) await загрузитьУслуги();
+      if (путь.includes("/branches")) await загрузитьФилиалы();
     } catch (e) { setError((e as Error).message); }
     finally { setBusy(false); }
   };
@@ -121,7 +152,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
     <div className="settings">
       <Tabs value={раздел} onValueChange={(v) => { setРаздел(v as Раздел); setФорма(null); }}>
         <TabsList className="h-11">
-          {РАЗДЕЛЫ.map((r) => (
+          {видимыеРазделы.map((r) => (
             <TabsTrigger key={r.id} value={r.id} className="h-9 px-4">{r.label}</TabsTrigger>
           ))}
         </TabsList>
@@ -173,52 +204,29 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
 
       {/* ── Услуги ─────────────────────────────────────────────────── */}
       {раздел === "services" && (
-        <Карточка
-          title="Услуги и цены"
-          sub="Почасовые — аренда помещений. Штучные — веник, массаж, простыня"
-          onAdd={() => setФорма({ вид: "service", kind: "time_based", defaultDuration: 120,
-            timePricingMode: "segments",
-            rules: [{ days: "все", from: "00:00", to: "24:00", price: "", priority: 0, minUnits: 1 }] })}
-          addLabel="Добавить услугу">
-          <table>
-            <thead><tr><th>Услуга</th><th>Тип</th><th>Тарифы</th><th></th></tr></thead>
-            <tbody>
-              {услуги.map((s: any) => (
-                <tr key={s.id} className={s.archived_at ? "archived" : ""}>
-                  <td>{s.name}{s.archived_at && <span className="chip">в архиве</span>}</td>
-                  <td>{s.kind === "time_based" ? "почасовая" : "штучная"}</td>
-                  <td>
-                    <div className="rules">
-                      {(s.rules ?? []).map((r: any, i: number) => (
-                        <span key={i}>
-                          {маскаВДни(r.dowMask)} {r.from}–{r.to} · {formatTenge(r.price)}
-                          {s.kind === "time_based" ? "/ч" : ""}
-                          {Number(r.minUnits) > 1 ? ` · мин ${Number(r.minUnits)} ч` : ""}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="row-actions">
-                    <button className="btn small" onClick={() => setФорма({
-                      вид: "service", id: s.id, name: s.name, kind: s.kind,
-                      defaultDuration: s.default_duration_min ?? 60,
-                      timePricingMode: s.time_pricing_mode ?? "segments",
-                      price: s.kind === "extra" ? тенге(s.rules?.[0]?.price ?? 0) : "",
-                      rules: (s.rules ?? []).map((r: any) => ({
-                        days: маскаВДни(r.dowMask), from: r.from, to: r.to,
-                        price: тенге(r.price), priority: r.priority, minUnits: Number(r.minUnits),
-                      })),
-                    })}>Изменить</button>
-                    <button className="btn small ghost"
-                      onClick={() => архив(`/v1/manage/services/${s.id}/archive`, !!s.archived_at)}>
-                      {s.archived_at ? "Вернуть" : "В архив"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Карточка>
+        <>
+          {показыватьЧастный && (
+            <Карточка
+              title="Помещения и цены"
+              sub="Почасовые услуги, которые назначаются саунам, комнатам и купелям"
+              onAdd={() => setФорма({ вид: "service", kind: "time_based", defaultDuration: 120,
+                timePricingMode: "segments",
+                rules: [{ days: "все", from: "00:00", to: "24:00", price: "", priority: 0, minUnits: 1 }] })}
+              addLabel="Добавить почасовую услугу">
+              <ТаблицаУслуг услуги={услуги.filter((s: any) => s.kind === "time_based")}
+                onEdit={setФорма} onArchive={архив} />
+            </Карточка>
+          )}
+
+          <Карточка
+            title="Дополнительные услуги"
+            sub="Штучные позиции: веник, массаж, простыня и другие дополнения к визиту"
+            onAdd={() => setФорма({ вид: "service", kind: "extra", price: "" })}
+            addLabel="Добавить услугу">
+            <ТаблицаУслуг услуги={услуги.filter((s: any) => s.kind === "extra")}
+              onEdit={setФорма} onArchive={архив} />
+          </Карточка>
+        </>
       )}
 
       {/* ── Помещения ──────────────────────────────────────────────── */}
@@ -339,12 +347,15 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
       {раздел === "branch" && (
         <div className="card">
           <h2>Настройки филиала</h2>
-          <span className="sub">Как округлять время и сколько скидки может дать кассир</span>
-          {(данные.branches ?? []).map((b: any) => (
+          <span className="sub">Тарификация, скидки и видимые сценарии каталога</span>
+          {филиалы.map((b) => (
             <div className="branch-row" key={b.id}>
               <div>
                 <strong>{b.name}</strong>
-                <span className="muted"> · пояс {b.timezone}</span>
+                <span className="muted">
+                  {` · ${({ private: "частная сауна", public: "общественная баня",
+                    mixed: "смешанный каталог" } as const)[режимКаталога(b)]}`}
+                </span>
               </div>
               <button className="btn small" onClick={() => setФорма({
                 вид: "branch", id: b.id, name: b.name, address: b.address ?? "",
@@ -352,6 +363,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                 graceMinutes: b.settings?.grace_minutes ?? 5,
                 discountLimit: b.settings?.cashier_discount_limit_percent ?? 10,
                 rounding: b.settings?.rounding ?? "up",
+                catalogMode: режимКаталога(b),
               })}>Изменить</button>
             </div>
           ))}
@@ -483,8 +495,11 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                 </Select>
               </Поле>
               <Поле label="Тарифы"
-                    hint="Если правила пересекаются, побеждает то, у которого приоритет выше">
+                    hint="Новая строка получает преимущество над добавленными раньше. Неоднозначные пересечения форма не сохранит.">
                 <div className="rule-editor">
+                  <div className="rule-head">
+                    <span>дни</span><span>с</span><span>до</span><span>₸/час</span><span></span>
+                  </div>
                   {(форма.rules ?? []).map((r: any, i: number) => (
                     <div className="rule-row" key={i}>
                       <Select value={r.days}
@@ -511,23 +526,18 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                              onChange={(e) => setФорма({ ...форма,
                                rules: форма.rules.map((x: any, j: number) =>
                                  j === i ? { ...x, price: e.target.value } : x) })} />
-                      <Input className="h-10!" type="number" min={0} value={r.priority}
-                             aria-label="приоритет"
-                             onChange={(e) => setФорма({ ...форма,
-                               rules: форма.rules.map((x: any, j: number) =>
-                                 j === i ? { ...x, priority: Number(e.target.value) } : x) })} />
                       <button className="btn small ghost" aria-label="Убрать тариф"
                               onClick={() => setФорма({ ...форма,
                                 rules: форма.rules.filter((_: any, j: number) => j !== i) })}>×</button>
                     </div>
                   ))}
-                  <div className="rule-head">
-                    <span>дни</span><span>с</span><span>до</span><span>₸/час</span>
-                    <span>приоритет</span><span></span>
-                  </div>
-                  <button className="btn small" onClick={() => setФорма({ ...форма,
-                    rules: [...(форма.rules ?? []),
-                            { days: "все", from: "00:00", to: "24:00", price: "", priority: 0, minUnits: 1 }] })}>
+                  <button className="btn small" onClick={() => {
+                    const правила = форма.rules ?? [];
+                    const следующий = Math.max(-1, ...правила.map((r: any) => Number(r.priority ?? 0))) + 1;
+                    setФорма({ ...форма, rules: [...правила,
+                      { days: "все", from: "00:00", to: "24:00", price: "",
+                        priority: следующий, minUnits: 1 }] });
+                  }}>
                     Добавить тариф
                   </button>
                 </div>
@@ -688,7 +698,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
               onSave={() => сохранить("PATCH", `/v1/manage/branches/${форма.id}`,
                 { name: форма.name, address: форма.address, pricingStep: форма.pricingStep,
                   graceMinutes: форма.graceMinutes, discountLimit: форма.discountLimit,
-                  rounding: форма.rounding },
+                  rounding: форма.rounding, catalogMode: форма.catalogMode },
                 "Настройки сохранены")}>
           <Поле label="Название">
             <Input value={форма.name ?? ""} className="h-11!"
@@ -697,6 +707,18 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
           <Поле label="Адрес">
             <Input value={форма.address ?? ""} className="h-11!"
                    onChange={(e) => setФорма({ ...форма, address: e.target.value })} />
+          </Поле>
+          <Поле label="Режим каталога"
+                hint="Меняет только видимость разделов в кабинете; расчёт цены и касса не меняются">
+            <Select value={форма.catalogMode ?? "private"}
+                    onValueChange={(v) => setФорма({ ...форма, catalogMode: v })}>
+              <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="private" className="h-11">Частная сауна — помещения и время</SelectItem>
+                <SelectItem value="public" className="h-11">Общественная баня — вход и абонементы</SelectItem>
+                <SelectItem value="mixed" className="h-11">Смешанный — оба сценария</SelectItem>
+              </SelectContent>
+            </Select>
           </Поле>
           <div className="pair">
             <Поле label="Шаг тарификации, мин" hint="Обычно 30 или 60">
@@ -716,6 +738,55 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
         </Окно>
       )}
     </div>
+  );
+}
+
+function ТаблицаУслуг({ услуги, onEdit, onArchive }: {
+  услуги: any[];
+  onEdit: (форма: any) => void;
+  onArchive: (путь: string, restore: boolean) => Promise<void>;
+}) {
+  return (
+    <table>
+      <thead><tr><th>Услуга</th><th>Тарифы</th><th></th></tr></thead>
+      <tbody>
+        {услуги.length === 0 && (
+          <tr><td colSpan={3} className="empty">Пока ничего не добавлено</td></tr>
+        )}
+        {услуги.map((s: any) => (
+          <tr key={s.id} className={s.archived_at ? "archived" : ""}>
+            <td>{s.name}{s.archived_at && <span className="chip">в архиве</span>}</td>
+            <td>
+              <div className="rules">
+                {(s.rules ?? []).map((r: any, i: number) => (
+                  <span key={i}>
+                    {маскаВДни(r.dowMask)} {r.from}–{r.to} · {formatTenge(r.price)}
+                    {s.kind === "time_based" ? "/ч" : ""}
+                    {Number(r.minUnits) > 1 ? ` · мин ${Number(r.minUnits)} ч` : ""}
+                  </span>
+                ))}
+              </div>
+            </td>
+            <td className="row-actions">
+              <button className="btn small" onClick={() => onEdit({
+                вид: "service", id: s.id, name: s.name, kind: s.kind,
+                defaultDuration: s.default_duration_min ?? 60,
+                timePricingMode: s.time_pricing_mode ?? "segments",
+                price: s.kind === "extra" ? тенге(s.rules?.[0]?.price ?? 0) : "",
+                rules: (s.rules ?? []).map((r: any) => ({
+                  days: маскаВДни(r.dowMask), from: r.from, to: r.to,
+                  price: тенге(r.price), priority: r.priority, minUnits: Number(r.minUnits),
+                })),
+              })}>Изменить</button>
+              <button className="btn small ghost"
+                onClick={() => void onArchive(`/v1/manage/services/${s.id}/archive`, !!s.archived_at)}>
+                {s.archived_at ? "Вернуть" : "В архив"}
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

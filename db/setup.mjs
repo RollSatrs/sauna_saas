@@ -51,6 +51,7 @@ try {
        rounding: "up",
        grace_minutes: config.филиал.льготныеМинуты,
        cashier_discount_limit_percent: 10,
+       catalog_mode: "private",
      })])).rows[0].id;
 
   const создатьСотрудника = async (человек, роль, филиал) => {

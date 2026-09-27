@@ -264,7 +264,8 @@ export function registerReportRoutes(app: FastifyInstance): void {
     const ctx = request.ctx;
     return withTenant(ctx.orgId, async (client) => {
       const { rows } = await client.query(
-        "SELECT id, name, timezone FROM branches WHERE archived_at IS NULL ORDER BY name");
+        `SELECT id, name, address, timezone, settings
+         FROM branches WHERE archived_at IS NULL ORDER BY name`);
       return { branches: rows };
     });
   });

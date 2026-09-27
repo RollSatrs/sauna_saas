@@ -174,6 +174,18 @@ describe("услуги и тарифы", () => {
     assert.match(r.body.error, /позже начала/);
   });
 
+  test("пересекающиеся тарифы одного приоритета отклоняются с понятной причиной", async () => {
+    const r = await call("POST", "/v1/manage/services", {
+      name: "Неоднозначный тариф", kind: "time_based",
+      rules: [
+        { days: "все", from: "00:00", to: "24:00", price: 5000, priority: 0 },
+        { days: "будни", from: "12:00", to: "18:00", price: 7000, priority: 0 },
+      ],
+    });
+    assert.equal(r.status, 400);
+    assert.match(r.body.error, /пересекаются без явного порядка/);
+  });
+
   test("услугу, назначенную помещению, нельзя убрать в архив", async () => {
     const услуги = (await call("GET", "/v1/manage/services")).body.services;
     const занятая = услуги.find((s: any) => s.name === "Аренда сауны");
@@ -247,6 +259,23 @@ describe("настройки филиала", () => {
       { pricingStep: 30, graceMinutes: 45 });
     assert.equal(r.status, 400);
     assert.match(r.body.error, /меньше шага/);
+  });
+
+  test("режим каталога сохраняется в настройках филиала", async () => {
+    const r = await call("PATCH", `/v1/manage/branches/${branchId}`, { catalogMode: "mixed" });
+    assert.equal(r.status, 200);
+    assert.equal(r.body.branch.settings.catalog_mode, "mixed");
+
+    const branches = await call("GET", "/v1/branches");
+    assert.equal(branches.body.branches.find((b: any) => b.id === branchId).settings.catalog_mode, "mixed");
+
+    await call("PATCH", `/v1/manage/branches/${branchId}`, { catalogMode: "private" });
+  });
+
+  test("неизвестный режим каталога отклоняется", async () => {
+    const r = await call("PATCH", `/v1/manage/branches/${branchId}`, { catalogMode: "spa" });
+    assert.equal(r.status, 400);
+    assert.match(r.body.error, /private, public или mixed/);
   });
 });
 
