@@ -2,7 +2,9 @@
 // Сценарии повторяют прайс демо-бани: будни день/вечер и выходные с минимумом.
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { billedMinutesFor, quoteTime, quotePiece, splitByCoveredMinutes, PricingError } from "../src/pricing.ts";
+import {
+  billedMinutesFor, quoteEntry, quoteTime, quotePiece, splitByCoveredMinutes, PricingError,
+} from "../src/pricing.ts";
 import type { BranchPricing, PriceRule } from "../src/pricing.ts";
 import { instantFromLocal, localParts } from "../src/time.ts";
 import { formatTenge, tenge } from "../src/money.ts";
@@ -160,6 +162,28 @@ describe("штучные позиции", () => {
   test("веники считаются по количеству", () => {
     const q = quotePiece({ rules: extras, at: at(9, 14), timezone: TZ, qty: 3 });
     assert.equal(q.total, tenge(4500));
+  });
+});
+
+describe("готовые тарифы посещения", () => {
+  const entryRules: PriceRule[] = [
+    { id: "session", priority: 0, dowMask: 127, timeFrom: "00:00", timeTo: "24:00", amount: tenge(10000), unit: "visit", minUnits: 0 },
+    { id: "morning", priority: 1, dowMask: 31, timeFrom: "08:00", timeTo: "12:00", amount: tenge(6000), unit: "visit", minUnits: 0 },
+  ];
+
+  test("фиксирует подходящую цену по дню и времени входа", () => {
+    const q = quoteEntry({ rules: entryRules, at: at(9, 10), timezone: TZ });
+    assert.equal(q.ruleId, "morning");
+    assert.equal(q.total, tenge(6000));
+  });
+
+  test("тариф за человека умножается на число гостей", () => {
+    const q = quoteEntry({
+      rules: [{ ...entryRules[0], id: "person", unit: "person", amount: tenge(2500) }],
+      at: at(9, 14), timezone: TZ, guestsCount: 3,
+    });
+    assert.equal(q.qty, 3);
+    assert.equal(q.total, tenge(7500));
   });
 });
 

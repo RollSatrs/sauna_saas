@@ -8,6 +8,7 @@ import { Bookings } from "./Bookings.tsx";
 import { PaymentPanel, StartVisit, VisitPanel } from "./Panel.tsx";
 import { Receipts } from "./Receipts.tsx";
 import { SubscriptionsView } from "./Subscriptions.tsx";
+import { PublicBath } from "./PublicBath.tsx";
 import type { Board, Catalog, Tile } from "./types.ts";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 // @ts-expect-error — виртуальный модуль vite-plugin-pwa
@@ -17,10 +18,11 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/ui/dialog";
 
-type View = "board" | "bookings" | "receipts" | "subscriptions";
+type View = "board" | "entries" | "bookings" | "receipts" | "subscriptions";
 
 const VIEWS: { id: View; label: string }[] = [
   { id: "board", label: "Зал" },
+  { id: "entries", label: "Посещения" },
   { id: "bookings", label: "Брони" },
   { id: "receipts", label: "Чеки" },
   { id: "subscriptions", label: "Абонементы" },
@@ -195,25 +197,41 @@ export function App() {
       if (event.key === "Escape") { setSelectedId(null); setMode("idle"); }
       if (event.key === "F2") {
         event.preventDefault();
-        setView("board");
+        const publicOnly = catalog?.branch.settings?.catalog_mode === "public";
+        setView(publicOnly ? "entries" : "board");
         const free = board?.resources.find((t) => !t.visit);
-        if (free) setSelectedId(free.resourceId);
+        if (!publicOnly && free) setSelectedId(free.resourceId);
       }
-      if (event.key === "F3") { event.preventDefault(); setView("bookings"); }
+      if (event.key === "F3" && catalog?.branch.settings?.catalog_mode !== "public") {
+        event.preventDefault(); setView("bookings");
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [board]);
+  }, [board, catalog]);
 
   const selected = useMemo(
     () => board?.resources.find((t) => t.resourceId === selectedId) ?? null,
     [board, selectedId]);
+  const catalogMode = catalog?.branch.settings?.catalog_mode ?? "private";
+  const showPrivate = catalogMode === "private" || catalogMode === "mixed";
+  const showPublic = catalogMode === "public" || catalogMode === "mixed";
+  const visibleViews = VIEWS.filter((item) =>
+    (item.id !== "board" && item.id !== "bookings" || showPrivate) &&
+    (item.id !== "entries" || showPublic));
+  const operationalView: View = showPrivate ? "board" : "entries";
+  const showPanel = (view === "board" || view === "entries") && (mode !== "idle" || selected !== null);
+
+  useEffect(() => {
+    if (catalog && !visibleViews.some((item) => item.id === view)) {
+      setView(operationalView); setSelectedId(null); setMode("idle");
+    }
+  }, [catalogMode, view]);
 
   if (!context) return <Login onDone={setContext} />;
 
   const shift = board?.shift ?? null;
   const unpaid = board?.unpaidOrders ?? [];
-  const showPanel = view === "board" && (mode !== "idle" || selected !== null);
 
   return (
     <div className="app">
@@ -224,7 +242,7 @@ export function App() {
         <Tabs value={view}
               onValueChange={(next) => { setView(next as View); setSelectedId(null); setMode("idle"); }}>
           <TabsList className="h-11 bg-secondary">
-            {VIEWS.map((v) => (
+            {visibleViews.map((v) => (
               <TabsTrigger key={v.id} value={v.id} className="h-9 px-4 text-sm">
                 {v.label}
               </TabsTrigger>
@@ -252,7 +270,7 @@ export function App() {
         {error && наСвязи && <span className="warn">{error}</span>}
         {unpaid.length > 0 && (
           <button className="shift-chip" onClick={() => {
-            setView("board"); setSelectedId(null);
+            setView(operationalView); setSelectedId(null);
             setPayOrderId(unpaid[0].id); setMode("payment");
           }}>
             <span className="dot" style={{ background: "var(--warn)" }} />
@@ -267,7 +285,7 @@ export function App() {
           </button>
         )}
         <button className="shift-chip" onClick={() => {
-          setView("board"); setSelectedId(null); setMode("shift");
+          setView(operationalView); setSelectedId(null); setMode("shift");
         }}>
           <span className={`dot ${shift ? "" : "off"}`} />
           {shift ? `Смена открыта · ${shift.opened_by_name}` : "Смена закрыта — открыть"}
@@ -316,16 +334,20 @@ export function App() {
               : <div className="empty">Загружаю зал…</div>}
           </div>
         )}
+        {view === "entries" && (
+          <PublicBath catalog={catalog} shift={shift} nowMs={nowMs} onChanged={load}
+            onPayment={(orderId) => { setPayOrderId(orderId); setMode("payment"); void load(); }} />
+        )}
         {view === "bookings" && <Bookings catalog={catalog} />}
         {view === "receipts" && <Receipts onChanged={load} />}
         {view === "subscriptions" && <SubscriptionsView onChanged={load} />}
 
-        {view === "board" && mode === "shift" && (
+        {(view === "board" || view === "entries") && mode === "shift" && (
           <ShiftDialog shift={shift}
                        onOpened={() => { setMode("idle"); void load(); }}
                        onClosed={(r) => { setReport(r); setMode("report"); void load(); }} />
         )}
-        {view === "board" && mode === "report" && report && (
+        {(view === "board" || view === "entries") && mode === "report" && report && (
           <ZReport report={report} onClose={() => { setMode("idle"); setReport(null); }} />
         )}
         {view === "board" && mode === "idle" && selected && !selected.visit && (
@@ -341,7 +363,7 @@ export function App() {
                       }}
                       onClose={() => { setSelectedId(null); void load(); }} />
         )}
-        {view === "board" && mode === "payment" && payOrderId && (
+        {(view === "board" || view === "entries") && mode === "payment" && payOrderId && (
           <PaymentPanel orderId={payOrderId}
                         onPaid={() => { setPayOrderId(null); setMode("idle"); void load(); }}
                         onClose={() => { setPayOrderId(null); setMode("idle"); void load(); }} />

@@ -39,6 +39,7 @@ type Subs = {
 
 const KIND_LABEL: Record<string, string> = {
   service_time: "Время в парной",
+  service_entry: "Тарифы посещения",
   service_extra: "Доп. услуги",
   product: "Товары",
   subscription: "Абонементы",

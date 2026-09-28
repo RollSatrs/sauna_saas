@@ -218,6 +218,19 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
             </Карточка>
           )}
 
+          {показыватьОбщественный && (
+            <Карточка
+              title="Тарифы посещения"
+              sub="Готовая цена входа без выбора помещения и почасового расчёта"
+              onAdd={() => setФорма({ вид: "service", kind: "entry",
+                rules: [{ days: "все", from: "00:00", to: "24:00", price: "", priority: 0, minUnits: 0 }] })}
+              addLabel="Добавить тариф посещения">
+              <ТаблицаУслуг
+                услуги={услуги.filter((s: any) => s.kind === "entry" || s.kind === "per_person")}
+                onEdit={setФорма} onArchive={архив} />
+            </Карточка>
+          )}
+
           <Карточка
             title="Дополнительные услуги"
             sub="Штучные позиции: веник, массаж, простыня и другие дополнения к визиту"
@@ -443,8 +456,9 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
 
       {форма?.вид === "service" && (
         <Окно open title={форма.id ? "Изменить услугу" : "Новая услуга"}
-              description="Тарифы можно задать разные на будни, вечер и выходные — программа
-                           сама разложит визит по ним, даже если он пересекает границу."
+              description={форма.kind === "entry" || форма.kind === "per_person"
+                ? "Готовая цена выбирается по дню и времени входа и не пересчитывается при выходе."
+                : "Тарифы можно задать разные на будни, вечер и выходные."}
               onClose={() => setФорма(null)} busy={busy} error={error}
               onSave={() => сохранить(форма.id ? "PATCH" : "POST",
                 форма.id ? `/v1/manage/services/${форма.id}` : "/v1/manage/services",
@@ -461,6 +475,8 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
               <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="time_based" className="h-11">Почасовая — аренда помещения</SelectItem>
+                <SelectItem value="entry" className="h-11">Посещение — фиксированная цена</SelectItem>
+                <SelectItem value="per_person" className="h-11">Посещение — цена за человека</SelectItem>
                 <SelectItem value="extra" className="h-11">Штучная — веник, массаж, простыня</SelectItem>
               </SelectContent>
             </Select>
@@ -473,32 +489,40 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
             </Поле>
           ) : (
             <>
-              <Поле label="Длительность по умолчанию, мин"
-                    hint="Что подставится кассиру при приёме гостя">
-                <Input type="number" min={15} step={15} value={форма.defaultDuration ?? 120}
-                       className="h-11!"
-                       onChange={(e) => setФорма({ ...форма, defaultDuration: Number(e.target.value) })} />
-              </Поле>
-              <Поле label="Если визит переходит в другой тариф"
-                    hint="Например, гость зашёл днём, а вышел вечером">
-                <Select value={форма.timePricingMode ?? "segments"}
-                        onValueChange={(v) => setФорма({ ...форма, timePricingMode: v })}>
-                  <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="segments" className="h-11">
-                      Считать по частям — точнее, но сложнее объяснить гостю
-                    </SelectItem>
-                    <SelectItem value="at_start" className="h-11">
-                      Считать по тарифу на момент входа — весь визит одной ценой
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </Поле>
+              {форма.kind === "time_based" && (
+                <>
+                  <Поле label="Длительность по умолчанию, мин"
+                        hint="Что подставится кассиру при приёме гостя">
+                    <Input type="number" min={15} step={15} value={форма.defaultDuration ?? 120}
+                           className="h-11!"
+                           onChange={(e) => setФорма({ ...форма, defaultDuration: Number(e.target.value) })} />
+                  </Поле>
+                  <Поле label="Если визит переходит в другой тариф"
+                        hint="Например, гость зашёл днём, а вышел вечером">
+                    <Select value={форма.timePricingMode ?? "segments"}
+                            onValueChange={(v) => setФорма({ ...форма, timePricingMode: v })}>
+                      <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="segments" className="h-11">
+                          Считать по частям — точнее, но сложнее объяснить гостю
+                        </SelectItem>
+                        <SelectItem value="at_start" className="h-11">
+                          Считать по тарифу на момент входа — весь визит одной ценой
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </Поле>
+                </>
+              )}
               <Поле label="Тарифы"
-                    hint="Новая строка получает преимущество над добавленными раньше. Неоднозначные пересечения форма не сохранит.">
+                    hint={форма.kind === "time_based"
+                      ? "Новая строка получает преимущество над добавленными раньше. Неоднозначные пересечения форма не сохранит."
+                      : "Цена фиксируется в момент входа. Можно задать разные условия по дням и времени."}>
                 <div className="rule-editor">
                   <div className="rule-head">
-                    <span>дни</span><span>с</span><span>до</span><span>₸/час</span><span></span>
+                    <span>дни</span><span>с</span><span>до</span>
+                    <span>{форма.kind === "time_based" ? "₸/час" : форма.kind === "per_person" ? "₸/чел" : "₸/визит"}</span>
+                    <span></span>
                   </div>
                   {(форма.rules ?? []).map((r: any, i: number) => (
                     <div className="rule-row" key={i}>
@@ -522,7 +546,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                                rules: форма.rules.map((x: any, j: number) =>
                                  j === i ? { ...x, to: e.target.value } : x) })} />
                       <Input className="h-10!" inputMode="numeric" value={r.price}
-                             aria-label="цена за час"
+                             aria-label={форма.kind === "time_based" ? "цена за час" : "цена посещения"}
                              onChange={(e) => setФорма({ ...форма,
                                rules: форма.rules.map((x: any, j: number) =>
                                  j === i ? { ...x, price: e.target.value } : x) })} />
@@ -536,7 +560,7 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                     const следующий = Math.max(-1, ...правила.map((r: any) => Number(r.priority ?? 0))) + 1;
                     setФорма({ ...форма, rules: [...правила,
                       { days: "все", from: "00:00", to: "24:00", price: "",
-                        priority: следующий, minUnits: 1 }] });
+                        priority: следующий, minUnits: форма.kind === "time_based" ? 1 : 0 }] });
                   }}>
                     Добавить тариф
                   </button>
@@ -761,8 +785,8 @@ function ТаблицаУслуг({ услуги, onEdit, onArchive }: {
                 {(s.rules ?? []).map((r: any, i: number) => (
                   <span key={i}>
                     {маскаВДни(r.dowMask)} {r.from}–{r.to} · {formatTenge(r.price)}
-                    {s.kind === "time_based" ? "/ч" : ""}
-                    {Number(r.minUnits) > 1 ? ` · мин ${Number(r.minUnits)} ч` : ""}
+                    {s.kind === "time_based" ? "/ч" : s.kind === "per_person" ? "/чел" : ""}
+                    {s.kind === "time_based" && Number(r.minUnits) > 1 ? ` · мин ${Number(r.minUnits)} ч` : ""}
                   </span>
                 ))}
               </div>

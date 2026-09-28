@@ -236,14 +236,14 @@ export function VisitPanel({ tile, catalog, nowMs, onChanged, onFinished, onClos
       <div className="section">
         <span className="label">Время по тарифу</span>
         <div className="segments">
-          {details.timeQuote.segments.map((s, i) => (
+          {details.timeQuote!.segments.map((s, i) => (
             <span key={i}>
               {new Date(s.from).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}–
               {new Date(s.to).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}
               {" · "}{s.minutes} мин по {formatTenge(s.ratePerHour)}/ч = {formatTenge(s.amount)}
             </span>
           ))}
-          {details.timeQuote.minimumApplied && (
+          {details.timeQuote!.minimumApplied && (
             <span className="warn">Применена минимальная длительность тарифа</span>
           )}
         </div>
@@ -402,7 +402,7 @@ export function PaymentPanel({ orderId, onPaid, onClose }: {
       {remaining <= 0 ? (
         <>
           <span className="hint">
-            Платить нечего: всё закрыто абонементом. Гостя можно отпускать.
+            Платить нечего: итог заказа 0 ₸. Гостя можно отпускать.
           </span>
           {error && <div className="error">{error}</div>}
           <button className="btn primary" onClick={onPaid}>Готово</button>

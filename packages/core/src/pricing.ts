@@ -196,6 +196,32 @@ export function quotePiece(input: {
 }
 
 /**
+ * Готовый тариф посещения общественной бани. Цена фиксируется в момент входа:
+ * для `visit` она берётся один раз за визит, для `person` умножается на гостей.
+ * Почасовой движок намеренно не участвует в этом расчёте.
+ */
+export function quoteEntry(input: {
+  rules: readonly PriceRule[];
+  at: Date;
+  timezone: string;
+  guestsCount?: number;
+}): { unitPrice: Tiyn; total: Tiyn; ruleId: string; unit: "visit" | "person"; qty: number } {
+  const entries = input.rules.filter((r) => r.unit === "visit" || r.unit === "person");
+  const rule = ruleAt(entries, input.at, input.timezone);
+  if (!rule) throw new PricingError("для тарифа посещения не задана цена на это время");
+  const guests = Math.max(1, Math.round(input.guestsCount ?? 1));
+  const unit: "visit" | "person" = rule.unit === "person" ? "person" : "visit";
+  const qty = unit === "person" ? guests : 1;
+  return {
+    unitPrice: rule.amount,
+    total: rule.amount * qty,
+    ruleId: rule.id,
+    unit,
+    qty,
+  };
+}
+
+/**
  * Делит уже посчитанный интервал на часть, закрытую абонементом, и остаток к оплате.
  * Идём по сегментам от начала визита: абонемент закрывает первые минуты,
  * остальное гость доплачивает по тарифу. Считаем по сегментам, а не долей от

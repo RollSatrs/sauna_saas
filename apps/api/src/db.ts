@@ -95,9 +95,13 @@ export async function once<T>(
   }
 
   const result = await fn();
-  // Отказ (обработчик вернул сам reply) не запоминаем: ключ уйдёт вместе с
-  // откатом транзакции, и повтор получит тот же отказ заново.
-  if (result !== (reply as unknown)) {
+  // Fastify в зависимости от пути возвращает из reply.send либо сам reply,
+  // либо undefined. Отказ не кэшируем: повтор должен снова получить валидацию,
+  // а не JSON null из незавершённой операции.
+  if (result === (reply as unknown) || result === undefined) {
+    await client.query(
+      "DELETE FROM idempotency_keys WHERE org_id = $1 AND key = $2", [ctx.orgId, key]);
+  } else {
     await client.query(
       "UPDATE idempotency_keys SET response = $3 WHERE org_id = $1 AND key = $2",
       [ctx.orgId, key, JSON.stringify(result)]);

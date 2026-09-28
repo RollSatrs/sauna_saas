@@ -1,8 +1,78 @@
 import type { FastifyInstance } from "fastify";
-import { audit, withTenant } from "../db.ts";
+import { audit, idempotencyKey, once, withTenant } from "../db.ts";
 import { can } from "../auth.ts";
+import {
+  addSellableItem, OrderError, requireOpenShift, type SellableItem,
+} from "../order-service.ts";
 
 export function registerOrderRoutes(app: FastifyInstance): void {
+  /** Быстрая продажа товара или доп. услуги без визита и таймера. */
+  app.post("/v1/orders", async (request, reply) => {
+    const ctx = request.ctx;
+    if (!can(ctx, "visit.create")) return reply.code(403).send({ error: "нет права создавать продажи" });
+    const { customerId, items } = (request.body ?? {}) as {
+      customerId?: string;
+      items?: SellableItem[];
+    };
+    if (!Array.isArray(items) || items.length === 0) {
+      return reply.code(400).send({ error: "добавьте хотя бы одну позицию" });
+    }
+
+    try {
+      return await withTenant(ctx.orgId, async (client) => {
+        const { result, repeated } = await once(
+          client, ctx, idempotencyKey(request), "orders.create", reply, async () => {
+            const shiftId = await requireOpenShift(client, ctx);
+            if (!shiftId) throw new OrderError("смена не открыта", 409);
+            const order = (await client.query(
+              `INSERT INTO orders (org_id, branch_id, shift_id, customer_id, created_by)
+               VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+              [ctx.orgId, ctx.branchId, shiftId, customerId ?? null, ctx.userId])).rows[0];
+            let updated = order;
+            for (const item of items) {
+              updated = (await addSellableItem(client, ctx, order, item)).order;
+            }
+            await audit(client, ctx, { entityType: "order", entityId: order.id,
+                                       action: "create_direct", after: updated, shiftId });
+            return { order: updated };
+          });
+        if (repeated && result === undefined) {
+          return reply.code(409).send({ error: "операция уже выполняется, повторите через секунду" });
+        }
+        return repeated ? { ...(result as object), repeated: true } : result;
+      });
+    } catch (error) {
+      if (error instanceof OrderError) return reply.code(error.status).send({ error: error.message });
+      throw error;
+    }
+  });
+
+  app.post("/v1/orders/:id/items", async (request, reply) => {
+    const ctx = request.ctx;
+    if (!can(ctx, "visit.create")) return reply.code(403).send({ error: "нет права менять продажу" });
+    const { id } = request.params as { id: string };
+    const input = (request.body ?? {}) as SellableItem;
+    try {
+      return await withTenant(ctx.orgId, async (client) => {
+        const { result, repeated } = await once(
+          client, ctx, idempotencyKey(request), "orders.items", reply, async () => {
+            const order = (await client.query(
+              `SELECT * FROM orders WHERE id = $1 AND branch_id = $2 AND visit_id IS NULL FOR UPDATE`,
+              [id, ctx.branchId])).rows[0];
+            if (!order) throw new OrderError("быстрая продажа не найдена", 404);
+            return addSellableItem(client, ctx, order, input);
+          });
+        if (repeated && result === undefined) {
+          return reply.code(409).send({ error: "операция уже выполняется, повторите через секунду" });
+        }
+        return repeated ? { ...(result as object), repeated: true } : result;
+      });
+    } catch (error) {
+      if (error instanceof OrderError) return reply.code(error.status).send({ error: error.message });
+      throw error;
+    }
+  });
+
   /**
    * Оплата. Ключ идемпотентности обязателен: подвисшая сеть плюс второй клик
    * кассира не должны превращаться в два чека.

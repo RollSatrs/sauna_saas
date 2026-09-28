@@ -8,6 +8,7 @@ const unit = ["packages/core/test/pricing.test.ts"];
 const integration = [
   "apps/api/test/auth.test.ts",
   "apps/api/test/flow.test.ts",
+  "apps/api/test/public-flow.test.ts",
   "apps/api/test/subscriptions.test.ts",
   "apps/api/test/reports.test.ts",
   "apps/api/test/manage.test.ts",

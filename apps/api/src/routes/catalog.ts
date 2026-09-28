@@ -9,8 +9,24 @@ export function registerCatalogRoutes(app: FastifyInstance): void {
     const ctx = request.ctx;
     return withTenant(ctx.orgId, async (client) => {
       const services = await client.query(
-          `SELECT id, name, kind, unit, default_duration_min, resource_type_id, time_pricing_mode
-           FROM services WHERE archived_at IS NULL ORDER BY kind, name`);
+          `SELECT s.id, s.name, s.kind, s.unit, s.default_duration_min,
+                  s.resource_type_id, s.time_pricing_mode, current_rule.amount AS current_price
+           FROM services s
+           JOIN branches b ON b.id = $1
+           LEFT JOIN LATERAL (
+             SELECT r.amount
+             FROM price_rules r
+             WHERE r.service_id = s.id AND r.is_active
+               AND (r.branch_id IS NULL OR r.branch_id = b.id)
+               AND (r.dow_mask & (1 << (EXTRACT(ISODOW FROM now() AT TIME ZONE b.timezone)::int - 1))) <> 0
+               AND (now() AT TIME ZONE b.timezone)::time >= r.time_from
+               AND (now() AT TIME ZONE b.timezone)::time < r.time_to
+               AND (r.date_from IS NULL OR (now() AT TIME ZONE b.timezone)::date >= r.date_from)
+               AND (r.date_to IS NULL OR (now() AT TIME ZONE b.timezone)::date <= r.date_to)
+             ORDER BY r.priority DESC, r.created_at DESC
+             LIMIT 1
+           ) current_rule ON true
+           WHERE s.archived_at IS NULL ORDER BY s.kind, s.name`, [ctx.branchId]);
       const products = await client.query(
           `SELECT p.id, p.name, p.category, p.unit, p.price,
                   COALESCE(st.qty, 0) AS stock

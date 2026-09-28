@@ -203,8 +203,13 @@ export function registerManageRoutes(app: FastifyInstance): void {
   const сохранитьУслугу = async (request: any, reply: any, id?: string) =>
     обработать(reply, () => withTenant(request.ctx.orgId, async (client) => {
       const b = request.body ?? {};
-      const почасовая = b.kind === "time_based";
-      const единица = почасовая ? "hour" : "piece";
+      const вид = String(b.kind ?? "");
+      if (!["time_based", "entry", "per_person", "extra"].includes(вид)) {
+        throw new ОшибкаВвода("выберите тип услуги");
+      }
+      const почасовая = вид === "time_based";
+      const штучная = вид === "extra";
+      const единица = почасовая ? "hour" : вид === "entry" ? "visit" : вид === "per_person" ? "person" : "piece";
       const имя = текст(b.name, "название услуги");
       const длительность = почасовая ? целое(b.defaultDuration ?? 60, "длительность, мин", 15, 1440) : null;
       const режимВремени = почасовая && b.timePricingMode === "at_start" ? "at_start" : "segments";
@@ -215,17 +220,20 @@ export function registerManageRoutes(app: FastifyInstance): void {
         было = (await client.query("SELECT * FROM services WHERE id = $1", [id])).rows[0];
         if (!было) return reply.code(404).send({ error: "услуга не найдена" });
         await client.query(
-          "UPDATE services SET name=$2, default_duration_min=$3, time_pricing_mode=$4 WHERE id=$1",
-          [id, имя, длительность, режимВремени]);
+          `UPDATE services SET name=$2, kind=$3, unit=$4, default_duration_min=$5,
+                               time_pricing_mode=$6 WHERE id=$1`,
+          [id, имя, вид, единица, длительность, режимВремени]);
       } else {
         serviceId = (await client.query(
           `INSERT INTO services (org_id, name, kind, unit, default_duration_min, time_pricing_mode)
            VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
-          [request.ctx.orgId, имя, почасовая ? "time_based" : "extra", единица, длительность, режимВремени])).rows[0].id;
+           [request.ctx.orgId, имя, вид, единица, длительность, режимВремени])).rows[0].id;
       }
 
       await записатьТарифы(client, request.ctx, serviceId!, единица,
-        почасовая ? b.rules : [{ price: b.price, days: "все", from: "00:00", to: "24:00", priority: 0 }]);
+        штучная
+          ? [{ price: b.price, days: "все", from: "00:00", to: "24:00", priority: 0 }]
+          : b.rules);
 
       const стало = (await client.query("SELECT * FROM services WHERE id = $1", [serviceId])).rows[0];
       await audit(client, request.ctx, { entityType: "service", entityId: serviceId,
