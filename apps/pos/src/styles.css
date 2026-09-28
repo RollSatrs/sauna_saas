@@ -97,6 +97,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .layout { display: grid; grid-template-columns: 1fr 380px; min-height: 0; }
 .layout.solo { grid-template-columns: 1fr; }
 .board { padding: 18px; overflow: auto; }
+.public-bath { padding: 18px; overflow: auto; display: flex; flex-direction: column; gap: 18px; }
+.public-actions { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.public-actions h2 { margin: 0 0 4px; }
+.entry-grid .tile { min-height: 142px; }
+.public-panel { border-left: 0; }
 .grid {
   display: grid; gap: 14px;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));

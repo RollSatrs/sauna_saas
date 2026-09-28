@@ -186,6 +186,36 @@ describe("услуги и тарифы", () => {
     assert.match(r.body.error, /пересекаются без явного порядка/);
   });
 
+  test("тип существующей услуги нельзя сменить и почасовой зал продолжает работать", async () => {
+    const каталог = await call("GET", "/v1/catalog", undefined, cashier);
+    const помещение = каталог.body.resources.find((r: any) => r.default_service_id);
+    const услуга = (await call("GET", "/v1/manage/services")).body.services
+      .find((s: any) => s.id === помещение.default_service_id);
+
+    const изменена = await call("PATCH", `/v1/manage/services/${услуга.id}`, {
+      name: услуга.name, kind: "entry", rules: услуга.rules,
+    });
+    assert.equal(изменена.status, 409);
+    assert.match(изменена.body.error, /тип услуги нельзя менять.*создайте новую/);
+
+    const послеОтказа = (await call("GET", "/v1/manage/services")).body.services
+      .find((s: any) => s.id === услуга.id);
+    assert.equal(послеОтказа.kind, "time_based", "тип услуги не изменился");
+
+    await call("POST", "/v1/shifts", { openingCash: 0 }, cashier);
+    const визит = await call("POST", "/v1/visits", {
+      resourceId: помещение.id, plannedMinutes: 60,
+    }, cashier);
+    assert.equal(визит.status, 200, "почасовой визит открывается после отклонённой смены типа");
+
+    const зал = await call("GET", "/v1/board", undefined, cashier);
+    assert.equal(зал.status, 200);
+    assert.equal(зал.body.resources.find((r: any) => r.resourceId === помещение.id).state, "busy");
+
+    const завершён = await call("POST", `/v1/visits/${визит.body.visit.id}/finish`, {}, cashier);
+    assert.equal(завершён.status, 200);
+  });
+
   test("услугу, назначенную помещению, нельзя убрать в архив", async () => {
     const услуги = (await call("GET", "/v1/manage/services")).body.services;
     const занятая = услуги.find((s: any) => s.name === "Аренда сауны");

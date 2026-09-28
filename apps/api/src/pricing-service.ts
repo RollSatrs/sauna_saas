@@ -1,6 +1,6 @@
 // Мост между таблицами тарифов и чистым движком из @sauna/core.
 // Вся арифметика живёт в ядре, здесь только загрузка правил.
-import { quotePiece, quoteTime } from "@sauna/core";
+import { quoteEntry, quotePiece, quoteTime } from "@sauna/core";
 import type { BranchPricing, PriceRule, TimeQuote } from "@sauna/core";
 import type { Client } from "./db.ts";
 
@@ -89,4 +89,12 @@ export async function quoteExtraService(
   const branch = await loadBranchPricing(client, branchId);
   const rules = await loadRules(client, serviceId, branchId);
   return quotePiece({ rules, at, timezone: branch.timezone, qty });
+}
+
+export async function quoteEntryService(
+  client: Client, serviceId: string, branchId: string, guestsCount: number, at: Date = new Date(),
+) {
+  const branch = await loadBranchPricing(client, branchId);
+  const rules = await loadRules(client, serviceId, branchId);
+  return quoteEntry({ rules, at, timezone: branch.timezone, guestsCount });
 }
