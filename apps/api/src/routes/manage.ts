@@ -219,6 +219,11 @@ export function registerManageRoutes(app: FastifyInstance): void {
       if (id) {
         было = (await client.query("SELECT * FROM services WHERE id = $1", [id])).rows[0];
         if (!было) return reply.code(404).send({ error: "услуга не найдена" });
+        if (было.kind !== вид) {
+          return reply.code(409).send({
+            error: "тип услуги нельзя менять — создайте новую услугу",
+          });
+        }
         await client.query(
           `UPDATE services SET name=$2, kind=$3, unit=$4, default_duration_min=$5,
                                time_pricing_mode=$6 WHERE id=$1`,

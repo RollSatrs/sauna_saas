@@ -471,7 +471,8 @@ export function Settings({ branches }: { branches: { id: string; name: string }[
                    onChange={(e) => setФорма({ ...форма, name: e.target.value })} />
           </Поле>
           <Поле label="Тип">
-            <Select value={форма.kind} onValueChange={(v) => setФорма({ ...форма, kind: v })}>
+            <Select value={форма.kind} disabled={!!форма.id}
+                    onValueChange={(v) => setФорма({ ...форма, kind: v })}>
               <SelectTrigger className="h-11!"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="time_based" className="h-11">Почасовая — аренда помещения</SelectItem>
